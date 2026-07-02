@@ -1,0 +1,13 @@
+node_modules
+.next
+.git
+.swc
+.gitignore
+Dockerfile
+internals
+.opencode
+.dockerignore
+npm-debug.log
+README.md
+coverage
+.env*.local
