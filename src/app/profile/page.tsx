@@ -1,14 +1,14 @@
 'use client';
 
+import { Sidebar } from '@/components/sidebar/sidebar';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Sidebar } from '@/components/sidebar/sidebar';
+import { breakpoints } from '@/constants/breakpoints';
 import { useAuthStore, type UserRole } from '@/domains/auth';
 import { routes } from '@/routes/routes';
-import { breakpoints } from '@/lib/breakpoints';
+import { ArrowLeft, Mail, Save, Shield, User } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { User, Mail, Shield, Save, ArrowLeft } from 'lucide-react';
 import styled from 'styled-components';
 
 const Layout = styled.div`
@@ -145,7 +145,9 @@ const Input = styled.input`
   font-size: 15px;
   font-weight: 400;
   line-height: 1.5;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
 
   &:focus {
     border-color: ${({ theme }) => theme.colors.primary};
@@ -173,7 +175,9 @@ const Select = styled.select`
   font-size: 15px;
   font-weight: 400;
   line-height: 1.5;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
   appearance: none;
 
   &:focus {

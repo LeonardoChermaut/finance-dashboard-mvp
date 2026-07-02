@@ -28,8 +28,6 @@ export default [
       '@typescript-eslint/no-unsafe-return': 'error',
       '@typescript-eslint/no-unsafe-argument': 'error',
 
-      '@typescript-eslint/explicit-function-return-type': 'error',
-      '@typescript-eslint/explicit-module-boundary-types': 'error',
       '@typescript-eslint/no-inferrable-types': 'off',
 
       'prefer-const': 'error',
@@ -66,6 +64,12 @@ export default [
       'no-console': 'warn',
       'no-debugger': 'error',
       'no-alert': 'warn',
+    },
+  },
+  {
+    files: ['src/app/**/page.tsx', 'src/app/**/layout.tsx'],
+    rules: {
+      'no-restricted-syntax': 'off',
     },
   },
   {

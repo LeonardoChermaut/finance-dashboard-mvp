@@ -8,6 +8,7 @@ import {
   LogoIcon,
   LogoText,
   LogoWrapper,
+  LogoutButton,
   MobileToggle,
   NavIcon,
   NavItem,
@@ -26,9 +27,9 @@ import {
 import { clearSessionCookie, createMockAuthService, useAuthStore } from '@/domains/auth';
 import { useFilterStore } from '@/domains/filters';
 import { useClickOutside } from '@/hooks';
-import { getInitials } from '@/lib/utils';
 import { routes } from '@/routes/routes';
 import { useThemeMode } from '@/theme';
+import { getInitials } from '@/utils/utils';
 import { ChevronLeft, Home, LayoutDashboard, LogOut, Menu, Moon, Sun } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -120,7 +121,7 @@ export const Sidebar = () => {
         $isExpanded={isExpanded}
         $isMobileOpen={isMobileOpen}
         role="navigation"
-        aria-label="Navegacao principal"
+        aria-label="Navegação principal"
       >
         <SidebarHeader $isExpanded={isExpanded}>
           <LogoWrapper>
@@ -149,15 +150,15 @@ export const Sidebar = () => {
             $isExpanded={isExpanded}
             onMouseEnter={() => setHoveredItem('home')}
             onMouseLeave={() => setHoveredItem(null)}
-            aria-label="Inicio"
+            aria-label="Início"
             onFocus={() => setHoveredItem('home')}
             onBlur={() => setHoveredItem(null)}
           >
             <NavIcon>
               <Home size={18} />
             </NavIcon>
-            <NavLabel $isExpanded={isExpanded}>Inicio</NavLabel>
-            {showTooltip('home') && <Tooltip role="tooltip">Inicio</Tooltip>}
+            <NavLabel $isExpanded={isExpanded}>Início</NavLabel>
+            {showTooltip('home') && <Tooltip role="tooltip">Início</Tooltip>}
           </NavItem>
 
           <NavItem
@@ -210,7 +211,7 @@ export const Sidebar = () => {
             </UserAvatarContainer>
           ) : null}
 
-          <FooterItem
+          <LogoutButton
             type="button"
             onClick={handleLogout}
             $isExpanded={isExpanded}
@@ -225,7 +226,7 @@ export const Sidebar = () => {
             </NavIcon>
             <FooterLabel $isExpanded={isExpanded}>Sair</FooterLabel>
             {showTooltip('logout') && <Tooltip role="tooltip">Sair</Tooltip>}
-          </FooterItem>
+          </LogoutButton>
         </SidebarFooter>
       </SidebarContainer>
     </>

@@ -1,6 +1,6 @@
 'use client';
 
-import { mediaQuery } from '@/lib/breakpoints';
+import { mediaQuery } from '@/constants/breakpoints';
 import { createGlobalStyle } from 'styled-components';
 
 export const GlobalStyle = createGlobalStyle`

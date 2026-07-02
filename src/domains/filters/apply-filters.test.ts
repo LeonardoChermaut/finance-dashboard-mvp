@@ -22,7 +22,7 @@ const buildFilterState = (overrides: Partial<FilterState>): FilterState => {
     accounts: [],
     industries: [],
     states: [],
-    dateRange: { startDate: null, endDate: null },
+    dateRange: { startDate: null, endDate: null, startTime: null, endTime: null },
     ...overrides,
   };
 };
@@ -87,7 +87,14 @@ describe('applyFilters', () => {
   it('Filter by date range (inclusive)', () => {
     const result = applyFilters(
       transactions,
-      buildFilterState({ dateRange: { startDate: '2024-02-01', endDate: '2024-02-28' } }),
+      buildFilterState({
+        dateRange: {
+          startDate: '2024-02-01',
+          endDate: '2024-02-28',
+          startTime: null,
+          endTime: null,
+        },
+      }),
     );
 
     expect(result).toHaveLength(1);

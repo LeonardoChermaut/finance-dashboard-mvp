@@ -19,6 +19,7 @@ import { useEffect, useMemo, useState } from 'react';
 type DashboardData = {
   currency: string;
   isLoading: boolean;
+  error: string | null;
   summary: FinancialSummary;
   filterOptions: FilterOptions;
   monthlyTotals: readonly MonthlyTotals[];
@@ -45,6 +46,7 @@ const emptyFilterOptions: FilterOptions = {
 export const useDashboardData = (): DashboardData => {
   const [transactions, setTransactions] = useState<readonly Transaction[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   const states = useFilterStore((state) => state.states);
   const accounts = useFilterStore((state) => state.accounts);
@@ -53,11 +55,16 @@ export const useDashboardData = (): DashboardData => {
 
   useEffect(() => {
     let isMounted = true;
-    const fetchData = async () => {
+    const fetchData = async (): Promise<void> => {
       try {
         const data = await getTransactionRepository().getAll();
         if (isMounted) {
           setTransactions(data);
+        }
+      } catch (err) {
+        if (isMounted) {
+          const message = err instanceof Error ? err.message : 'Erro ao carregar dados';
+          setError(message);
         }
       } finally {
         if (isMounted) {
@@ -109,6 +116,7 @@ export const useDashboardData = (): DashboardData => {
     filterOptions: transactions.length > 0 ? filterOptions : emptyFilterOptions,
     currency,
     isLoading,
+    error,
     filteredTransactions,
   };
 };

@@ -87,7 +87,9 @@ const Input = styled.input`
   font-size: 15px;
   font-weight: 400;
   line-height: 1.5;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
 
   &:focus {
     border-color: ${({ theme }) => theme.colors.primary};

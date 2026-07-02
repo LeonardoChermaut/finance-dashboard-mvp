@@ -1,5 +1,5 @@
 import type { Transaction } from '@/domains/transactions/transaction.types';
-import { formatCentsToCurrency } from '@/lib/format';
+import { formatCentsToCurrency } from '@/utils/format';
 
 export const exportToExcel = (transactions: readonly Transaction[], currency: string): void => {
   import('xlsx').then((xlsx) => {

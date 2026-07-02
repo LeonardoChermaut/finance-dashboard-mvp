@@ -3,7 +3,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
 const emptyFilterState: FilterState = {
-  dateRange: { startDate: null, endDate: null },
+  dateRange: { startDate: null, endDate: null, startTime: null, endTime: null },
   accounts: [],
   industries: [],
   states: [],

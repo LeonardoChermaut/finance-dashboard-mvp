@@ -1,6 +1,6 @@
 'use client';
 
-import { GlobalStyle } from '@/lib/global-style';
+import { GlobalStyle } from '@/styles/global-style';
 import { ThemeProvider } from '@/theme/theme-provider';
 import { useServerInsertedHTML } from 'next/navigation';
 import type { ReactNode } from 'react';

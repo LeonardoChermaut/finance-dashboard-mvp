@@ -2,8 +2,14 @@
 
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { createMockAuthService, setSessionCookie, useAuthStore } from '@/domains/auth';
+import {
+  createMockAuthService,
+  createRealAuthService,
+  setSessionCookie,
+  useAuthStore,
+} from '@/domains/auth';
 import { usePasswordVisibility } from '@/hooks';
+import { env } from '@/config/env';
 import { routes } from '@/routes/routes';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -94,7 +100,9 @@ const Input = styled.input`
   font-size: 15px;
   font-weight: 400;
   line-height: 1.5;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
 
   &:focus {
     border-color: ${({ theme }) => theme.colors.primary};
@@ -123,7 +131,9 @@ const PasswordToggle = styled.button`
   height: 32px;
   border-radius: 8px;
   color: ${({ theme }) => theme.colors.muted};
-  transition: color 0.15s ease, background-color 0.15s ease;
+  transition:
+    color 0.15s ease,
+    background-color 0.15s ease;
 
   &:hover {
     color: ${({ theme }) => theme.colors.text};
@@ -171,6 +181,10 @@ const ErrorMessage = styled.p`
   font-weight: 500;
 `;
 
+const getAuthService = () => {
+  return env.NEXT_PUBLIC_DATA_SOURCE === 'api' ? createRealAuthService() : createMockAuthService();
+};
+
 const LoginPage = () => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -179,7 +193,7 @@ const LoginPage = () => {
 
   const router = useRouter();
   const setAuthenticated = useAuthStore((state) => state.setAuthenticated);
-  const authService = createMockAuthService();
+  const authService = getAuthService();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
     event.preventDefault();

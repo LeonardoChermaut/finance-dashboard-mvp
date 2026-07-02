@@ -62,7 +62,10 @@ export const Button = styled.button<ButtonProps>`
   font-size: 15px;
   font-weight: 600;
   line-height: 1.4;
-  transition: background-color 0.15s ease, transform 0.1s ease, opacity 0.15s ease;
+  transition:
+    background-color 0.15s ease,
+    transform 0.1s ease,
+    opacity 0.15s ease;
   cursor: pointer;
 
   &:disabled {

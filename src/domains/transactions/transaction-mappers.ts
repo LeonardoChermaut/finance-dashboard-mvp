@@ -1,4 +1,4 @@
-import { PENDING_WINDOW_DAYS } from '@/constants/constants';
+import { PENDING_WINDOW_DAYS } from '@/config/business-rules';
 import type { RawTransaction, Transaction } from '@/domains/transactions/transaction.types';
 
 const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;

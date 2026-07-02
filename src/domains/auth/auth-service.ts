@@ -1,6 +1,6 @@
-import { AUTHENTICATION_COOKIE_NAME } from '@/constants/constants';
-import type { AuthSession } from '@/domains/auth/auth-api-service';
-import type { Credentials } from '@/domains/auth/auth.types';
+import { AUTHENTICATION_COOKIE_NAME } from '@/constants/config';
+import type { AuthSession, Credentials } from '@/domains/auth/auth.types';
+import { api } from '@/lib/api';
 import { MOCK_USERS } from '@/mocks/users';
 
 const COOKIE_MAX_AGE_SECONDS = 60 * 60 * 24;
@@ -27,6 +27,12 @@ export const createMockAuthService = (): AuthService => ({
     });
   },
   logout: () => new Promise((resolve) => setTimeout(resolve, 100)),
+});
+
+export const createRealAuthService = (): AuthService => ({
+  login: async (credentials: Credentials) =>
+    await api.post<AuthSession, Credentials>('/auth/login', credentials),
+  logout: async () => await Promise.resolve(),
 });
 
 export const setSessionCookie = (): void => {

@@ -92,7 +92,9 @@ const ThemeButton = styled.button`
   height: 40px;
   border-radius: 10px;
   color: ${({ theme }) => theme.colors.textSecondary};
-  transition: background-color 0.15s ease, color 0.15s ease;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
 
   &:hover {
     background-color: ${({ theme }) => theme.colors.sidebarHover};
@@ -436,17 +438,20 @@ const features = [
   {
     icon: BarChart3,
     title: 'Graficos em Tempo Real',
-    description: 'Visualize receitas, despesas e saldo acumulado com graficos interativos e responsivos.',
+    description:
+      'Visualize receitas, despesas e saldo acumulado com graficos interativos e responsivos.',
   },
   {
     icon: Filter,
     title: 'Filtros Dinamicos',
-    description: 'Filtre por datas, contas, industrias e estados. Todos os dados atualizam instantaneamente.',
+    description:
+      'Filtre por datas, contas, industrias e estados. Todos os dados atualizam instantaneamente.',
   },
   {
     icon: Wallet,
     title: 'Cards de Resumo',
-    description: 'Resumo visual com receitas, despesas, pendencias e saldo total em um unico painel.',
+    description:
+      'Resumo visual com receitas, despesas, pendencias e saldo total em um unico painel.',
   },
   {
     icon: Lock,
@@ -461,7 +466,8 @@ const features = [
   {
     icon: Bell,
     title: 'Transacoes Pendentes',
-    description: 'Identificacao automatica de transacoes recentes com indicador visual de pendencia.',
+    description:
+      'Identificacao automatica de transacoes recentes com indicador visual de pendencia.',
   },
 ];
 
@@ -509,8 +515,8 @@ const HomePage = () => {
           Controle financeiro <HeroHighlight>simples e poderoso</HeroHighlight>
         </HeroTitle>
         <HeroDescription>
-          Acompanhe suas receitas, despesas e saldo acumulado com uma interface moderna,
-          responsiva e com suporte completo a tema claro e escuro.
+          Acompanhe suas receitas, despesas e saldo acumulado com uma interface moderna, responsiva
+          e com suporte completo a tema claro e escuro.
         </HeroDescription>
         <HeroActions>
           <Link href={isAuthenticated ? routes.dashboard : routes.login} passHref>
@@ -542,8 +548,8 @@ const HomePage = () => {
         <SectionLabel>Funcionalidades</SectionLabel>
         <SectionTitle>Tudo que voce precisa</SectionTitle>
         <SectionDescription>
-          Um sistema financeiro completo com visual profissional, filtros dinamicos e
-          graficos reativos.
+          Um sistema financeiro completo com visual profissional, filtros dinamicos e graficos
+          reativos.
         </SectionDescription>
         <FeaturesGrid>
           {features.map((feature) => {
