@@ -34,7 +34,7 @@ import {
   Sun,
   X,
 } from 'lucide-react';
-import { useRef } from 'react';
+import { Suspense, useRef } from 'react';
 import {
   ChartsSection,
   ContentWrapper,
@@ -90,7 +90,7 @@ import {
 } from './dashboard.styles';
 import { drilldownConfig, formatDate, getVisiblePages } from './dashboard.utils';
 
-const DashboardPage = () => {
+const DashboardContent = () => {
   const {
     summary,
     monthlyTotals,
@@ -413,5 +413,11 @@ const DashboardPage = () => {
     </Layout>
   );
 };
+
+const DashboardPage = () => (
+  <Suspense fallback={<div>Carregando...</div>}>
+    <DashboardContent />
+  </Suspense>
+);
 
 export default DashboardPage;
