@@ -1,4 +1,4 @@
-import { breakpoints } from '@/lib/breakpoints';
+import { breakpoints } from '@/constants/breakpoints';
 import styled, { css, keyframes } from 'styled-components';
 
 const EXPANDED_WIDTH = '240px';
@@ -52,7 +52,9 @@ export const SidebarContainer = styled.aside<SidebarContainerProps>`
   flex-direction: column;
   background-color: ${({ theme }) => theme.colors.sidebarSurface};
   border-right: 1px solid ${({ theme }) => theme.colors.border};
-  transition: transform ${SIDEBAR_TRANSITION}, width ${SIDEBAR_TRANSITION};
+  transition:
+    transform ${SIDEBAR_TRANSITION},
+    width ${SIDEBAR_TRANSITION};
   overflow: hidden;
   width: ${EXPANDED_WIDTH};
 
@@ -112,7 +114,9 @@ export const LogoText = styled.span<{ readonly $isExpanded: boolean }>`
   font-weight: 700;
   color: ${({ theme }) => theme.colors.sidebarText};
   white-space: nowrap;
-  transition: opacity 0.2s ease, width 0.2s ease;
+  transition:
+    opacity 0.2s ease,
+    width 0.2s ease;
   overflow: hidden;
   min-width: 0;
 
@@ -129,7 +133,9 @@ export const CollapseButton = styled.button`
   height: 28px;
   border-radius: 8px;
   color: ${({ theme }) => theme.colors.sidebarMuted};
-  transition: background-color 0.15s ease, color 0.15s ease;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
   flex-shrink: 0;
 
   &:hover {
@@ -155,8 +161,7 @@ export const SidebarNav = styled.nav<{ readonly $isExpanded?: boolean }>`
   display: flex;
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing(1)};
-  padding: ${({ theme, $isExpanded }) =>
-    $isExpanded ? `0 ${theme.spacing(3)}` : '0'};
+  padding: ${({ theme, $isExpanded }) => ($isExpanded ? `0 ${theme.spacing(3)}` : '0')};
   flex: 1;
 `;
 
@@ -180,7 +185,9 @@ export const NavItem = styled.button<NavItemProps>`
     $isActive ? theme.colors.sidebarActive : theme.colors.sidebarText};
   background-color: ${({ theme, $isActive }) =>
     $isActive ? theme.colors.primaryMuted : 'transparent'};
-  transition: background-color 0.15s ease, color 0.15s ease;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
   white-space: nowrap;
   position: relative;
 
@@ -199,10 +206,12 @@ export const NavItem = styled.button<NavItemProps>`
   }
 
   @media (min-width: ${breakpoints.tablet}) {
-    ${({ $isExpanded }) => !$isExpanded && css`
-      padding-left: 0;
-      padding-right: 0;
-    `}
+    ${({ $isExpanded }) =>
+      !$isExpanded &&
+      css`
+        padding-left: 0;
+        padding-right: 0;
+      `}
   }
 `;
 
@@ -217,7 +226,9 @@ export const NavIcon = styled.span`
 
 export const NavLabel = styled.span<{ readonly $isExpanded: boolean }>`
   white-space: nowrap;
-  transition: opacity 0.2s ease, width 0.2s ease;
+  transition:
+    opacity 0.2s ease,
+    width 0.2s ease;
   overflow: hidden;
 
   @media (min-width: ${breakpoints.tablet}) {
@@ -250,7 +261,9 @@ export const FooterItem = styled.button<FooterItemProps>`
   font-size: 14px;
   font-weight: 500;
   color: ${({ theme }) => theme.colors.sidebarText};
-  transition: background-color 0.15s ease, color 0.15s ease;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
   white-space: nowrap;
 
   &:hover {
@@ -267,20 +280,63 @@ export const FooterItem = styled.button<FooterItemProps>`
   }
 
   @media (min-width: ${breakpoints.tablet}) {
-    ${({ $isExpanded }) => !$isExpanded && css`
-      padding-left: 0;
-      padding-right: 0;
-    `}
+    ${({ $isExpanded }) =>
+      !$isExpanded &&
+      css`
+        padding-left: 0;
+        padding-right: 0;
+      `}
   }
 `;
 
 export const FooterLabel = styled.span<{ readonly $isExpanded: boolean }>`
   white-space: nowrap;
-  transition: opacity 0.2s ease, width 0.2s ease;
+  transition:
+    opacity 0.2s ease,
+    width 0.2s ease;
   overflow: hidden;
 
   @media (min-width: ${breakpoints.tablet}) {
     ${({ $isExpanded }) => !$isExpanded && sidebarTextCollapsed}
+  }
+`;
+
+export const LogoutButton = styled.button<{ readonly $isExpanded: boolean }>`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme, $isExpanded }) => ($isExpanded ? theme.spacing(3) : '0')};
+  width: 100%;
+  padding: ${({ theme, $isExpanded }) =>
+    $isExpanded ? `${theme.spacing(3)} ${theme.spacing(3)}` : `${theme.spacing(3)} 0`};
+  justify-content: ${({ $isExpanded }) => ($isExpanded ? 'flex-start' : 'center')};
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  color: ${({ theme }) => theme.colors.danger};
+  background-color: ${({ theme }) => theme.colors.dangerMuted};
+  transition: background-color 0.15s ease;
+  white-space: nowrap;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.dangerMuted};
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  &:focus-visible {
+    outline: 2px solid ${({ theme }) => theme.colors.danger};
+    outline-offset: 2px;
+  }
+
+  @media (min-width: ${breakpoints.tablet}) {
+    ${({ $isExpanded }) =>
+      !$isExpanded &&
+      css`
+        padding-left: 0;
+        padding-right: 0;
+      `}
   }
 `;
 
@@ -330,7 +386,9 @@ export const UserInfo = styled.div<{ readonly $isExpanded: boolean }>`
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  transition: opacity 0.2s ease, width 0.2s ease;
+  transition:
+    opacity 0.2s ease,
+    width 0.2s ease;
   min-width: 0;
 
   @media (min-width: ${breakpoints.tablet}) {

@@ -1,4 +1,4 @@
-import { StyledRegistry } from '@/lib/styled-registry';
+import { StyledRegistry } from '@/styles/styled-registry';
 import type { Metadata } from 'next';
 import { Geist } from 'next/font/google';
 import type { ReactNode } from 'react';

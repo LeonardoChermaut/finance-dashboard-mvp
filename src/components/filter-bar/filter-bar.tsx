@@ -13,6 +13,24 @@ const Wrapper = styled(Card)`
   gap: ${({ theme }) => theme.spacing(1)};
 `;
 
+const ClearAllButton = styled.button`
+  align-self: flex-end;
+  font-size: 12px;
+  font-weight: 600;
+  color: ${({ theme }) => theme.colors.danger};
+  padding: ${({ theme }) => `${theme.spacing(1)} 0`};
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    outline: 2px solid ${({ theme }) => theme.colors.danger};
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+`;
+
 const AccordionHeader = styled.button`
   display: flex;
   align-items: center;
@@ -211,17 +229,15 @@ const SelectAllButton = styled.button`
 const ClearSelectionButton = styled.button`
   font-size: 12px;
   font-weight: 600;
-  color: ${({ theme }) => theme.colors.warning};
+  color: ${({ theme }) => theme.colors.danger};
   padding: ${({ theme }) => `${theme.spacing(1)} 0`};
-  transition: color 0.15s ease;
 
   &:hover {
-    color: ${({ theme }) => theme.colors.danger};
     text-decoration: underline;
   }
 
   &:focus-visible {
-    outline: 2px solid ${({ theme }) => theme.colors.warning};
+    outline: 2px solid ${({ theme }) => theme.colors.danger};
     outline-offset: 2px;
     border-radius: 4px;
   }
@@ -279,14 +295,13 @@ const ChipRemove = styled.span`
 `;
 
 const ClearDateButton = styled.button`
+  align-self: flex-start;
   font-size: 12px;
   font-weight: 600;
   color: ${({ theme }) => theme.colors.danger};
   padding: ${({ theme }) => `${theme.spacing(1)} 0`};
-  transition: color 0.15s ease;
 
   &:hover {
-    color: ${({ theme }) => theme.colors.primaryHover};
     text-decoration: underline;
   }
 
@@ -405,7 +420,7 @@ const SearchableMultiSelect = ({
         </SelectAllButton>
         {selected.length > 0 && (
           <ClearSelectionButton type="button" onClick={onClearAll}>
-            Limpar selecao
+            Limpar seleção
           </ClearSelectionButton>
         )}
       </SelectActions>
@@ -451,12 +466,20 @@ export const FilterBar = ({ filterOptions }: FilterBarProps) => {
   const industries = useFilterStore((state) => state.industries);
   const states = useFilterStore((state) => state.states);
   const setDateRange = useFilterStore((state) => state.setDateRange);
+  const resetFilters = useFilterStore((state) => state.resetFilters);
   const toggleAccount = useFilterStore((state) => state.toggleAccount);
   const toggleIndustry = useFilterStore((state) => state.toggleIndustry);
   const toggleState = useFilterStore((state) => state.toggleState);
   const setAccounts = useFilterStore((state) => state.setAccounts);
   const setIndustries = useFilterStore((state) => state.setIndustries);
   const setStates = useFilterStore((state) => state.setStates);
+
+  const hasActiveFilters =
+    dateRange.startDate !== null ||
+    dateRange.endDate !== null ||
+    accounts.length > 0 ||
+    industries.length > 0 ||
+    states.length > 0;
 
   const toggleSection = useCallback((section: string) => {
     setOpenSections((previous) => ({ ...previous, [section]: !previous[section] }));
@@ -465,11 +488,16 @@ export const FilterBar = ({ filterOptions }: FilterBarProps) => {
   const hasDateRange = dateRange.startDate !== null || dateRange.endDate !== null;
 
   const handleClearDates = useCallback(() => {
-    setDateRange({ startDate: null, endDate: null });
+    setDateRange({ startDate: null, endDate: null, startTime: null, endTime: null });
   }, [setDateRange]);
 
   return (
     <Wrapper as="section" aria-label="Filtros">
+      {hasActiveFilters ? (
+        <ClearAllButton type="button" onClick={resetFilters}>
+          Limpar filtro
+        </ClearAllButton>
+      ) : null}
       <AccordionSection
         title="Datas"
         count={hasDateRange ? 1 : undefined}
@@ -478,7 +506,7 @@ export const FilterBar = ({ filterOptions }: FilterBarProps) => {
       >
         <DateRow>
           <DateField htmlFor="filter-date-start">
-            Inicio
+            Início
             <DateInput
               id="filter-date-start"
               type="date"
@@ -487,8 +515,8 @@ export const FilterBar = ({ filterOptions }: FilterBarProps) => {
               max={filterOptions.maxDate ?? undefined}
               onChange={(event) =>
                 setDateRange({
+                  ...dateRange,
                   startDate: event.target.value === '' ? null : event.target.value,
-                  endDate: dateRange.endDate,
                 })
               }
             />
@@ -503,7 +531,7 @@ export const FilterBar = ({ filterOptions }: FilterBarProps) => {
               max={filterOptions.maxDate ?? undefined}
               onChange={(event) =>
                 setDateRange({
-                  startDate: dateRange.startDate,
+                  ...dateRange,
                   endDate: event.target.value === '' ? null : event.target.value,
                 })
               }

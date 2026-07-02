@@ -1,8 +1,8 @@
+import { AUTHENTICATION_COOKIE_NAME } from '@/constants/config';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
-import { AUTHENTICATION_COOKIE_NAME } from './constants/constants';
 
-export function proxy(request: NextRequest) {
+export const middleware = (request: NextRequest): NextResponse => {
   const sessionToken = request.cookies.get(AUTHENTICATION_COOKIE_NAME);
 
   if (request.nextUrl.pathname.startsWith('/dashboard')) {
@@ -18,7 +18,7 @@ export function proxy(request: NextRequest) {
   }
 
   return NextResponse.next();
-}
+};
 
 export const config = {
   matcher: ['/', '/login', '/dashboard/:path*'],

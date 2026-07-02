@@ -93,7 +93,9 @@ const Input = styled.input`
   font-size: 15px;
   font-weight: 400;
   line-height: 1.5;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
 
   &:focus {
     border-color: ${({ theme }) => theme.colors.primary};
@@ -122,7 +124,9 @@ const PasswordToggle = styled.button`
   height: 32px;
   border-radius: 8px;
   color: ${({ theme }) => theme.colors.muted};
-  transition: color 0.15s ease, background-color 0.15s ease;
+  transition:
+    color 0.15s ease,
+    background-color 0.15s ease;
 
   &:hover {
     color: ${({ theme }) => theme.colors.text};
@@ -186,7 +190,9 @@ const Select = styled.select`
   font-size: 15px;
   font-weight: 400;
   line-height: 1.5;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
   appearance: none;
 
   &:focus {
@@ -247,9 +253,7 @@ const RegisterPage = () => {
         </Heading>
 
         {isSuccess ? (
-          <SuccessMessage role="status">
-            Conta criada com sucesso! Redirecionando...
-          </SuccessMessage>
+          <SuccessMessage role="status">Conta criada com sucesso! Redirecionando...</SuccessMessage>
         ) : (
           <Form onSubmit={handleSubmit}>
             <FieldWrapper htmlFor="register-name">
@@ -326,9 +330,7 @@ const RegisterPage = () => {
               />
             </FieldWrapper>
 
-            {hasError ? (
-              <ErrorMessage role="alert">{errorMessage}</ErrorMessage>
-            ) : null}
+            {hasError ? <ErrorMessage role="alert">{errorMessage}</ErrorMessage> : null}
 
             <Button type="submit" disabled={!name || !email || !password || !confirmPassword}>
               Criar conta

@@ -1,6 +1,8 @@
 export type DateRange = Readonly<{
   endDate: string | null;
   startDate: string | null;
+  startTime: string | null;
+  endTime: string | null;
 }>;
 
 export type FilterState = Readonly<{

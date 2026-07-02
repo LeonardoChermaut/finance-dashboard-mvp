@@ -2,7 +2,7 @@ import { normalizeTransactions } from '@/domains/transactions/transaction-mapper
 import type { Transaction } from '@/domains/transactions/transaction.types';
 import rawTransactionsData from '@/mocks/transactions.json';
 
-export interface TransactionRepository {
+export interface ITransactionRepository {
   getAll(): Promise<readonly Transaction[]>;
 }
 
@@ -13,7 +13,7 @@ const toTransactionType = (value: string): 'deposit' | 'withdraw' => {
   return 'withdraw';
 };
 
-export const createMockTransactionRepository = (): TransactionRepository => ({
+export const createMockTransactionRepository = (): ITransactionRepository => ({
   getAll: async () => {
     const rawTransactions = rawTransactionsData.map((entry) => ({
       date: entry.date,

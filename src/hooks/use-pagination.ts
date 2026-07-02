@@ -9,6 +9,8 @@ type PaginationResult<T> = {
   readonly goToPage: (page: number) => void;
   readonly goToNextPage: () => void;
   readonly goToPreviousPage: () => void;
+  readonly goToFirstPage: () => void;
+  readonly goToLastPage: () => void;
   readonly setPageSize: (size: number) => void;
 };
 
@@ -46,13 +48,18 @@ export const usePagination = <T>(
     goToPage(safeCurrentPage - 1);
   }, [goToPage, safeCurrentPage]);
 
-  const setPageSize = useCallback(
-    (size: number) => {
-      setPageSizeState(size);
-      setCurrentPage(1);
-    },
-    [],
-  );
+  const goToFirstPage = useCallback(() => {
+    goToPage(1);
+  }, [goToPage]);
+
+  const goToLastPage = useCallback(() => {
+    goToPage(totalPages);
+  }, [goToPage, totalPages]);
+
+  const setPageSize = useCallback((size: number) => {
+    setPageSizeState(size);
+    setCurrentPage(1);
+  }, []);
 
   return {
     currentPage: safeCurrentPage,
@@ -63,6 +70,8 @@ export const usePagination = <T>(
     goToPage,
     goToNextPage,
     goToPreviousPage,
+    goToFirstPage,
+    goToLastPage,
     setPageSize,
   };
 };
