@@ -17,6 +17,7 @@ import {
   InputContainer,
   PasswordInput,
   PasswordToggle,
+  Select,
 } from '@/components/ui/field';
 import { Form, LinkButton, LinksContainer, SuccessMessage } from '@/components/ui/form';
 import { useAuthStore } from '@/domains/auth';
@@ -25,30 +26,7 @@ import { usePasswordVisibility } from '@/hooks/use-password-visibility';
 import { registerSchema } from '@/domains/auth/auth.schemas';
 import { routes } from '@/routes/routes';
 import { useRouter } from 'next/navigation';
-import styled from 'styled-components';
 import type { FormEvent } from 'react';
-
-const Select = styled.select`
-  width: 100%;
-  padding: ${({ theme }) => `${theme.spacing(3)} ${theme.spacing(4)}`};
-  border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: ${({ theme }) => theme.radius.input};
-  background-color: ${({ theme }) => theme.colors.inputBackground};
-  color: ${({ theme }) => theme.colors.text};
-  font-size: 15px;
-  font-weight: 400;
-  line-height: 1.5;
-  transition:
-    border-color 0.15s ease,
-    box-shadow 0.15s ease;
-  appearance: none;
-
-  &:focus {
-    border-color: ${({ theme }) => theme.colors.primary};
-    box-shadow: 0 0 0 3px ${({ theme }) => theme.colors.primaryMuted};
-    outline: none;
-  }
-`;
 
 const RegisterPage = () => {
   const router = useRouter();

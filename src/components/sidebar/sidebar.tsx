@@ -24,6 +24,7 @@ import {
   UserInfo,
   UserName,
 } from '@/components/sidebar/sidebar.styled';
+import { SIDEBAR_STATE_KEY } from '@/constants/config';
 import { clearSessionCookie, createMockAuthService, useAuthStore } from '@/domains/auth';
 import { useFilterStore } from '@/domains/filters';
 import { useClickOutside } from '@/hooks';
@@ -33,18 +34,17 @@ import { getInitials } from '@/utils/transaction';
 import { ChevronLeft, Home, LayoutDashboard, LogOut, Menu, Moon, Sun } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { useCallback, useEffect, useRef, useState } from 'react';
-
-const SIDEBAR_STATE_KEY = 'financial_dashboard_sidebar_expanded';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 export const Sidebar = () => {
-  const [isExpanded, setIsExpanded] = useState<boolean>(true);
+  const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const [isMobileOpen, setIsMobileOpen] = useState<boolean>(false);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
+  const [shouldResetFilters, setShouldResetFilters] = useState<boolean>(false);
 
   const router = useRouter();
   const pathname = usePathname();
-  const authService = createMockAuthService();
+  const authService = useMemo(() => createMockAuthService(), []);
 
   const { user, clearAuth } = useAuthStore();
   const { resetFilters } = useFilterStore();
@@ -59,6 +59,13 @@ export const Sidebar = () => {
     }
   }, []);
 
+  useEffect(() => {
+    if (shouldResetFilters && pathname === routes.home) {
+      resetFilters();
+      setShouldResetFilters(false);
+    }
+  }, [shouldResetFilters, pathname, resetFilters]);
+
   const toggleExpanded = useCallback(() => {
     setIsExpanded((previous) => {
       const next = !previous;
@@ -68,9 +75,9 @@ export const Sidebar = () => {
   }, []);
 
   const handleHomeClick = useCallback(() => {
-    resetFilters();
+    setShouldResetFilters(true);
     setIsMobileOpen(false);
-  }, [resetFilters]);
+  }, []);
 
   const handleLogout = useCallback(async () => {
     await authService.logout();

@@ -1,16 +1,10 @@
 'use client';
 
+import { summaryCardConfig } from '@/constants/dashboard';
 import type { FinancialSummary } from '@/domains/transactions/transaction.types';
 import { formatCentsToCurrency } from '@/utils/format';
-import {
-  ArrowDownLeft,
-  ArrowUpRight,
-  ChevronLeft,
-  ChevronRight,
-  Clock,
-  TrendingDown,
-  TrendingUp,
-} from 'lucide-react';
+import { calculatePendingVariation, calculateVariation } from '@/utils/variation';
+import { ChevronLeft, ChevronRight, TrendingDown } from 'lucide-react';
 import { useState } from 'react';
 import {
   CardDescription,
@@ -33,44 +27,10 @@ import {
 
 type SummaryCardsProps = {
   summary: FinancialSummary;
+  previousSummary: FinancialSummary;
   currency: string;
   onCardClick?: (type: 'income' | 'expenses' | 'pending' | 'balance') => void;
 };
-
-const cardConfig = [
-  {
-    key: 'income',
-    label: 'Receitas',
-    tone: 'income' as const,
-    icon: ArrowUpRight,
-    description: 'Total de depositos recebidos',
-    variation: '+12% vs período anterior',
-  },
-  {
-    key: 'expenses',
-    label: 'Despesas',
-    tone: 'expense' as const,
-    icon: ArrowDownLeft,
-    description: 'Total de saques realizados',
-    variation: '+8% vs período anterior',
-  },
-  {
-    key: 'pending',
-    label: 'Pendentes',
-    tone: 'pending' as const,
-    icon: Clock,
-    description: 'Transações dos últimos 7 dias',
-    variation: '-3 vs período anterior',
-  },
-  {
-    key: 'balance',
-    label: 'Saldo Total',
-    tone: 'balance' as const,
-    icon: TrendingUp,
-    description: 'Receitas menos despesas',
-    variation: '+15% vs período anterior',
-  },
-] as const;
 
 const getLabel = (key: string, label: string) => {
   if (key === 'balance') {
@@ -79,40 +39,58 @@ const getLabel = (key: string, label: string) => {
   return <CardLabel>{label}</CardLabel>;
 };
 
-export const SummaryCards = ({ summary, currency, onCardClick }: SummaryCardsProps) => {
+export const SummaryCards = ({
+  summary,
+  previousSummary,
+  currency,
+  onCardClick,
+}: SummaryCardsProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const values: Record<string, { readonly amount: number; readonly tone?: 'income' | 'expense' }> =
-    {
-      income: { amount: summary.incomeInCents, tone: 'income' },
-      expenses: { amount: summary.expensesInCents, tone: 'expense' },
-      pending: { amount: summary.pendingCount },
-      balance: { amount: summary.balanceInCents },
-    };
+
+  const variations: Record<string, string> = {
+    income: calculateVariation(summary.incomeInCents, previousSummary.incomeInCents),
+    expenses: calculateVariation(summary.expensesInCents, previousSummary.expensesInCents),
+    pending: calculatePendingVariation(summary.pendingCount, previousSummary.pendingCount),
+    balance: calculateVariation(summary.balanceInCents, previousSummary.balanceInCents),
+  };
 
   const handlePrevious = () =>
-    setCurrentIndex((prev) => (prev === 0 ? cardConfig.length - 1 : prev - 1));
+    setCurrentIndex((prev) => (prev === 0 ? summaryCardConfig.length - 1 : prev - 1));
 
   const handleNext = () =>
-    setCurrentIndex((prev) => (prev === cardConfig.length - 1 ? 0 : prev + 1));
+    setCurrentIndex((prev) => (prev === summaryCardConfig.length - 1 ? 0 : prev + 1));
 
-  const renderCard = (config: (typeof cardConfig)[number]) => {
-    const value = values[config.key];
+  const renderCard = (config: (typeof summaryCardConfig)[number]) => {
+    const getAmount = (): number => {
+      if (config.key === 'income') {
+        return summary.incomeInCents;
+      }
+      if (config.key === 'expenses') {
+        return summary.expensesInCents;
+      }
+      return summary.balanceInCents;
+    };
+
     const displayValue =
       config.key === 'pending'
-        ? String(value.amount)
-        : formatCentsToCurrency(value.amount, currency);
+        ? String(summary.pendingCount)
+        : formatCentsToCurrency(getAmount(), currency);
 
-    const balanceVariant =
-      config.key === 'balance'
-        ? value.amount > 0
-          ? ('positive' as const)
-          : value.amount < 0
-            ? ('negative' as const)
-            : ('zero' as const)
-        : undefined;
+    const getBalanceVariant = (): 'positive' | 'negative' | 'zero' | undefined => {
+      if (config.key !== 'balance') {
+        return undefined;
+      }
+      if (summary.balanceInCents > 0) {
+        return 'positive';
+      }
+      if (summary.balanceInCents < 0) {
+        return 'negative';
+      }
+      return 'zero';
+    };
 
-    const Icon =
-      config.key === 'balance' && balanceVariant === 'negative' ? TrendingDown : config.icon;
+    const balanceVariant = getBalanceVariant();
+    const Icon = balanceVariant === 'negative' ? TrendingDown : config.icon;
 
     return (
       <StyledCard
@@ -136,7 +114,7 @@ export const SummaryCards = ({ summary, currency, onCardClick }: SummaryCardsPro
         </CardHeader>
         <CardValue>{displayValue}</CardValue>
         <CardDescription>{config.description}</CardDescription>
-        <CardVariation>{config.variation}</CardVariation>
+        <CardVariation>{variations[config.key]}</CardVariation>
       </StyledCard>
     );
   };
@@ -148,13 +126,13 @@ export const SummaryCards = ({ summary, currency, onCardClick }: SummaryCardsPro
           <NavigationButton $direction="left" onClick={handlePrevious} aria-label="Anterior">
             <ChevronLeft size={16} />
           </NavigationButton>
-          {renderCard(cardConfig[currentIndex])}
+          {renderCard(summaryCardConfig[currentIndex])}
           <NavigationButton $direction="right" onClick={handleNext} aria-label="Próximo">
             <ChevronRight size={16} />
           </NavigationButton>
         </CarouselContainer>
         <DotsContainer>
-          {cardConfig.map((config, index) => (
+          {summaryCardConfig.map((config, index) => (
             <Dot
               key={config.key}
               $active={index === currentIndex}
@@ -166,7 +144,9 @@ export const SummaryCards = ({ summary, currency, onCardClick }: SummaryCardsPro
       </MobileCardContainer>
 
       <TabletCardContainer>
-        <Grid $isMobile={false}>{cardConfig.slice(0, 2).map((config) => renderCard(config))}</Grid>
+        <Grid $isMobile={false}>
+          {summaryCardConfig.slice(0, 2).map((config) => renderCard(config))}
+        </Grid>
         <DotsContainer>
           {[0, 1].map((pageIndex) => (
             <Dot
@@ -180,7 +160,7 @@ export const SummaryCards = ({ summary, currency, onCardClick }: SummaryCardsPro
       </TabletCardContainer>
 
       <DesktopCardContainer>
-        <Grid $isMobile={false}>{cardConfig.map((config) => renderCard(config))}</Grid>
+        <Grid $isMobile={false}>{summaryCardConfig.map((config) => renderCard(config))}</Grid>
       </DesktopCardContainer>
     </>
   );

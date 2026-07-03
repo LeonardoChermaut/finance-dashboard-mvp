@@ -14,6 +14,7 @@ import {
 import { useThemeMode } from '@/theme';
 import { formatDate } from '@/utils/date';
 import { formatCentsToCurrency } from '@/utils/format';
+import { getVisiblePages } from '@/utils/pagination';
 import {
   ArrowDownLeft,
   ArrowUpRight,
@@ -32,7 +33,7 @@ import {
   X,
 } from 'lucide-react';
 import dynamic from 'next/dynamic';
-import { Suspense, useRef } from 'react';
+import { Suspense, useEffect, useRef, useState } from 'react';
 import {
   ChartsSection,
   ContentWrapper,
@@ -107,23 +108,10 @@ const DynamicFilterBar = dynamic(
   { ssr: false, loading: () => null },
 );
 
-const getVisiblePages = (current: number, total: number): readonly number[] => {
-  if (total <= 5) {
-    return Array.from({ length: total }, (_unused, index) => index + 1);
-  }
-  if (current <= 3) {
-    return [1, 2, 3, 4, 5];
-  }
-  if (current >= total - 2) {
-    return [total - 4, total - 3, total - 2, total - 1, total];
-  }
-
-  return [current - 2, current - 1, current, current + 1, current + 2];
-};
-
 const DashboardContent = () => {
   const {
     summary,
+    previousSummary,
     monthlyTotals,
     accumulatedBalance,
     filterOptions,
@@ -133,6 +121,11 @@ const DashboardContent = () => {
   } = useDashboardData();
   const { mode, toggleTheme } = useThemeMode();
   const exportMenuRef = useRef<HTMLDivElement>(null);
+  const [currentDate, setCurrentDate] = useState('');
+
+  useEffect(() => {
+    setCurrentDate(formatDate(new Date()));
+  }, []);
 
   useSyncFiltersFromUrl();
   useSyncFiltersToUrl();
@@ -195,7 +188,7 @@ const DashboardContent = () => {
                   Resumo financeiro atualizado conforme os filtros selecionados.
                 </PageDescription>
               </HeaderText>
-              <CurrentDate>{formatDate(new Date())}</CurrentDate>
+              <CurrentDate>{currentDate}</CurrentDate>
             </HeaderTop>
             <HeaderActions>
               <ThemeToggle
@@ -290,6 +283,7 @@ const DashboardContent = () => {
           <SummarySection aria-label="Resumo financeiro">
             <DynamicSummaryCards
               summary={summary}
+              previousSummary={previousSummary}
               currency={currency}
               onCardClick={handleCardClick}
             />

@@ -24,6 +24,7 @@ import { Button } from '@/components/ui/button';
 
 import { useAuthStore, type UserRole } from '@/domains/auth';
 import { routes } from '@/routes/routes';
+import { getInitials } from '@/utils/transaction';
 import { ArrowLeft, Mail, Save, Shield, User } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState, type FormEvent } from 'react';
@@ -54,12 +55,7 @@ const ProfilePage = () => {
     return null;
   }
 
-  const initials = name
-    .split(' ')
-    .map((part) => part.charAt(0))
-    .join('')
-    .toUpperCase()
-    .slice(0, 2);
+  const initials = getInitials(name);
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault();

@@ -1,5 +1,6 @@
 'use client';
 
+import { DEFAULT_CURRENCY, emptyFilterOptions, emptySummary } from '@/constants/dashboard';
 import { applyFilters, deriveFilterOptions, useFilterStore } from '@/domains/filters';
 import type { FilterOptions } from '@/domains/filters/filters.types';
 import {
@@ -22,25 +23,10 @@ type DashboardData = {
   error: string | null;
   summary: FinancialSummary;
   filterOptions: FilterOptions;
+  previousSummary: FinancialSummary;
   monthlyTotals: readonly MonthlyTotals[];
   accumulatedBalance: readonly AccumulatedBalancePoint[];
   filteredTransactions: readonly Transaction[];
-};
-
-const DEFAULT_CURRENCY = 'BRL';
-
-const emptySummary: FinancialSummary = {
-  pendingCount: 0,
-  incomeInCents: 0,
-  balanceInCents: 0,
-  expensesInCents: 0,
-};
-const emptyFilterOptions: FilterOptions = {
-  maxDate: null,
-  minDate: null,
-  states: [],
-  accounts: [],
-  industries: [],
 };
 
 export const useDashboardData = (): DashboardData => {
@@ -99,6 +85,17 @@ export const useDashboardData = (): DashboardData => {
     return calculateFinancialSummary(filteredTransactions);
   }, [filteredTransactions, isLoading]);
 
+  const previousSummary = useMemo(() => {
+    if (isLoading || filteredTransactions.length === 0) {
+      return emptySummary;
+    }
+
+    const midpoint = Math.floor(filteredTransactions.length / 2);
+    const previousTransactions = filteredTransactions.slice(0, midpoint);
+
+    return calculateFinancialSummary(previousTransactions);
+  }, [filteredTransactions, isLoading]);
+
   const monthlyTotals = useMemo(() => {
     return calculateMonthlyTotals(filteredTransactions);
   }, [filteredTransactions]);
@@ -111,6 +108,7 @@ export const useDashboardData = (): DashboardData => {
 
   return {
     summary,
+    previousSummary,
     monthlyTotals,
     accumulatedBalance,
     filterOptions: transactions.length > 0 ? filterOptions : emptyFilterOptions,
