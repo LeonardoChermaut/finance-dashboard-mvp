@@ -11,4 +11,3 @@ export {
   useUpdateSearchParams,
 } from './use-search-params';
 export { useSyncFiltersToUrl } from './use-sync-filters-to-url';
-export { useUrlSync } from './use-url-sync';

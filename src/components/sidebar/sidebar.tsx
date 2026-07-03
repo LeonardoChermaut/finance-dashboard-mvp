@@ -24,6 +24,7 @@ import {
   UserInfo,
   UserName,
 } from '@/components/sidebar/sidebar.styled';
+import { SIDEBAR_STATE_KEY } from '@/constants/config';
 import { clearSessionCookie, createMockAuthService, useAuthStore } from '@/domains/auth';
 import { useFilterStore } from '@/domains/filters';
 import { useClickOutside } from '@/hooks';
@@ -31,18 +32,19 @@ import { routes } from '@/routes/routes';
 import { useThemeMode } from '@/theme';
 import { getInitials } from '@/utils/transaction';
 import { ChevronLeft, Home, LayoutDashboard, LogOut, Menu, Moon, Sun } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import { useCallback, useEffect, useRef, useState } from 'react';
-
-const SIDEBAR_STATE_KEY = 'financial_dashboard_sidebar_expanded';
+import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 export const Sidebar = () => {
-  const [isExpanded, setIsExpanded] = useState<boolean>(true);
+  const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const [isMobileOpen, setIsMobileOpen] = useState<boolean>(false);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
+  const [shouldResetFilters, setShouldResetFilters] = useState<boolean>(false);
 
   const router = useRouter();
-  const authService = createMockAuthService();
+  const pathname = usePathname();
+  const authService = useMemo(() => createMockAuthService(), []);
 
   const { user, clearAuth } = useAuthStore();
   const { resetFilters } = useFilterStore();
@@ -57,6 +59,13 @@ export const Sidebar = () => {
     }
   }, []);
 
+  useEffect(() => {
+    if (shouldResetFilters && pathname === routes.home) {
+      resetFilters();
+      setShouldResetFilters(false);
+    }
+  }, [shouldResetFilters, pathname, resetFilters]);
+
   const toggleExpanded = useCallback(() => {
     setIsExpanded((previous) => {
       const next = !previous;
@@ -65,21 +74,10 @@ export const Sidebar = () => {
     });
   }, []);
 
-  const handleDashboard = useCallback(() => {
-    router.push(routes.dashboard);
+  const handleHomeClick = useCallback(() => {
+    setShouldResetFilters(true);
     setIsMobileOpen(false);
-  }, [router]);
-
-  const handleHome = useCallback(() => {
-    router.push(routes.home);
-    resetFilters();
-    setIsMobileOpen(false);
-  }, [router, resetFilters]);
-
-  const handleProfile = useCallback(() => {
-    router.push(routes.profile);
-    setIsMobileOpen(false);
-  }, [router]);
+  }, []);
 
   const handleLogout = useCallback(async () => {
     await authService.logout();
@@ -150,26 +148,28 @@ export const Sidebar = () => {
 
         <SidebarNav $isExpanded={isExpanded}>
           <NavItem
-            type="button"
-            onClick={handleHome}
+            as={Link}
+            href={routes.home}
+            onClick={handleHomeClick}
             $isExpanded={isExpanded}
             onMouseEnter={() => setHoveredItem('home')}
             onMouseLeave={() => setHoveredItem(null)}
-            aria-label="Início"
+            aria-label="Inicio"
             onFocus={() => setHoveredItem('home')}
             onBlur={() => setHoveredItem(null)}
           >
             <NavIcon>
               <Home size={18} />
             </NavIcon>
-            <NavLabel $isExpanded={isExpanded}>Início</NavLabel>
-            {showTooltip('home') && <Tooltip role="tooltip">Início</Tooltip>}
+            <NavLabel $isExpanded={isExpanded}>Inicio</NavLabel>
+            {showTooltip('home') && <Tooltip role="tooltip">Inicio</Tooltip>}
           </NavItem>
 
           <NavItem
-            type="button"
-            onClick={handleDashboard}
-            $isActive
+            as={Link}
+            href={routes.dashboard}
+            onClick={() => setIsMobileOpen(false)}
+            $isActive={pathname === routes.dashboard}
             $isExpanded={isExpanded}
             onMouseEnter={() => setHoveredItem('dashboard')}
             onMouseLeave={() => setHoveredItem(null)}
@@ -207,7 +207,12 @@ export const Sidebar = () => {
           </FooterItem>
 
           {user ? (
-            <UserAvatarContainer $isExpanded={isExpanded} onClick={handleProfile}>
+            <UserAvatarContainer
+              as={Link}
+              href={routes.profile}
+              onClick={() => setIsMobileOpen(false)}
+              $isExpanded={isExpanded}
+            >
               <Avatar aria-hidden="true">{initials}</Avatar>
               <UserInfo $isExpanded={isExpanded}>
                 <UserName>{userName}</UserName>

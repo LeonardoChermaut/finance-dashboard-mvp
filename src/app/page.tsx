@@ -593,8 +593,8 @@ const HomePage = () => {
             {mode === 'light' ? <Moon size={16} /> : <Sun size={16} />}
           </ThemeButton>
           {!isAuthenticated ? (
-            <Link href={routes.login} passHref>
-              <FooterLink as="a">Entrar</FooterLink>
+            <Link href={routes.login}>
+              <FooterLink>Entrar</FooterLink>
             </Link>
           ) : null}
         </FooterLinks>

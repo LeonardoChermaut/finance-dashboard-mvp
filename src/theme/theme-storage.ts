@@ -1,13 +1,13 @@
-export type ThemeMode = 'light' | 'dark';
+import { THEME_STORAGE_KEY } from '@/constants/config';
 
-const STORAGE_KEY = 'financial_dashboard_theme';
+export type ThemeMode = 'light' | 'dark';
 
 export const getStoredTheme = (): ThemeMode => {
   if (typeof window === 'undefined') {
     return 'light';
   }
 
-  const stored = window.localStorage.getItem(STORAGE_KEY);
+  const stored = window.localStorage.getItem(THEME_STORAGE_KEY);
   if (stored === 'dark' || stored === 'light') {
     return stored;
   }
@@ -17,6 +17,6 @@ export const getStoredTheme = (): ThemeMode => {
 
 export const storeTheme = (mode: ThemeMode): void => {
   if (typeof window !== 'undefined') {
-    window.localStorage.setItem(STORAGE_KEY, mode);
+    window.localStorage.setItem(THEME_STORAGE_KEY, mode);
   }
 };

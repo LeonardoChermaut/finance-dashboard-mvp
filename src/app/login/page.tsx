@@ -19,7 +19,7 @@ import {
   PasswordToggle,
 } from '@/components/ui/field';
 import { Form, LinkButton, LinksContainer } from '@/components/ui/form';
-import { env } from '@/config/env';
+import { env } from '@/constants/config';
 import {
   createMockAuthService,
   createRealAuthService,
