@@ -585,13 +585,6 @@ const HomePage = () => {
       <Footer>
         <FooterText>Dashboard Financeiro MVP — Projeto de demonstracao</FooterText>
         <FooterLinks>
-          <ThemeButton
-            type="button"
-            onClick={toggleTheme}
-            aria-label={mode === 'light' ? 'Ativar modo escuro' : 'Ativar modo claro'}
-          >
-            {mode === 'light' ? <Moon size={16} /> : <Sun size={16} />}
-          </ThemeButton>
           {!isAuthenticated ? (
             <Link href={routes.login}>
               <FooterLink>Entrar</FooterLink>

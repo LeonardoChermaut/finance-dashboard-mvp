@@ -217,7 +217,7 @@ export const Charts = ({ monthlyTotals, accumulatedBalance, summary, currency }:
         </ChartArea>
       </ChartCard>
       <ChartCard>
-        <ChartTitle>Distribuicao</ChartTitle>
+        <ChartTitle>Distribuição</ChartTitle>
         <ChartDescription>Proporcao entre receitas e despesas.</ChartDescription>
         <DoughnutArea>
           <Doughnut data={doughnutData} options={doughnutOptions} />
