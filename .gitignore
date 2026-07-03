@@ -6,7 +6,6 @@ node_modules
 .next/
 .DS_Store
 /internals
-tsconfig.tsbuildinfo
 
 #Agents
 .agents
