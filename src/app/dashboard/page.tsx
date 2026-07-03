@@ -11,7 +11,6 @@ import {
   useClickOutside,
   useDrilldown,
   useExport,
-  useModalScroll,
   useQuickFilters,
   useSyncFiltersFromUrl,
   useSyncFiltersToUrl,
@@ -149,15 +148,13 @@ const DashboardContent = () => {
     handleDrilldownClose,
   } = useDrilldown(filteredTransactions);
 
-  useModalScroll(drilldownType !== null);
   useClickOutside(exportMenuRef, showExportMenu, () => setShowExportMenu(false));
+
+  const handleCardClick = (type: 'income' | 'expenses' | 'pending' | 'balance') =>
+    setDrilldownType(type);
 
   const paginationStart = (currentPage - 1) * pageSize + 1;
   const paginationEnd = Math.min(currentPage * pageSize, totalItems);
-
-  const handleCardClick = (type: 'income' | 'expenses' | 'pending' | 'balance') => {
-    setDrilldownType(type);
-  };
 
   if (isLoading) {
     return (
