@@ -3,13 +3,13 @@
 import type { Transaction } from '@/domains/transactions/transaction.types';
 import { exportToExcel, exportToPdf } from '@/lib/export';
 import { filterTransactionsByType } from '@/utils/utils';
-import { useCallback, useState } from 'react';
+import { Dispatch, SetStateAction, useCallback, useState } from 'react';
 
 type ExportData = {
   showExportMenu: boolean;
-  setShowExportMenu: React.Dispatch<React.SetStateAction<boolean>>;
   handleExportPdf: () => void;
   handleExportExcel: () => void;
+  setShowExportMenu: Dispatch<SetStateAction<boolean>>;
   handleExportFiltered: (type: 'income' | 'expenses' | 'pending' | 'balance') => void;
 };
 

@@ -1,18 +1,18 @@
 import { useCallback, useMemo, useState } from 'react';
 
-type PaginationResult<T> = {
-  readonly currentPage: number;
-  readonly pageSize: number;
-  readonly totalItems: number;
-  readonly totalPages: number;
-  readonly paginatedItems: readonly T[];
-  readonly goToPage: (page: number) => void;
-  readonly goToNextPage: () => void;
-  readonly goToPreviousPage: () => void;
-  readonly goToFirstPage: () => void;
-  readonly goToLastPage: () => void;
-  readonly setPageSize: (size: number) => void;
-};
+type PaginationResult<T> = Readonly<{
+  currentPage: number;
+  pageSize: number;
+  totalItems: number;
+  totalPages: number;
+  paginatedItems: T[];
+  goToNextPage: () => void;
+  goToLastPage: () => void;
+  goToFirstPage: () => void;
+  goToPreviousPage: () => void;
+  goToPage: (page: number) => void;
+  setPageSize: (size: number) => void;
+}>;
 
 export const usePagination = <T>(
   items: readonly T[],
@@ -40,21 +40,19 @@ export const usePagination = <T>(
     [totalPages],
   );
 
-  const goToNextPage = useCallback(() => {
-    goToPage(safeCurrentPage + 1);
-  }, [goToPage, safeCurrentPage]);
+  const goToNextPage = useCallback(
+    () => goToPage(safeCurrentPage + 1),
+    [goToPage, safeCurrentPage],
+  );
 
-  const goToPreviousPage = useCallback(() => {
-    goToPage(safeCurrentPage - 1);
-  }, [goToPage, safeCurrentPage]);
+  const goToPreviousPage = useCallback(
+    () => goToPage(safeCurrentPage - 1),
+    [goToPage, safeCurrentPage],
+  );
 
-  const goToFirstPage = useCallback(() => {
-    goToPage(1);
-  }, [goToPage]);
+  const goToFirstPage = useCallback(() => goToPage(1), [goToPage]);
 
-  const goToLastPage = useCallback(() => {
-    goToPage(totalPages);
-  }, [goToPage, totalPages]);
+  const goToLastPage = useCallback(() => goToPage(totalPages), [goToPage, totalPages]);
 
   const setPageSize = useCallback((size: number) => {
     setPageSizeState(size);

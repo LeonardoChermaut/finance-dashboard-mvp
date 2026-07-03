@@ -35,8 +35,8 @@ describe('normalizeTransactions', () => {
     expect(normalizeTransactions(Object.freeze([]))).toEqual([]);
   });
 
-  it('Marks transactions within the 5-day window as pending', () => {
-    const withinWindowTimestamp = LATEST_TIMESTAMP - 4 * MILLISECONDS_PER_DAY;
+  it('Marks transactions within the 7-day window as pending', () => {
+    const withinWindowTimestamp = LATEST_TIMESTAMP - 6 * MILLISECONDS_PER_DAY;
     const rawTransactions = Object.freeze([
       buildRawTransaction({ date: LATEST_TIMESTAMP }),
       buildRawTransaction({ date: withinWindowTimestamp }),
@@ -48,8 +48,8 @@ describe('normalizeTransactions', () => {
     expect(transactions[1].isPending).toBe(true);
   });
 
-  it('Does not mark transactions outside the 5-day window as pending', () => {
-    const outsideWindowTimestamp = LATEST_TIMESTAMP - 10 * MILLISECONDS_PER_DAY;
+  it('Does not mark transactions outside the 7-day window as pending', () => {
+    const outsideWindowTimestamp = LATEST_TIMESTAMP - 8 * MILLISECONDS_PER_DAY;
     const rawTransactions = Object.freeze([
       buildRawTransaction({ date: LATEST_TIMESTAMP }),
       buildRawTransaction({ date: outsideWindowTimestamp }),

@@ -267,7 +267,7 @@ const cardConfig = [
     label: 'Pendentes',
     tone: 'pending' as const,
     icon: Clock,
-    description: 'Transações dos últimos 5 dias',
+    description: 'Transações dos últimos 7 dias',
     variation: '-3 vs período anterior',
   },
   {

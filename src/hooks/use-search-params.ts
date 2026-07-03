@@ -5,7 +5,7 @@ import type { DateRange } from '@/domains/filters/filters.types';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useRef } from 'react';
 
-type DashboardSearchParams = Readonly<{
+type DashboardSearchParams = {
   type: string | null;
   dateFrom: string | null;
   dateTo: string | null;
@@ -15,19 +15,9 @@ type DashboardSearchParams = Readonly<{
   industry: string | null;
   state: string | null;
   view: string | null;
-}>;
+};
 
-type UpdateSearchParamsInput = Readonly<{
-  type?: string;
-  dateFrom?: string;
-  dateTo?: string;
-  startTime?: string;
-  endTime?: string;
-  account?: string;
-  industry?: string;
-  state?: string;
-  view?: string;
-}>;
+type UpdateSearchParamsInput = Partial<DashboardSearchParams>;
 
 export const useSearchParamsState = (): DashboardSearchParams => {
   const searchParams = useSearchParams();
@@ -113,7 +103,7 @@ export const useUpdateSearchParams = (): ((input: UpdateSearchParamsInput) => vo
         if (value === undefined || value === '') {
           params.delete(key);
         } else {
-          params.set(key, value);
+          params.set(key, value ?? '');
         }
       });
 
