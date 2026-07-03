@@ -3,10 +3,9 @@
 import { useFilterStore } from '@/domains/filters';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useRef } from 'react';
-import type { DrilldownType } from '@/hooks/use-drilldown';
 
 type UrlSyncData = {
-  syncToUrl: (drilldownType: DrilldownType) => void;
+  syncToUrl: () => void;
 };
 
 export const useUrlSync = (): UrlSyncData => {
@@ -54,7 +53,7 @@ export const useUrlSync = (): UrlSyncData => {
     router.replace(newUrl);
   }, [dateRange, accounts, industries, states, router, pathname]);
 
-  const syncToUrl = (drilldownType: DrilldownType) => {
+  const syncToUrl = () => {
     const params = new URLSearchParams();
 
     if (dateRange.startDate !== null) {
@@ -77,9 +76,6 @@ export const useUrlSync = (): UrlSyncData => {
     }
     if (states.length > 0) {
       params.set('state', states.join(','));
-    }
-    if (drilldownType !== null) {
-      params.set('type', drilldownType);
     }
 
     const queryString = params.toString();

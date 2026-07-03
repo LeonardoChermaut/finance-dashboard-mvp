@@ -1,6 +1,7 @@
 'use client';
 
 import { Charts } from '@/components/charts/charts';
+import { DashboardSkeleton } from '@/components/dashboard-skeleton';
 import { FilterBar } from '@/components/filter-bar/filter-bar';
 import { Sidebar } from '@/components/sidebar/sidebar';
 import { SummaryCards } from '@/components/summary-cards/summary-cards';
@@ -14,7 +15,6 @@ import {
   useQuickFilters,
   useSyncFiltersFromUrl,
   useSyncFiltersToUrl,
-  useUpdateSearchParams,
 } from '@/hooks';
 import { useThemeMode } from '@/theme';
 import { formatDate } from '@/utils/date';
@@ -120,7 +120,6 @@ const DashboardContent = () => {
 
   useSyncFiltersFromUrl();
   useSyncFiltersToUrl();
-  const updateSearchParams = useUpdateSearchParams();
   const { activeQuickFilter, handleQuickFilter } = useQuickFilters();
   const {
     showExportMenu,
@@ -158,7 +157,6 @@ const DashboardContent = () => {
 
   const handleCardClick = (type: 'income' | 'expenses' | 'pending' | 'balance') => {
     setDrilldownType(type);
-    updateSearchParams({ type });
   };
 
   if (isLoading) {
@@ -167,7 +165,7 @@ const DashboardContent = () => {
         <Sidebar />
         <MainContent>
           <ContentWrapper>
-            <LoadingWrapper>Carregando...</LoadingWrapper>
+            <DashboardSkeleton />
           </ContentWrapper>
         </MainContent>
       </Layout>
@@ -430,7 +428,7 @@ const DashboardContent = () => {
 };
 
 const DashboardPage = () => (
-  <Suspense fallback={<div>Carregando...</div>}>
+  <Suspense fallback={<DashboardSkeleton />}>
     <DashboardContent />
   </Suspense>
 );

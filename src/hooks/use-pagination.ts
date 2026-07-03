@@ -6,6 +6,7 @@ type PaginationResult<T> = Readonly<{
   totalItems: number;
   totalPages: number;
   paginatedItems: T[];
+  resetPage: () => void;
   goToNextPage: () => void;
   goToLastPage: () => void;
   goToFirstPage: () => void;
@@ -59,6 +60,10 @@ export const usePagination = <T>(
     setCurrentPage(1);
   }, []);
 
+  const resetPage = useCallback(() => {
+    setCurrentPage(1);
+  }, []);
+
   return {
     currentPage: safeCurrentPage,
     pageSize,
@@ -71,5 +76,6 @@ export const usePagination = <T>(
     goToFirstPage,
     goToLastPage,
     setPageSize,
+    resetPage,
   };
 };
