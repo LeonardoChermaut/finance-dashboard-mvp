@@ -6,7 +6,6 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useRef } from 'react';
 
 type DashboardSearchParams = {
-  type: string | null;
   dateFrom: string | null;
   dateTo: string | null;
   startTime: string | null;
@@ -23,7 +22,6 @@ export const useSearchParamsState = (): DashboardSearchParams => {
   const searchParams = useSearchParams();
 
   return {
-    type: searchParams.get('type'),
     dateFrom: searchParams.get('dateFrom'),
     dateTo: searchParams.get('dateTo'),
     startTime: searchParams.get('startTime'),

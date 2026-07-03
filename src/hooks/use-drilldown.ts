@@ -3,8 +3,8 @@
 import type { Transaction } from '@/domains/transactions/transaction.types';
 import { usePagination } from '@/hooks/use-pagination';
 import { filterTransactionsByType } from '@/utils/transaction';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useCallback, useMemo, useState } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 export type DrilldownType = 'income' | 'expenses' | 'pending' | 'balance' | null;
 
@@ -32,21 +32,12 @@ type DrilldownData = {
   setDrilldownType: (type: DrilldownType) => void;
 };
 
-const isValidDrilldownType = (value: string | null): value is DrilldownType => {
-  return value === 'income' || value === 'expenses' || value === 'pending' || value === 'balance';
-};
-
 export const useDrilldown = (filteredTransactions: readonly Transaction[]): DrilldownData => {
   const router = useRouter();
   const pathname = usePathname();
-  const searchParams = useSearchParams();
-
-  const initialType = searchParams.get('type');
 
   const [drilldownSearch, setDrilldownSearch] = useState<string>('');
-  const [drilldownType, setDrilldownType] = useState<DrilldownType>(
-    isValidDrilldownType(initialType) ? initialType : null,
-  );
+  const [drilldownType, setDrilldownType] = useState<DrilldownType>(null);
 
   const drilldownTransactions = useMemo(() => {
     if (drilldownType === null) {
@@ -89,26 +80,23 @@ export const useDrilldown = (filteredTransactions: readonly Transaction[]): Dril
     goToPreviousPage,
     goToFirstPage,
     goToLastPage,
+    resetPage,
   } = usePagination(filteredDrilldownTransactions, 10);
+
+  useEffect(() => {
+    resetPage();
+    setDrilldownSearch('');
+  }, [drilldownType, resetPage]);
 
   const drilldownTotal = drilldownTransactions.reduce(
     (sum, transaction) => sum + transaction.amountInCents,
     0,
   );
 
-  const removeTypeFromUrl = useCallback(() => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.delete('type');
-    const queryString = params.toString();
-    const newUrl = queryString !== '' ? `${pathname}?${queryString}` : pathname;
-    router.replace(newUrl);
-  }, [searchParams, router, pathname]);
-
   const handleDrilldownClose = useCallback(() => {
     setDrilldownType(null);
     setDrilldownSearch('');
-    removeTypeFromUrl();
-  }, [removeTypeFromUrl]);
+  }, []);
 
   const clearAllFilters = useCallback(() => {
     setDrilldownType(null);
