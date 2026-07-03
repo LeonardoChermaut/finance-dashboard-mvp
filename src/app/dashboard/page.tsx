@@ -1,10 +1,6 @@
 'use client';
 
-import { Charts } from '@/components/charts/charts';
 import { DashboardSkeleton } from '@/components/dashboard-skeleton';
-import { FilterBar } from '@/components/filter-bar/filter-bar';
-import { Sidebar } from '@/components/sidebar/sidebar';
-import { SummaryCards } from '@/components/summary-cards/summary-cards';
 import { drilldownConfig } from '@/constants/drilldown';
 import { useDashboardData } from '@/domains/transactions/use-dashboard-data';
 import {
@@ -35,6 +31,7 @@ import {
   Sun,
   X,
 } from 'lucide-react';
+import dynamic from 'next/dynamic';
 import { Suspense, useRef } from 'react';
 import {
   ChartsSection,
@@ -65,7 +62,6 @@ import {
   HeaderActions,
   HeaderText,
   HeaderTop,
-  Layout,
   LoadingWrapper,
   MainContent,
   PageDescription,
@@ -89,6 +85,27 @@ import {
   TransactionMeta,
   TransactionValue,
 } from './dashboard.styled';
+
+const DynamicCharts = dynamic(
+  () => import('@/components/charts/charts').then((module) => ({ default: module.Charts })),
+  { ssr: false, loading: () => null },
+);
+
+const DynamicSummaryCards = dynamic(
+  () =>
+    import('@/components/summary-cards/summary-cards').then((module) => ({
+      default: module.SummaryCards,
+    })),
+  { ssr: false, loading: () => null },
+);
+
+const DynamicFilterBar = dynamic(
+  () =>
+    import('@/components/filter-bar/filter-bar').then((module) => ({
+      default: module.FilterBar,
+    })),
+  { ssr: false, loading: () => null },
+);
 
 const getVisiblePages = (current: number, total: number): readonly number[] => {
   if (total <= 5) {
@@ -158,20 +175,16 @@ const DashboardContent = () => {
 
   if (isLoading) {
     return (
-      <Layout>
-        <Sidebar />
-        <MainContent>
-          <ContentWrapper>
-            <DashboardSkeleton />
-          </ContentWrapper>
-        </MainContent>
-      </Layout>
+      <MainContent>
+        <ContentWrapper>
+          <DashboardSkeleton />
+        </ContentWrapper>
+      </MainContent>
     );
   }
 
   return (
-    <Layout>
-      <Sidebar />
+    <>
       <MainContent>
         <ContentWrapper data-dashboard-content>
           <PageHeader>
@@ -271,11 +284,15 @@ const DashboardContent = () => {
           </QuickFilters>
 
           <FilterSection aria-label="Filtros">
-            <FilterBar filterOptions={filterOptions} />
+            <DynamicFilterBar filterOptions={filterOptions} />
           </FilterSection>
 
           <SummarySection aria-label="Resumo financeiro">
-            <SummaryCards summary={summary} currency={currency} onCardClick={handleCardClick} />
+            <DynamicSummaryCards
+              summary={summary}
+              currency={currency}
+              onCardClick={handleCardClick}
+            />
           </SummarySection>
 
           <ChartsSection aria-label="Graficos">
@@ -283,7 +300,7 @@ const DashboardContent = () => {
             <SectionDescription>
               Receitas, despesas e saldo acumulado ao longo do tempo.
             </SectionDescription>
-            <Charts
+            <DynamicCharts
               monthlyTotals={monthlyTotals}
               accumulatedBalance={accumulatedBalance}
               summary={summary}
@@ -318,10 +335,10 @@ const DashboardContent = () => {
               </DrilldownSearchIcon>
               <DrilldownSearchInput
                 type="text"
-                placeholder="Buscar por conta, indústria, estado ou data..."
+                placeholder="Buscar por conta, industria, estado ou data..."
                 value={drilldownSearch}
                 onChange={(event) => setDrilldownSearch(event.target.value)}
-                aria-label="Buscar transações"
+                aria-label="Buscar transacoes"
               />
               {drilldownSearch !== '' ? (
                 <DrilldownClearSearch
@@ -420,7 +437,7 @@ const DashboardContent = () => {
           </DrilldownPanel>
         </DrilldownOverlay>
       ) : null}
-    </Layout>
+    </>
   );
 };
 

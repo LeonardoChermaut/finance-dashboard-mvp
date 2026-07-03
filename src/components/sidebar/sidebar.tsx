@@ -31,7 +31,8 @@ import { routes } from '@/routes/routes';
 import { useThemeMode } from '@/theme';
 import { getInitials } from '@/utils/transaction';
 import { ChevronLeft, Home, LayoutDashboard, LogOut, Menu, Moon, Sun } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 const SIDEBAR_STATE_KEY = 'financial_dashboard_sidebar_expanded';
@@ -42,6 +43,7 @@ export const Sidebar = () => {
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
 
   const router = useRouter();
+  const pathname = usePathname();
   const authService = createMockAuthService();
 
   const { user, clearAuth } = useAuthStore();
@@ -65,21 +67,10 @@ export const Sidebar = () => {
     });
   }, []);
 
-  const handleDashboard = useCallback(() => {
-    router.push(routes.dashboard);
-    setIsMobileOpen(false);
-  }, [router]);
-
-  const handleHome = useCallback(() => {
-    router.push(routes.home);
+  const handleHomeClick = useCallback(() => {
     resetFilters();
     setIsMobileOpen(false);
-  }, [router, resetFilters]);
-
-  const handleProfile = useCallback(() => {
-    router.push(routes.profile);
-    setIsMobileOpen(false);
-  }, [router]);
+  }, [resetFilters]);
 
   const handleLogout = useCallback(async () => {
     await authService.logout();
@@ -150,26 +141,28 @@ export const Sidebar = () => {
 
         <SidebarNav $isExpanded={isExpanded}>
           <NavItem
-            type="button"
-            onClick={handleHome}
+            as={Link}
+            href={routes.home}
+            onClick={handleHomeClick}
             $isExpanded={isExpanded}
             onMouseEnter={() => setHoveredItem('home')}
             onMouseLeave={() => setHoveredItem(null)}
-            aria-label="Início"
+            aria-label="Inicio"
             onFocus={() => setHoveredItem('home')}
             onBlur={() => setHoveredItem(null)}
           >
             <NavIcon>
               <Home size={18} />
             </NavIcon>
-            <NavLabel $isExpanded={isExpanded}>Início</NavLabel>
-            {showTooltip('home') && <Tooltip role="tooltip">Início</Tooltip>}
+            <NavLabel $isExpanded={isExpanded}>Inicio</NavLabel>
+            {showTooltip('home') && <Tooltip role="tooltip">Inicio</Tooltip>}
           </NavItem>
 
           <NavItem
-            type="button"
-            onClick={handleDashboard}
-            $isActive
+            as={Link}
+            href={routes.dashboard}
+            onClick={() => setIsMobileOpen(false)}
+            $isActive={pathname === routes.dashboard}
             $isExpanded={isExpanded}
             onMouseEnter={() => setHoveredItem('dashboard')}
             onMouseLeave={() => setHoveredItem(null)}
@@ -207,7 +200,12 @@ export const Sidebar = () => {
           </FooterItem>
 
           {user ? (
-            <UserAvatarContainer $isExpanded={isExpanded} onClick={handleProfile}>
+            <UserAvatarContainer
+              as={Link}
+              href={routes.profile}
+              onClick={() => setIsMobileOpen(false)}
+              $isExpanded={isExpanded}
+            >
               <Avatar aria-hidden="true">{initials}</Avatar>
               <UserInfo $isExpanded={isExpanded}>
                 <UserName>{userName}</UserName>
