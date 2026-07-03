@@ -6,9 +6,13 @@ node_modules
 .next/
 .DS_Store
 /internals
+tsconfig.tsbuildinfo
+
+.agents
 .opencode
 .swc
-tsconfig.tsbuildinfo
+skills-lock.json
+AGENTS.md
 
 # Yarn files
 /yarn.lock
