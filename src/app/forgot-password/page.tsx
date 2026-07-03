@@ -1,35 +1,29 @@
 'use client';
 
 import {
-  FieldWrapper,
-  Form,
   Heading,
-  Input,
-  LinkButton,
-  LinksContainer,
   LoginCard,
   LogoContainer,
   LogoIcon,
   PageWrapper,
   Subtitle,
-  SuccessMessage,
   Title,
-} from '@/app/forgot-password/forget-password.styled';
+} from '@/components/ui/auth-layout';
 import { Button } from '@/components/ui/button';
+import { FieldWrapper, Input } from '@/components/ui/field';
+import { Form, LinkButton, LinksContainer, SuccessMessage } from '@/components/ui/form';
+import { forgotPasswordSchema } from '@/domains/auth/auth.schemas';
+import { useForm } from '@/hooks/use-form';
 import { routes } from '@/routes/routes';
 import { useRouter } from 'next/navigation';
-import { useState, type FormEvent } from 'react';
+import type { FormEvent } from 'react';
 
 const ForgotPasswordPage = () => {
-  const [email, setEmail] = useState<string>('');
-  const [isSuccess, setIsSuccess] = useState<boolean>(false);
-
   const router = useRouter();
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>): void => {
-    event.preventDefault();
-    setIsSuccess(true);
-  };
+  const { values, isSubmitting, handleChange, handleSubmit } = useForm(forgotPasswordSchema);
+
+  const onSubmit = async (): Promise<void> => {};
 
   return (
     <PageWrapper>
@@ -44,36 +38,41 @@ const ForgotPasswordPage = () => {
           </Subtitle>
         </Heading>
 
-        {isSuccess ? (
-          <SuccessMessage role="status">
-            Se o email estiver cadastrado, voce recebera as instrucoes de recuperacao em breve.
+        <Form
+          onSubmit={(formEvent: FormEvent<HTMLFormElement>) => {
+            formEvent.preventDefault();
+            void handleSubmit(() => onSubmit());
+          }}
+        >
+          <FieldWrapper htmlFor="forgot-email">
+            Email
+            <Input
+              id="forgot-email"
+              type="email"
+              value={values.email ?? ''}
+              autoComplete="email"
+              placeholder="seu@email.com"
+              onChange={(event) => handleChange('email', event.target.value)}
+              required
+            />
+          </FieldWrapper>
+
+          <Button type="submit" disabled={!values.email}>
+            Enviar instrucoes
+          </Button>
+
+          <LinksContainer $justify="center">
+            <LinkButton type="button" onClick={() => router.push(routes.login)}>
+              Voltar ao login
+            </LinkButton>
+          </LinksContainer>
+        </Form>
+
+        {isSubmitting ? (
+          <SuccessMessage $padding role="status">
+            Se o email estiver cadastrado, você receberá as instruções de recuperação em breve.
           </SuccessMessage>
-        ) : (
-          <Form onSubmit={handleSubmit}>
-            <FieldWrapper htmlFor="forgot-email">
-              Email
-              <Input
-                id="forgot-email"
-                type="email"
-                value={email}
-                autoComplete="email"
-                placeholder="seu@email.com"
-                onChange={(event) => setEmail(event.target.value)}
-                required
-              />
-            </FieldWrapper>
-
-            <Button type="submit" disabled={!email}>
-              Enviar instrucoes
-            </Button>
-
-            <LinksContainer>
-              <LinkButton type="button" onClick={() => router.push(routes.login)}>
-                Voltar ao login
-              </LinkButton>
-            </LinksContainer>
-          </Form>
-        )}
+        ) : null}
       </LoginCard>
     </PageWrapper>
   );

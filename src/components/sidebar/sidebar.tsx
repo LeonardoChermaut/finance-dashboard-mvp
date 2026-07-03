@@ -76,6 +76,11 @@ export const Sidebar = () => {
     setIsMobileOpen(false);
   }, [router, resetFilters]);
 
+  const handleProfile = useCallback(() => {
+    router.push(routes.profile);
+    setIsMobileOpen(false);
+  }, [router]);
+
   const handleLogout = useCallback(async () => {
     await authService.logout();
     clearSessionCookie();
@@ -202,7 +207,7 @@ export const Sidebar = () => {
           </FooterItem>
 
           {user ? (
-            <UserAvatarContainer $isExpanded={isExpanded}>
+            <UserAvatarContainer $isExpanded={isExpanded} onClick={handleProfile}>
               <Avatar aria-hidden="true">{initials}</Avatar>
               <UserInfo $isExpanded={isExpanded}>
                 <UserName>{userName}</UserName>

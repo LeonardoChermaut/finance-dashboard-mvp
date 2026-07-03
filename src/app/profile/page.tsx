@@ -35,17 +35,22 @@ const ProfilePage = () => {
   const updateUser = useAuthStore((state) => state.updateUser);
 
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
+  const [isHydrated, setIsHydrated] = useState<boolean>(false);
   const [name, setName] = useState<string>(user?.name ?? '');
   const [email, setEmail] = useState<string>(user?.email ?? '');
   const [role, setRole] = useState<UserRole>(user?.role ?? 'user');
 
   useEffect(() => {
-    if (!user) {
+    setIsHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    if (isHydrated && !user) {
       router.push(routes.login);
     }
-  }, [user, router]);
+  }, [isHydrated, user, router]);
 
-  if (!user) {
+  if (!isHydrated || !user) {
     return null;
   }
 

@@ -1,24 +1,24 @@
 'use client';
 
 import {
-  ErrorMessage,
-  FieldWrapper,
-  Form,
   Heading,
-  Input,
-  InputContainer,
-  LinkButton,
-  LinksContainer,
   LoginCard,
   LogoContainer,
   LogoIcon,
   PageWrapper,
-  PasswordInput,
-  PasswordToggle,
   Subtitle,
   Title,
-} from '@/app/login/login.styled';
+} from '@/components/ui/auth-layout';
 import { Button } from '@/components/ui/button';
+import {
+  ErrorMessage,
+  FieldWrapper,
+  Input,
+  InputContainer,
+  PasswordInput,
+  PasswordToggle,
+} from '@/components/ui/field';
+import { Form, LinkButton, LinksContainer } from '@/components/ui/form';
 import { env } from '@/config/env';
 import {
   createMockAuthService,
@@ -26,37 +26,33 @@ import {
   setSessionCookie,
   useAuthStore,
 } from '@/domains/auth';
-import { usePasswordVisibility } from '@/hooks';
+import { useForm } from '@/hooks/use-form';
+import { usePasswordVisibility } from '@/hooks/use-password-visibility';
+import { loginSchema } from '@/domains/auth/auth.schemas';
 import { routes } from '@/routes/routes';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useState, type FormEvent } from 'react';
+import type { FormEvent } from 'react';
 
 const getAuthService = () =>
   env.NEXT_PUBLIC_DATA_SOURCE === 'api' ? createRealAuthService() : createMockAuthService();
 
 const LoginPage = () => {
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const [hasError, setHasError] = useState<boolean>(false);
-
   const router = useRouter();
   const authService = getAuthService();
 
   const setAuthenticated = useAuthStore((state) => state.setAuthenticated);
   const { showPassword, togglePassword, InputIcon } = usePasswordVisibility();
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>): Promise<void> => {
-    event.preventDefault();
-    setHasError(false);
+  const { values, errors, handleChange, handleSubmit, setErrors } = useForm(loginSchema);
 
+  const onSubmit = async (data: { email: string; password: string }): Promise<void> => {
     try {
-      const { user } = await authService.login({ email, password });
+      const { user } = await authService.login({ email: data.email, password: data.password });
       setSessionCookie();
       setAuthenticated(user);
       router.push(routes.dashboard);
     } catch {
-      setHasError(true);
+      setErrors({ email: 'Credenciais invalidas. Tente novamente.' });
     }
   };
 
@@ -71,16 +67,21 @@ const LoginPage = () => {
           <Subtitle>Entre com suas credenciais para acessar o painel financeiro.</Subtitle>
         </Heading>
 
-        <Form onSubmit={handleSubmit}>
+        <Form
+          onSubmit={(formEvent: FormEvent<HTMLFormElement>) => {
+            formEvent.preventDefault();
+            void handleSubmit(() => onSubmit(values));
+          }}
+        >
           <FieldWrapper htmlFor="login-email">
             Email
             <Input
               id="login-email"
               type="email"
-              value={email}
+              value={values.email ?? ''}
               autoComplete="email"
               placeholder="seu@email.com"
-              onChange={(event) => setEmail(event.target.value)}
+              onChange={(event) => handleChange('email', event.target.value)}
               required
             />
           </FieldWrapper>
@@ -91,10 +92,10 @@ const LoginPage = () => {
               <PasswordInput
                 id="login-password"
                 type={showPassword ? 'text' : 'password'}
-                value={password}
+                value={values.password ?? ''}
                 autoComplete="current-password"
                 placeholder="Sua senha"
-                onChange={(event) => setPassword(event.target.value)}
+                onChange={(event) => handleChange('password', event.target.value)}
                 required
               />
               <PasswordToggle
@@ -108,21 +109,19 @@ const LoginPage = () => {
             </InputContainer>
           </FieldWrapper>
 
-          {hasError ? (
-            <ErrorMessage role="alert">Credenciais invalidas. Tente novamente.</ErrorMessage>
-          ) : null}
+          {errors.email ? <ErrorMessage role="alert">{errors.email}</ErrorMessage> : null}
 
-          <Button type="submit" disabled={!email || !password}>
+          <Button type="submit" disabled={!values.email || !values.password}>
             Entrar
           </Button>
 
           <LinksContainer>
-            <Link href={routes.forgotPassword} passHref>
-              <LinkButton as="a">Esqueci minha senha</LinkButton>
-            </Link>
-            <Link href={routes.register} passHref>
-              <LinkButton as="a">Criar conta</LinkButton>
-            </Link>
+            <LinkButton type="button" onClick={() => router.push(routes.forgotPassword)}>
+              Esqueci minha senha
+            </LinkButton>
+            <LinkButton type="button" onClick={() => router.push(routes.register)}>
+              Criar conta
+            </LinkButton>
           </LinksContainer>
         </Form>
       </LoginCard>

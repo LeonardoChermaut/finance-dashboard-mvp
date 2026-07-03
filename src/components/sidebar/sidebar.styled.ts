@@ -365,6 +365,16 @@ export const UserAvatarContainer = styled.div<{ readonly $isExpanded: boolean }>
   justify-content: ${({ $isExpanded }) => ($isExpanded ? 'flex-start' : 'center')};
   border-radius: 10px;
   transition: background-color 0.15s ease;
+  cursor: pointer;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.sidebarHover};
+  }
+
+  &:focus-visible {
+    outline: 2px solid ${({ theme }) => theme.colors.primary};
+    outline-offset: 2px;
+  }
 `;
 
 export const Avatar = styled.div`
