@@ -8,6 +8,7 @@ node_modules
 /internals
 tsconfig.tsbuildinfo
 
+#Agents
 .agents
 .opencode
 .swc
