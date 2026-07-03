@@ -1,7 +1,25 @@
 'use client';
 
+import {
+  ErrorMessage,
+  FieldWrapper,
+  Form,
+  Heading,
+  Input,
+  InputContainer,
+  LinkButton,
+  LinksContainer,
+  LoginCard,
+  LogoContainer,
+  LogoIcon,
+  PageWrapper,
+  PasswordInput,
+  PasswordToggle,
+  Subtitle,
+  Title,
+} from '@/app/login/login.styled';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
+import { env } from '@/config/env';
 import {
   createMockAuthService,
   createRealAuthService,
@@ -9,193 +27,26 @@ import {
   useAuthStore,
 } from '@/domains/auth';
 import { usePasswordVisibility } from '@/hooks';
-import { env } from '@/config/env';
 import { routes } from '@/routes/routes';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { useState } from 'react';
-import styled from 'styled-components';
+import { useRouter } from 'next/navigation';
+import { useState, type FormEvent } from 'react';
 
-const PageWrapper = styled.main`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  padding: ${({ theme }) => theme.spacing(4)};
-  background-color: ${({ theme }) => theme.colors.background};
-`;
-
-const LoginCard = styled(Card)`
-  display: flex;
-  flex-direction: column;
-  gap: ${({ theme }) => theme.spacing(6)};
-  width: 100%;
-  max-width: 400px;
-`;
-
-const Heading = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: ${({ theme }) => theme.spacing(2)};
-`;
-
-const LogoContainer = styled.div`
-  display: flex;
-  align-items: center;
-  gap: ${({ theme }) => theme.spacing(3)};
-  margin-bottom: ${({ theme }) => theme.spacing(1)};
-`;
-
-const LogoIcon = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
-  background-color: ${({ theme }) => theme.colors.primary};
-  color: ${({ theme }) => theme.colors.surface};
-  font-size: 18px;
-  font-weight: 700;
-`;
-
-const Title = styled.h1`
-  font-size: 24px;
-  font-weight: 700;
-  color: ${({ theme }) => theme.colors.text};
-`;
-
-const Subtitle = styled.p`
-  font-size: 14px;
-  color: ${({ theme }) => theme.colors.textSecondary};
-  line-height: 1.5;
-`;
-
-const Form = styled.form`
-  display: flex;
-  flex-direction: column;
-  gap: ${({ theme }) => theme.spacing(4)};
-`;
-
-const FieldWrapper = styled.label`
-  display: flex;
-  flex-direction: column;
-  gap: ${({ theme }) => theme.spacing(2)};
-  font-size: 14px;
-  font-weight: 600;
-  color: ${({ theme }) => theme.colors.textSecondary};
-`;
-
-const InputContainer = styled.div`
-  position: relative;
-`;
-
-const Input = styled.input`
-  width: 100%;
-  padding: ${({ theme }) => `${theme.spacing(3)} ${theme.spacing(4)}`};
-  border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: ${({ theme }) => theme.radius.input};
-  background-color: ${({ theme }) => theme.colors.inputBackground};
-  color: ${({ theme }) => theme.colors.text};
-  font-size: 15px;
-  font-weight: 400;
-  line-height: 1.5;
-  transition:
-    border-color 0.15s ease,
-    box-shadow 0.15s ease;
-
-  &:focus {
-    border-color: ${({ theme }) => theme.colors.primary};
-    box-shadow: 0 0 0 3px ${({ theme }) => theme.colors.primaryMuted};
-    outline: none;
-  }
-
-  &::placeholder {
-    color: ${({ theme }) => theme.colors.muted};
-  }
-`;
-
-const PasswordInput = styled(Input)`
-  padding-right: 48px;
-`;
-
-const PasswordToggle = styled.button`
-  position: absolute;
-  right: 8px;
-  top: 50%;
-  transform: translateY(-50%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  color: ${({ theme }) => theme.colors.muted};
-  transition:
-    color 0.15s ease,
-    background-color 0.15s ease;
-
-  &:hover {
-    color: ${({ theme }) => theme.colors.text};
-    background-color: ${({ theme }) => theme.colors.sidebarHover};
-  }
-
-  &:focus-visible {
-    outline: 2px solid ${({ theme }) => theme.colors.primary};
-    outline-offset: 2px;
-  }
-`;
-
-const LinksContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: ${({ theme }) => theme.spacing(1)};
-`;
-
-const LinkButton = styled.button`
-  font-size: 13px;
-  font-weight: 500;
-  color: ${({ theme }) => theme.colors.textSecondary};
-  transition: color 0.15s ease;
-  cursor: pointer;
-  border: none;
-  background: none;
-  padding: ${({ theme }) => `${theme.spacing(1)} 0`};
-
-  &:hover {
-    color: ${({ theme }) => theme.colors.primary};
-    text-decoration: underline;
-  }
-
-  &:focus-visible {
-    outline: 2px solid ${({ theme }) => theme.colors.primary};
-    outline-offset: 2px;
-    border-radius: 4px;
-  }
-`;
-
-const ErrorMessage = styled.p`
-  color: ${({ theme }) => theme.colors.danger};
-  font-size: 13px;
-  font-weight: 500;
-`;
-
-const getAuthService = () => {
-  return env.NEXT_PUBLIC_DATA_SOURCE === 'api' ? createRealAuthService() : createMockAuthService();
-};
+const getAuthService = () =>
+  env.NEXT_PUBLIC_DATA_SOURCE === 'api' ? createRealAuthService() : createMockAuthService();
 
 const LoginPage = () => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [hasError, setHasError] = useState<boolean>(false);
-  const { showPassword, togglePassword, InputIcon } = usePasswordVisibility();
 
   const router = useRouter();
-  const setAuthenticated = useAuthStore((state) => state.setAuthenticated);
   const authService = getAuthService();
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
+  const setAuthenticated = useAuthStore((state) => state.setAuthenticated);
+  const { showPassword, togglePassword, InputIcon } = usePasswordVisibility();
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>): Promise<void> => {
     event.preventDefault();
     setHasError(false);
 

@@ -4,6 +4,7 @@ import { Charts } from '@/components/charts/charts';
 import { FilterBar } from '@/components/filter-bar/filter-bar';
 import { Sidebar } from '@/components/sidebar/sidebar';
 import { SummaryCards } from '@/components/summary-cards/summary-cards';
+import { drilldownConfig } from '@/constants/drilldown';
 import { useDashboardData } from '@/domains/transactions/use-dashboard-data';
 import {
   useClickOutside,
@@ -16,6 +17,7 @@ import {
   useUpdateSearchParams,
 } from '@/hooks';
 import { useThemeMode } from '@/theme';
+import { formatDate } from '@/utils/date';
 import { formatCentsToCurrency } from '@/utils/format';
 import {
   ArrowDownLeft,
@@ -87,8 +89,21 @@ import {
   TransactionList,
   TransactionMeta,
   TransactionValue,
-} from './dashboard.styles';
-import { drilldownConfig, formatDate, getVisiblePages } from './dashboard.utils';
+} from './dashboard.styled';
+
+const getVisiblePages = (current: number, total: number): readonly number[] => {
+  if (total <= 5) {
+    return Array.from({ length: total }, (_unused, index) => index + 1);
+  }
+  if (current <= 3) {
+    return [1, 2, 3, 4, 5];
+  }
+  if (current >= total - 2) {
+    return [total - 4, total - 3, total - 2, total - 1, total];
+  }
+
+  return [current - 2, current - 1, current, current + 1, current + 2];
+};
 
 const DashboardContent = () => {
   const {

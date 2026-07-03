@@ -2,7 +2,7 @@
 
 import type { Transaction } from '@/domains/transactions/transaction.types';
 import { usePagination } from '@/hooks/use-pagination';
-import { filterTransactionsByType } from '@/utils/utils';
+import { filterTransactionsByType } from '@/utils/transaction';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useMemo, useState } from 'react';
 
@@ -11,23 +11,25 @@ export type DrilldownType = 'income' | 'expenses' | 'pending' | 'balance' | null
 type DrilldownData = {
   drilldownType: DrilldownType;
   drilldownSearch: string;
-  drilldownTransactions: readonly Transaction[];
-  filteredDrilldownTransactions: readonly Transaction[];
-  drilldownTotal: number;
-  currentPage: number;
   pageSize: number;
   totalItems: number;
   totalPages: number;
+  currentPage: number;
+  drilldownTotal: number;
+
   paginatedItems: readonly Transaction[];
-  goToPage: (page: number) => void;
+  drilldownTransactions: readonly Transaction[];
+  filteredDrilldownTransactions: readonly Transaction[];
+
   goToNextPage: () => void;
-  goToPreviousPage: () => void;
-  goToFirstPage: () => void;
   goToLastPage: () => void;
-  setDrilldownType: (type: DrilldownType) => void;
-  setDrilldownSearch: (search: string) => void;
-  handleDrilldownClose: () => void;
+  goToFirstPage: () => void;
   clearAllFilters: () => void;
+  goToPreviousPage: () => void;
+  goToPage: (page: number) => void;
+  handleDrilldownClose: () => void;
+  setDrilldownSearch: (search: string) => void;
+  setDrilldownType: (type: DrilldownType) => void;
 };
 
 const isValidDrilldownType = (value: string | null): value is DrilldownType => {
@@ -35,14 +37,16 @@ const isValidDrilldownType = (value: string | null): value is DrilldownType => {
 };
 
 export const useDrilldown = (filteredTransactions: readonly Transaction[]): DrilldownData => {
-  const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+
   const initialType = searchParams.get('type');
+
+  const [drilldownSearch, setDrilldownSearch] = useState<string>('');
   const [drilldownType, setDrilldownType] = useState<DrilldownType>(
     isValidDrilldownType(initialType) ? initialType : null,
   );
-  const [drilldownSearch, setDrilldownSearch] = useState<string>('');
 
   const drilldownTransactions = useMemo(() => {
     if (drilldownType === null) {
@@ -55,7 +59,9 @@ export const useDrilldown = (filteredTransactions: readonly Transaction[]): Dril
     if (drilldownSearch === '') {
       return drilldownTransactions;
     }
+
     const lowerSearch = drilldownSearch.toLowerCase();
+
     return drilldownTransactions.filter((transaction) => {
       const dateStr = transaction.date.toLocaleDateString('pt-BR');
       const timeStr = transaction.date.toLocaleTimeString('pt-BR');

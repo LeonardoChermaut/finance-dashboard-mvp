@@ -313,7 +313,6 @@ export const LogoutButton = styled.button<{ readonly $isExpanded: boolean }>`
   font-size: 14px;
   font-weight: 500;
   color: ${({ theme }) => theme.colors.danger};
-  background-color: ${({ theme }) => theme.colors.dangerMuted};
   transition: background-color 0.15s ease;
   white-space: nowrap;
 

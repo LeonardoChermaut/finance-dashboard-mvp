@@ -42,7 +42,7 @@ const Input = styled.input`
 `;
 
 type FieldProps = InputHTMLAttributes<HTMLInputElement> & {
-  readonly label: string;
+  label: string;
 };
 
 export const Field = ({ label, id, ...inputProps }: FieldProps) => {

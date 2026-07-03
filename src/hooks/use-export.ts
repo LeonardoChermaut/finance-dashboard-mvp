@@ -2,7 +2,7 @@
 
 import type { Transaction } from '@/domains/transactions/transaction.types';
 import { exportToExcel, exportToPdf } from '@/lib/export';
-import { filterTransactionsByType } from '@/utils/utils';
+import { filterTransactionsByType } from '@/utils/transaction';
 import { Dispatch, SetStateAction, useCallback, useState } from 'react';
 
 type ExportData = {
