@@ -1,9 +1,8 @@
 'use client';
 
-import type { InputHTMLAttributes } from 'react';
 import styled from 'styled-components';
 
-const FieldWrapper = styled.label`
+export const FieldWrapper = styled.label`
   display: flex;
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing(2)};
@@ -12,7 +11,12 @@ const FieldWrapper = styled.label`
   color: ${({ theme }) => theme.colors.textSecondary};
 `;
 
-const Input = styled.input`
+export const InputContainer = styled.div`
+  position: relative;
+`;
+
+export const Input = styled.input`
+  width: 100%;
   padding: ${({ theme }) => `${theme.spacing(3)} ${theme.spacing(4)}`};
   border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: ${({ theme }) => theme.radius.input};
@@ -34,24 +38,41 @@ const Input = styled.input`
   &::placeholder {
     color: ${({ theme }) => theme.colors.muted};
   }
+`;
 
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+export const PasswordInput = styled(Input)`
+  padding-right: 48px;
+`;
+
+export const PasswordToggle = styled.button`
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  color: ${({ theme }) => theme.colors.muted};
+  transition:
+    color 0.15s ease,
+    background-color 0.15s ease;
+
+  &:hover {
+    color: ${({ theme }) => theme.colors.text};
+    background-color: ${({ theme }) => theme.colors.sidebarHover};
+  }
+
+  &:focus-visible {
+    outline: 2px solid ${({ theme }) => theme.colors.primary};
+    outline-offset: 2px;
   }
 `;
 
-type FieldProps = InputHTMLAttributes<HTMLInputElement> & {
-  readonly label: string;
-};
-
-export const Field = ({ label, id, ...inputProps }: FieldProps) => {
-  const fieldId = id ?? label.toLowerCase().replace(/\s+/g, '-');
-
-  return (
-    <FieldWrapper htmlFor={fieldId}>
-      {label}
-      <Input id={fieldId} {...inputProps} />
-    </FieldWrapper>
-  );
-};
+export const ErrorMessage = styled.p`
+  color: ${({ theme }) => theme.colors.danger};
+  font-size: 13px;
+  font-weight: 500;
+`;

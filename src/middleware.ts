@@ -5,13 +5,16 @@ import { NextResponse } from 'next/server';
 export const middleware = (request: NextRequest): NextResponse => {
   const sessionToken = request.cookies.get(AUTHENTICATION_COOKIE_NAME);
 
-  if (request.nextUrl.pathname.startsWith('/dashboard')) {
+  if (
+    request.nextUrl.pathname.startsWith('/dashboard') ||
+    request.nextUrl.pathname.startsWith('/profile')
+  ) {
     if (!sessionToken) {
       return NextResponse.redirect(new URL('/login', request.url));
     }
   }
 
-  if (request.nextUrl.pathname === '/' || request.nextUrl.pathname === '/login') {
+  if (request.nextUrl.pathname === '/login') {
     if (sessionToken) {
       return NextResponse.redirect(new URL('/dashboard', request.url));
     }
@@ -21,5 +24,5 @@ export const middleware = (request: NextRequest): NextResponse => {
 };
 
 export const config = {
-  matcher: ['/', '/login', '/dashboard/:path*'],
+  matcher: ['/login', '/dashboard/:path*', '/profile/:path*'],
 };

@@ -1,6 +1,5 @@
 'use client';
 
-import { Card } from '@/components/ui/card';
 import type {
   AccumulatedBalancePoint,
   FinancialSummary,
@@ -20,7 +19,21 @@ import {
   Tooltip,
 } from 'chart.js';
 import { Bar, Doughnut, Line } from 'react-chartjs-2';
-import styled, { useTheme } from 'styled-components';
+import { useTheme } from 'styled-components';
+
+import {
+  ChartArea,
+  ChartCard,
+  ChartDescription,
+  ChartTitle,
+  DoughnutArea,
+  FullWidthGrid,
+  Grid,
+  StatItem,
+  StatLabel,
+  StatValue,
+  StatsGrid,
+} from './charts.styled';
 
 ChartJS.register(
   CategoryScale,
@@ -33,78 +46,11 @@ ChartJS.register(
   Legend,
 );
 
-const Grid = styled.div`
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: ${({ theme: appTheme }) => appTheme.spacing(4)};
-
-  @media (min-width: 1024px) {
-    grid-template-columns: repeat(2, 1fr);
-  }
-`;
-
-const FullWidthGrid = styled.div`
-  grid-column: 1 / -1;
-`;
-
-const ChartCard = styled(Card)`
-  display: flex;
-  flex-direction: column;
-  gap: ${({ theme: appTheme }) => appTheme.spacing(4)};
-`;
-
-const ChartTitle = styled.h3`
-  font-size: 15px;
-  font-weight: 700;
-`;
-
-const ChartDescription = styled.p`
-  font-size: 13px;
-  color: ${({ theme: appTheme }) => appTheme.colors.muted};
-`;
-
-const ChartArea = styled.div`
-  height: 320px;
-`;
-
-const DoughnutArea = styled.div`
-  height: 200px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-const StatsGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: ${({ theme: appTheme }) => appTheme.spacing(4)};
-`;
-
-const StatItem = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: ${({ theme: appTheme }) => appTheme.spacing(1)};
-  text-align: center;
-`;
-
-const StatLabel = styled.span`
-  font-size: 12px;
-  color: ${({ theme: appTheme }) => appTheme.colors.muted};
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-`;
-
-const StatValue = styled.span`
-  font-size: 18px;
-  font-weight: 700;
-  color: ${({ theme: appTheme }) => appTheme.colors.text};
-`;
-
 type ChartsProps = {
-  readonly monthlyTotals: readonly MonthlyTotals[];
-  readonly accumulatedBalance: readonly AccumulatedBalancePoint[];
-  readonly summary: FinancialSummary;
-  readonly currency: string;
+  monthlyTotals: readonly MonthlyTotals[];
+  accumulatedBalance: readonly AccumulatedBalancePoint[];
+  summary: FinancialSummary;
+  currency: string;
 };
 
 export const Charts = ({ monthlyTotals, accumulatedBalance, summary, currency }: ChartsProps) => {

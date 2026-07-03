@@ -313,7 +313,6 @@ export const LogoutButton = styled.button<{ readonly $isExpanded: boolean }>`
   font-size: 14px;
   font-weight: 500;
   color: ${({ theme }) => theme.colors.danger};
-  background-color: ${({ theme }) => theme.colors.dangerMuted};
   transition: background-color 0.15s ease;
   white-space: nowrap;
 
@@ -366,6 +365,16 @@ export const UserAvatarContainer = styled.div<{ readonly $isExpanded: boolean }>
   justify-content: ${({ $isExpanded }) => ($isExpanded ? 'flex-start' : 'center')};
   border-radius: 10px;
   transition: background-color 0.15s ease;
+  cursor: pointer;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.sidebarHover};
+  }
+
+  &:focus-visible {
+    outline: 2px solid ${({ theme }) => theme.colors.primary};
+    outline-offset: 2px;
+  }
 `;
 
 export const Avatar = styled.div`

@@ -5,3 +5,11 @@ export const formatDateToInputValue = (date: Date): string => {
 
   return `${year}-${month}-${day}`;
 };
+
+export const formatDate = (date: Date): string => {
+  return date.toLocaleDateString('pt-BR', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+};

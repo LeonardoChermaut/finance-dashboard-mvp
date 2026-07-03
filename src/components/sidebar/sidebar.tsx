@@ -23,13 +23,13 @@ import {
   UserEmail,
   UserInfo,
   UserName,
-} from '@/components/sidebar/sidebar.styles';
+} from '@/components/sidebar/sidebar.styled';
 import { clearSessionCookie, createMockAuthService, useAuthStore } from '@/domains/auth';
 import { useFilterStore } from '@/domains/filters';
 import { useClickOutside } from '@/hooks';
 import { routes } from '@/routes/routes';
 import { useThemeMode } from '@/theme';
-import { getInitials } from '@/utils/utils';
+import { getInitials } from '@/utils/transaction';
 import { ChevronLeft, Home, LayoutDashboard, LogOut, Menu, Moon, Sun } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -75,6 +75,11 @@ export const Sidebar = () => {
     resetFilters();
     setIsMobileOpen(false);
   }, [router, resetFilters]);
+
+  const handleProfile = useCallback(() => {
+    router.push(routes.profile);
+    setIsMobileOpen(false);
+  }, [router]);
 
   const handleLogout = useCallback(async () => {
     await authService.logout();
@@ -202,7 +207,7 @@ export const Sidebar = () => {
           </FooterItem>
 
           {user ? (
-            <UserAvatarContainer $isExpanded={isExpanded}>
+            <UserAvatarContainer $isExpanded={isExpanded} onClick={handleProfile}>
               <Avatar aria-hidden="true">{initials}</Avatar>
               <UserInfo $isExpanded={isExpanded}>
                 <UserName>{userName}</UserName>
@@ -213,11 +218,11 @@ export const Sidebar = () => {
 
           <LogoutButton
             type="button"
+            aria-label="Sair"
             onClick={handleLogout}
             $isExpanded={isExpanded}
             onMouseEnter={() => setHoveredItem('logout')}
             onMouseLeave={() => setHoveredItem(null)}
-            aria-label="Sair"
             onFocus={() => setHoveredItem('logout')}
             onBlur={() => setHoveredItem(null)}
           >

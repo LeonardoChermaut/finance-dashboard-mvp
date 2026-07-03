@@ -5,7 +5,7 @@ import styled, { css } from 'styled-components';
 type ButtonVariant = 'primary' | 'ghost' | 'danger';
 
 type ButtonProps = {
-  readonly $variant?: ButtonVariant;
+  $variant?: ButtonVariant;
 };
 
 const variantStyles = {
@@ -73,5 +73,5 @@ export const Button = styled.button<ButtonProps>`
     opacity: 0.5;
   }
 
-  ${({ $variant = 'primary' }) => variantStyles[$variant]}
+  ${({ $variant = 'primary' }) => variantStyles[$variant as keyof typeof variantStyles]}
 `;
