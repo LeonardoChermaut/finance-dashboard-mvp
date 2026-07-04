@@ -2,7 +2,7 @@ import {
   clearSessionCookie,
   createMockAuthService,
   setSessionCookie,
-} from '@/domains/auth/auth-service';
+} from '@/modules/auth/auth-service';
 
 beforeEach(() => {
   jest.clearAllMocks();
@@ -32,9 +32,8 @@ describe('createMockAuthService', () => {
     ).rejects.toThrow('Invalid credentials');
   });
 
-  it('Resolves logout without error', async () => {
-    await expect(authService.logout()).resolves.toBeUndefined();
-  });
+  it('Resolves logout without error', async () =>
+    await expect(authService.logout()).resolves.toBeUndefined());
 
   it('Returns session with user object containing name and email', async () => {
     const session = await authService.login({

@@ -2,7 +2,7 @@
 
 import { DashboardSkeleton } from '@/components/dashboard-skeleton';
 import { drilldownConfig } from '@/constants/drilldown';
-import { useDashboardData } from '@/domains/transactions/use-dashboard-data';
+import type { DrilldownType } from '@/hooks';
 import {
   useClickOutside,
   useDrilldown,
@@ -11,6 +11,7 @@ import {
   useSyncFiltersFromUrl,
   useSyncFiltersToUrl,
 } from '@/hooks';
+import { useDashboardData } from '@/modules/transactions/use-dashboard-data';
 import { useThemeMode } from '@/theme';
 import { formatDate } from '@/utils/date';
 import { formatCentsToCurrency } from '@/utils/format';
@@ -160,8 +161,7 @@ const DashboardContent = () => {
 
   useClickOutside(exportMenuRef, showExportMenu, () => setShowExportMenu(false));
 
-  const handleCardClick = (type: 'income' | 'expenses' | 'pending' | 'balance') =>
-    setDrilldownType(type);
+  const handleCardClick = (type: DrilldownType) => setDrilldownType(type);
 
   const paginationStart = (currentPage - 1) * pageSize + 1;
   const paginationEnd = Math.min(currentPage * pageSize, totalItems);

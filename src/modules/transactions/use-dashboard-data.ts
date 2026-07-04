@@ -1,20 +1,20 @@
 'use client';
 
 import { DEFAULT_CURRENCY, emptyFilterOptions, emptySummary } from '@/constants/dashboard';
-import { applyFilters, deriveFilterOptions, useFilterStore } from '@/domains/filters';
-import type { FilterOptions } from '@/domains/filters/filters.types';
+import { applyFilters, deriveFilterOptions, useFilterStore } from '@/modules/filters';
+import type { FilterOptions } from '@/modules/filters/filters.types';
 import {
   calculateAccumulatedBalance,
   calculateFinancialSummary,
   calculateMonthlyTotals,
-} from '@/domains/transactions/transaction-metrics';
-import { getTransactionRepository } from '@/domains/transactions/transaction-repository-factory';
+} from '@/modules/transactions/transaction-metrics';
+import { getTransactionRepository } from '@/modules/transactions/transaction-repository-factory';
 import type {
   AccumulatedBalancePoint,
   FinancialSummary,
   MonthlyTotals,
   Transaction,
-} from '@/domains/transactions/transaction.types';
+} from '@/modules/transactions/transaction.types';
 import { useEffect, useMemo, useState } from 'react';
 
 type DashboardData = {
@@ -64,18 +64,12 @@ export const useDashboardData = (): DashboardData => {
     };
   }, []);
 
-  const filterOptions = useMemo(() => {
-    return deriveFilterOptions(transactions);
-  }, [transactions]);
+  const filterOptions = useMemo(() => deriveFilterOptions(transactions), [transactions]);
 
-  const filteredTransactions = useMemo(() => {
-    return applyFilters(transactions, {
-      dateRange,
-      accounts,
-      industries,
-      states,
-    });
-  }, [transactions, dateRange, accounts, industries, states]);
+  const filteredTransactions = useMemo(
+    () => applyFilters(transactions, { dateRange, accounts, industries, states }),
+    [transactions, dateRange, accounts, industries, states],
+  );
 
   const summary = useMemo(() => {
     if (isLoading) {
@@ -96,13 +90,15 @@ export const useDashboardData = (): DashboardData => {
     return calculateFinancialSummary(previousTransactions);
   }, [filteredTransactions, isLoading]);
 
-  const monthlyTotals = useMemo(() => {
-    return calculateMonthlyTotals(filteredTransactions);
-  }, [filteredTransactions]);
+  const monthlyTotals = useMemo(
+    () => calculateMonthlyTotals(filteredTransactions),
+    [filteredTransactions],
+  );
 
-  const accumulatedBalance = useMemo(() => {
-    return calculateAccumulatedBalance(filteredTransactions);
-  }, [filteredTransactions]);
+  const accumulatedBalance = useMemo(
+    () => calculateAccumulatedBalance(filteredTransactions),
+    [filteredTransactions],
+  );
 
   const currency = transactions[0]?.currency ?? DEFAULT_CURRENCY;
 

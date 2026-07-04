@@ -1,7 +1,7 @@
 'use client';
 
-import { useFilterStore } from '@/domains/filters';
-import type { FilterOptions } from '@/domains/filters/filters.types';
+import { useFilterStore } from '@/modules/filters';
+import type { FilterOptions } from '@/modules/filters/filters.types';
 import { ChevronDown, Search, X } from 'lucide-react';
 import { useCallback, useMemo, useState, type ReactNode } from 'react';
 
@@ -42,6 +42,16 @@ type AccordionSectionProps = {
   onToggle: () => void;
 };
 
+type SearchableMultiSelectProps = {
+  label: string;
+  searchPlaceholder: string;
+  options: readonly string[];
+  selected: readonly string[];
+  onSelectAll: () => void;
+  onClearAll: () => void;
+  onToggle: (value: string) => void;
+};
+
 const AccordionSection = ({ title, count, isOpen, onToggle, children }: AccordionSectionProps) => {
   return (
     <div role="region" aria-label={title}>
@@ -78,28 +88,19 @@ const SearchableMultiSelect = ({
   onSelectAll,
   onClearAll,
   searchPlaceholder,
-}: {
-  readonly label: string;
-  readonly options: readonly string[];
-  readonly selected: readonly string[];
-  readonly onToggle: (value: string) => void;
-  readonly onSelectAll: () => void;
-  readonly onClearAll: () => void;
-  readonly searchPlaceholder: string;
-}) => {
+}: SearchableMultiSelectProps) => {
   const [searchTerm, setSearchTerm] = useState('');
 
   const filteredOptions = useMemo(() => {
     if (searchTerm === '') {
       return options;
     }
+
     const lowerSearchTerm = searchTerm.toLowerCase();
     return options.filter((option) => option.toLowerCase().includes(lowerSearchTerm));
   }, [options, searchTerm]);
 
-  const handleClear = useCallback(() => {
-    setSearchTerm('');
-  }, []);
+  const handleClear = useCallback(() => setSearchTerm(''), []);
 
   const allSelected = selected.length === options.length && options.length > 0;
 

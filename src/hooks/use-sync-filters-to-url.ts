@@ -1,6 +1,6 @@
 'use client';
 
-import { useFilterStore } from '@/domains/filters';
+import { useFilterStore } from '@/modules/filters';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useRef } from 'react';
 

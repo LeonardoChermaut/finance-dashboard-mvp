@@ -3,7 +3,7 @@ import type {
   FinancialSummary,
   MonthlyTotals,
   Transaction,
-} from '@/domains/transactions/transaction.types';
+} from '@/modules/transactions/transaction.types';
 
 const buildMonthKey = (date: Date): string => {
   const year = date.getFullYear();

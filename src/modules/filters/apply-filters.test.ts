@@ -1,6 +1,6 @@
-import { applyFilters, deriveFilterOptions } from '@/domains/filters/apply-filters';
-import type { FilterState } from '@/domains/filters/filters.types';
-import type { Transaction } from '@/domains/transactions/transaction.types';
+import { applyFilters, deriveFilterOptions } from '@/modules/filters/apply-filters';
+import type { FilterState } from '@/modules/filters/filters.types';
+import type { Transaction } from '@/modules/transactions/transaction.types';
 
 const buildTransaction = (overrides: Partial<Transaction>): Transaction => {
   return Object.freeze({

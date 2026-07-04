@@ -1,7 +1,7 @@
 'use client';
 
-import type { Transaction } from '@/domains/transactions/transaction.types';
 import { usePagination } from '@/hooks/use-pagination';
+import type { Transaction } from '@/modules/transactions/transaction.types';
 import { filterTransactionsByType } from '@/utils/transaction';
 import { usePathname, useRouter } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState } from 'react';

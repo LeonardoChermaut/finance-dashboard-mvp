@@ -1,7 +1,7 @@
 'use client';
 
-import type { Transaction } from '@/domains/transactions/transaction.types';
 import { exportToExcel, exportToPdf } from '@/lib/export';
+import type { Transaction } from '@/modules/transactions/transaction.types';
 import { filterTransactionsByType } from '@/utils/transaction';
 import { Dispatch, SetStateAction, useCallback, useState } from 'react';
 

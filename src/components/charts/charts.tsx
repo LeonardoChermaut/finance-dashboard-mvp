@@ -4,7 +4,7 @@ import type {
   AccumulatedBalancePoint,
   FinancialSummary,
   MonthlyTotals,
-} from '@/domains/transactions/transaction.types';
+} from '@/modules/transactions/transaction.types';
 import { formatCentsToCurrency } from '@/utils/format';
 import type { ChartOptions, TooltipItem } from 'chart.js';
 import {
@@ -217,7 +217,7 @@ export const Charts = ({ monthlyTotals, accumulatedBalance, summary, currency }:
         </ChartArea>
       </ChartCard>
       <ChartCard>
-        <ChartTitle>Distribuicao</ChartTitle>
+        <ChartTitle>Distribuição</ChartTitle>
         <ChartDescription>Proporcao entre receitas e despesas.</ChartDescription>
         <DoughnutArea>
           <Doughnut data={doughnutData} options={doughnutOptions} />

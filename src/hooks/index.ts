@@ -1,5 +1,6 @@
 export { useClickOutside } from './use-click-outside';
 export { useDrilldown } from './use-drilldown';
+export type { DrilldownType } from './use-drilldown';
 export { useExport } from './use-export';
 export { useForm } from './use-form';
 export { usePagination } from './use-pagination';

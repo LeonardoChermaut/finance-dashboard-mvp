@@ -1,10 +1,9 @@
-import type { FilterOptions, FilterState } from '@/domains/filters/filters.types';
-import type { Transaction } from '@/domains/transactions/transaction.types';
+import type { FilterOptions, FilterState } from '@/modules/filters/filters.types';
+import type { Transaction } from '@/modules/transactions/transaction.types';
 import { formatDateToInputValue } from '@/utils/date';
 
-const buildSortedUniqueValues = (values: readonly string[]): readonly string[] => {
-  return Array.from(new Set(values)).sort((left, right) => left.localeCompare(right));
-};
+const buildSortedUniqueValues = (values: readonly string[]): readonly string[] =>
+  Array.from(new Set(values)).sort((left, right) => left.localeCompare(right));
 
 export const deriveFilterOptions = (transactions: readonly Transaction[]): FilterOptions => {
   if (transactions.length === 0) {

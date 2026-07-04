@@ -1,9 +1,10 @@
 'use client';
 
 import { summaryCardConfig } from '@/constants/dashboard';
-import type { FinancialSummary } from '@/domains/transactions/transaction.types';
+import type { DrilldownType } from '@/hooks/use-drilldown';
+import type { FinancialSummary } from '@/modules/transactions/transaction.types';
 import { formatCentsToCurrency } from '@/utils/format';
-import { calculatePendingVariation, calculateVariation } from '@/utils/variation';
+import { calculatePendingVariation, calculateVariation } from '@/utils/calcs';
 import { ChevronLeft, ChevronRight, TrendingDown } from 'lucide-react';
 import { useState } from 'react';
 import {
@@ -25,11 +26,13 @@ import {
   TotalLabel,
 } from './summary-cards.styled';
 
+type CardBalanceVariant = 'positive' | 'negative' | 'zero';
+
 type SummaryCardsProps = {
+  currency: string;
   summary: FinancialSummary;
   previousSummary: FinancialSummary;
-  currency: string;
-  onCardClick?: (type: 'income' | 'expenses' | 'pending' | 'balance') => void;
+  onCardClick?: (type: DrilldownType) => void;
 };
 
 const getLabel = (key: string, label: string) => {
@@ -41,18 +44,18 @@ const getLabel = (key: string, label: string) => {
 
 export const SummaryCards = ({
   summary,
-  previousSummary,
   currency,
+  previousSummary,
   onCardClick,
 }: SummaryCardsProps) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
 
-  const variations: Record<string, string> = {
+  const variations: Record<Exclude<DrilldownType, null>, string> = {
     income: calculateVariation(summary.incomeInCents, previousSummary.incomeInCents),
     expenses: calculateVariation(summary.expensesInCents, previousSummary.expensesInCents),
     pending: calculatePendingVariation(summary.pendingCount, previousSummary.pendingCount),
     balance: calculateVariation(summary.balanceInCents, previousSummary.balanceInCents),
-  };
+  } as const;
 
   const handlePrevious = () =>
     setCurrentIndex((prev) => (prev === 0 ? summaryCardConfig.length - 1 : prev - 1));
@@ -62,13 +65,16 @@ export const SummaryCards = ({
 
   const renderCard = (config: (typeof summaryCardConfig)[number]) => {
     const getAmount = (): number => {
-      if (config.key === 'income') {
-        return summary.incomeInCents;
+      switch (config.key) {
+        case 'income':
+          return summary.incomeInCents;
+        case 'expenses':
+          return summary.expensesInCents;
+        case 'pending':
+          return summary.pendingCount;
+        case 'balance':
+          return summary.balanceInCents;
       }
-      if (config.key === 'expenses') {
-        return summary.expensesInCents;
-      }
-      return summary.balanceInCents;
     };
 
     const displayValue =
@@ -76,7 +82,7 @@ export const SummaryCards = ({
         ? String(summary.pendingCount)
         : formatCentsToCurrency(getAmount(), currency);
 
-    const getBalanceVariant = (): 'positive' | 'negative' | 'zero' | undefined => {
+    const getBalanceVariant = (): CardBalanceVariant | undefined => {
       if (config.key !== 'balance') {
         return undefined;
       }
@@ -97,11 +103,11 @@ export const SummaryCards = ({
         key={config.key}
         role="button"
         tabIndex={0}
-        onClick={() => onCardClick?.(config.key as 'income' | 'expenses' | 'pending' | 'balance')}
+        onClick={() => onCardClick?.(config.key as DrilldownType)}
         onKeyDown={(event) => {
           if (event.key === 'Enter' || event.key === ' ') {
             event.preventDefault();
-            onCardClick?.(config.key as 'income' | 'expenses' | 'pending' | 'balance');
+            onCardClick?.(config.key as DrilldownType);
           }
         }}
         aria-label={`${config.label}: ${displayValue}. Clique para ver detalhes.`}

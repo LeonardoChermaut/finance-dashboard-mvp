@@ -1,6 +1,6 @@
-import { normalizeTransactions } from '@/domains/transactions/transaction-mappers';
-import type { Transaction } from '@/domains/transactions/transaction.types';
 import rawTransactionsData from '@/mocks/transactions.json';
+import { normalizeTransactions } from '@/modules/transactions/transaction-mappers';
+import type { Transaction } from '@/modules/transactions/transaction.types';
 
 export interface ITransactionRepository {
   getAll(): Promise<readonly Transaction[]>;

@@ -25,9 +25,9 @@ import {
   UserName,
 } from '@/components/sidebar/sidebar.styled';
 import { SIDEBAR_STATE_KEY } from '@/constants/config';
-import { clearSessionCookie, createMockAuthService, useAuthStore } from '@/domains/auth';
-import { useFilterStore } from '@/domains/filters';
 import { useClickOutside } from '@/hooks';
+import { clearSessionCookie, createMockAuthService, useAuthStore } from '@/modules/auth';
+import { useFilterStore } from '@/modules/filters';
 import { routes } from '@/routes/routes';
 import { useThemeMode } from '@/theme';
 import { getInitials } from '@/utils/transaction';

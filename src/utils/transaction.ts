@@ -1,4 +1,4 @@
-import type { Transaction } from '@/domains/transactions/transaction.types';
+import type { Transaction } from '@/modules/transactions/transaction.types';
 
 export const getInitials = (name: string): string => {
   if (name === '') {
