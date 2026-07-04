@@ -1,9 +1,7 @@
-import { AUTHENTICATION_COOKIE_NAME } from '@/constants/config';
+import { AUTHENTICATION_COOKIE_NAME, COOKIE_MAX_AGE_SECONDS } from '@/constants/config';
 import { api } from '@/lib/api';
 import { MOCK_USERS } from '@/mocks/users';
 import type { AuthSession, Credentials } from '@/modules/auth/auth.types';
-
-const COOKIE_MAX_AGE_SECONDS = 60 * 60 * 24;
 
 export type AuthService = Readonly<{
   login: (credentials: Credentials) => Promise<AuthSession>;

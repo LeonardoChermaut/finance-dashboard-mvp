@@ -42,6 +42,16 @@ type AccordionSectionProps = {
   onToggle: () => void;
 };
 
+type SearchableMultiSelectProps = {
+  label: string;
+  searchPlaceholder: string;
+  options: readonly string[];
+  selected: readonly string[];
+  onSelectAll: () => void;
+  onClearAll: () => void;
+  onToggle: (value: string) => void;
+};
+
 const AccordionSection = ({ title, count, isOpen, onToggle, children }: AccordionSectionProps) => {
   return (
     <div role="region" aria-label={title}>
@@ -68,16 +78,6 @@ const AccordionSection = ({ title, count, isOpen, onToggle, children }: Accordio
       </AccordionContent>
     </div>
   );
-};
-
-type SearchableMultiSelectProps = {
-  label: string;
-  searchPlaceholder: string;
-  options: readonly string[];
-  selected: readonly string[];
-  onToggle: (value: string) => void;
-  onSelectAll: () => void;
-  onClearAll: () => void;
 };
 
 const SearchableMultiSelect = ({

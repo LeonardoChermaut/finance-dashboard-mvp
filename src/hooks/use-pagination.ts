@@ -51,16 +51,14 @@ export const usePagination = <T>(
     [goToPage, safeCurrentPage],
   );
 
+  const resetPage = useCallback(() => setCurrentPage(1), []);
+
   const goToFirstPage = useCallback(() => goToPage(1), [goToPage]);
 
   const goToLastPage = useCallback(() => goToPage(totalPages), [goToPage, totalPages]);
 
   const setPageSize = useCallback((size: number) => {
     setPageSizeState(size);
-    setCurrentPage(1);
-  }, []);
-
-  const resetPage = useCallback(() => {
     setCurrentPage(1);
   }, []);
 

@@ -4,7 +4,7 @@ import { summaryCardConfig } from '@/constants/dashboard';
 import type { DrilldownType } from '@/hooks/use-drilldown';
 import type { FinancialSummary } from '@/modules/transactions/transaction.types';
 import { formatCentsToCurrency } from '@/utils/format';
-import { calculatePendingVariation, calculateVariation } from '@/utils/variation';
+import { calculatePendingVariation, calculateVariation } from '@/utils/calcs';
 import { ChevronLeft, ChevronRight, TrendingDown } from 'lucide-react';
 import { useState } from 'react';
 import {

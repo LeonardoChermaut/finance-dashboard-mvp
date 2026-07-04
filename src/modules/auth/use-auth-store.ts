@@ -1,3 +1,4 @@
+import { AUTHENTICATION_COOKIE_NAME } from '@/constants/config';
 import type { AuthState } from '@/modules/auth/auth.types';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
@@ -19,6 +20,6 @@ export const useAuthStore = create<AuthState>()(
         })),
     }),
 
-    { name: 'financial_dashboard_session' },
+    { name: AUTHENTICATION_COOKIE_NAME },
   ),
 );

@@ -1,8 +1,6 @@
 import { env } from '@/constants/config';
-import {
-  ITransactionRepository,
-  createMockTransactionRepository,
-} from '@/modules/transactions/transaction-repository';
+import type { ITransactionRepository } from '@/modules/transactions/transaction-repository';
+import { createMockTransactionRepository } from '@/modules/transactions/transaction-repository';
 import { createApiTransactionRepository } from '@/modules/transactions/transaction-repository-api';
 
 export const getTransactionRepository = (): ITransactionRepository => {

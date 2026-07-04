@@ -24,9 +24,7 @@ const createApiTransactionRepository = (): ITransactionRepository => ({
   },
 });
 
-beforeEach(() => {
-  jest.clearAllMocks();
-});
+beforeEach(() => jest.clearAllMocks());
 
 describe('createApiTransactionRepository', () => {
   it('Fetches transactions from API', async () => {

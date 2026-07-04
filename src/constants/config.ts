@@ -1,6 +1,8 @@
+export const COOKIE_MAX_AGE_SECONDS = 60 * 60 * 24;
+export const THEME_STORAGE_KEY = 'financial_dashboard_theme';
+export const FILTERS_STORAGE_KEY = 'financial_dashboard_filters';
 export const AUTHENTICATION_COOKIE_NAME = 'financial_dashboard_session';
 export const SIDEBAR_STATE_KEY = 'financial_dashboard_sidebar_expanded';
-export const THEME_STORAGE_KEY = 'financial_dashboard_theme';
 
 export const env = {
   NEXT_PUBLIC_DATA_SOURCE: process.env.NEXT_PUBLIC_DATA_SOURCE || 'mock',

@@ -1,3 +1,4 @@
+import { FILTERS_STORAGE_KEY } from '@/constants/config';
 import type { DateRange, FilterState } from '@/modules/filters/filters.types';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
@@ -7,18 +8,18 @@ const emptyFilterState: FilterState = {
   accounts: [],
   industries: [],
   states: [],
-};
+} as const;
 
 type FilterStore = FilterState &
   Readonly<{
-    setDateRange: (dateRange: DateRange) => void;
+    resetFilters: () => void;
+    toggleState: (state: string) => void;
     toggleAccount: (account: string) => void;
     toggleIndustry: (industry: string) => void;
-    toggleState: (state: string) => void;
+    setDateRange: (dateRange: DateRange) => void;
+    setStates: (states: readonly string[]) => void;
     setAccounts: (accounts: readonly string[]) => void;
     setIndustries: (industries: readonly string[]) => void;
-    setStates: (states: readonly string[]) => void;
-    resetFilters: () => void;
   }>;
 
 const toggleValue = (values: readonly string[], value: string): readonly string[] => {
@@ -44,6 +45,6 @@ export const useFilterStore = create<FilterStore>()(
       setStates: (states) => set({ states }),
       resetFilters: () => set({ ...emptyFilterState }),
     }),
-    { name: 'financial_dashboard_filters' },
+    { name: FILTERS_STORAGE_KEY },
   ),
 );

@@ -1,8 +1,6 @@
 import { useAuthStore } from './use-auth-store';
 
-beforeEach(() => {
-  useAuthStore.setState({ user: null, isAuthenticated: false });
-});
+beforeEach(() => useAuthStore.setState({ user: null, isAuthenticated: false }));
 
 describe('Use Auth Store', () => {
   it('Initializes with unauthenticated state', () => {

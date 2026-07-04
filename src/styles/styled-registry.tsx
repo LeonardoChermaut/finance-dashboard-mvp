@@ -12,7 +12,7 @@ type StyledRegistryProps = {
 };
 
 export const StyledRegistry = ({ children }: StyledRegistryProps) => {
-  const [styledComponentsStyleSheet] = useState(() => new ServerStyleSheet());
+  const [styledComponentsStyleSheet, __] = useState(() => new ServerStyleSheet());
 
   useServerInsertedHTML(() => {
     const styles = styledComponentsStyleSheet.getStyleElement();

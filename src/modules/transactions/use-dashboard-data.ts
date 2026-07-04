@@ -64,18 +64,12 @@ export const useDashboardData = (): DashboardData => {
     };
   }, []);
 
-  const filterOptions = useMemo(() => {
-    return deriveFilterOptions(transactions);
-  }, [transactions]);
+  const filterOptions = useMemo(() => deriveFilterOptions(transactions), [transactions]);
 
-  const filteredTransactions = useMemo(() => {
-    return applyFilters(transactions, {
-      dateRange,
-      accounts,
-      industries,
-      states,
-    });
-  }, [transactions, dateRange, accounts, industries, states]);
+  const filteredTransactions = useMemo(
+    () => applyFilters(transactions, { dateRange, accounts, industries, states }),
+    [transactions, dateRange, accounts, industries, states],
+  );
 
   const summary = useMemo(() => {
     if (isLoading) {
@@ -96,13 +90,15 @@ export const useDashboardData = (): DashboardData => {
     return calculateFinancialSummary(previousTransactions);
   }, [filteredTransactions, isLoading]);
 
-  const monthlyTotals = useMemo(() => {
-    return calculateMonthlyTotals(filteredTransactions);
-  }, [filteredTransactions]);
+  const monthlyTotals = useMemo(
+    () => calculateMonthlyTotals(filteredTransactions),
+    [filteredTransactions],
+  );
 
-  const accumulatedBalance = useMemo(() => {
-    return calculateAccumulatedBalance(filteredTransactions);
-  }, [filteredTransactions]);
+  const accumulatedBalance = useMemo(
+    () => calculateAccumulatedBalance(filteredTransactions),
+    [filteredTransactions],
+  );
 
   const currency = transactions[0]?.currency ?? DEFAULT_CURRENCY;
 

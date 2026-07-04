@@ -24,35 +24,23 @@ const SAMPLE_TRANSACTIONS: readonly Transaction[] = Object.freeze([
 ]);
 
 describe('getInitials', () => {
-  it('Returns empty string for empty input', () => {
-    expect(getInitials('')).toBe('');
-  });
+  it('Returns empty string for empty input', () => expect(getInitials('')).toBe(''));
 
-  it('Returns single initial for single word', () => {
-    expect(getInitials('Joao')).toBe('J');
-  });
+  it('Returns single initial for single word', () => expect(getInitials('Joao')).toBe('J'));
 
-  it('Returns two initials for two words', () => {
-    expect(getInitials('Joao Silva')).toBe('JS');
-  });
+  it('Returns two initials for two words', () => expect(getInitials('Joao Silva')).toBe('JS'));
 
-  it('Returns only first two initials for multiple words', () => {
-    expect(getInitials('Joao Silva Santos')).toBe('JS');
-  });
+  it('Returns only first two initials for multiple words', () =>
+    expect(getInitials('Joao Silva Santos')).toBe('JS'));
 
-  it('Converts initials to uppercase', () => {
-    expect(getInitials('joao silva')).toBe('JS');
-  });
+  it('Converts initials to uppercase', () => expect(getInitials('joao silva')).toBe('JS'));
 
-  it('Handles single character words', () => {
-    expect(getInitials('A B C')).toBe('AB');
-  });
+  it('Handles single character words', () => expect(getInitials('A B C')).toBe('AB'));
 });
 
 describe('FilterTransactionsByType', () => {
-  it('Returns empty array for empty input', () => {
-    expect(filterTransactionsByType([], 'income')).toEqual([]);
-  });
+  it('Returns empty array for empty input', () =>
+    expect(filterTransactionsByType([], 'income')).toEqual([]));
 
   it('Filters deposits for income type', () => {
     const result = filterTransactionsByType(SAMPLE_TRANSACTIONS, 'income');
