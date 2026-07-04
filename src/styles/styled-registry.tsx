@@ -6,9 +6,10 @@ import { useServerInsertedHTML } from 'next/navigation';
 import type { ReactNode } from 'react';
 import { useState } from 'react';
 import { ServerStyleSheet, StyleSheetManager } from 'styled-components';
+import { Toaster } from 'sonner';
 
 type StyledRegistryProps = {
-  readonly children: ReactNode;
+  children: ReactNode;
 };
 
 export const StyledRegistry = ({ children }: StyledRegistryProps) => {
@@ -24,6 +25,7 @@ export const StyledRegistry = ({ children }: StyledRegistryProps) => {
     <StyleSheetManager sheet={styledComponentsStyleSheet.instance}>
       <ThemeProvider>
         <GlobalStyle />
+        <Toaster richColors position="top-right" />
         {children}
       </ThemeProvider>
     </StyleSheetManager>

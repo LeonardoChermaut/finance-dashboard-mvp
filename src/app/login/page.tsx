@@ -19,22 +19,14 @@ import {
   PasswordToggle,
 } from '@/components/ui/field';
 import { Form, LinkButton, LinksContainer } from '@/components/ui/form';
-import { env } from '@/constants/config';
 import { useForm } from '@/hooks/use-form';
 import { usePasswordVisibility } from '@/hooks/use-password-visibility';
-import {
-  createMockAuthService,
-  createRealAuthService,
-  setSessionCookie,
-  useAuthStore,
-} from '@/modules/auth';
+import { getAuthService, setSessionCookie, useAuthStore } from '@/modules/auth';
 import { loginSchema } from '@/modules/auth/auth.schemas';
 import { routes } from '@/routes/routes';
 import { useRouter } from 'next/navigation';
 import type { FormEvent } from 'react';
-
-const getAuthService = () =>
-  env.NEXT_PUBLIC_DATA_SOURCE === 'api' ? createRealAuthService() : createMockAuthService();
+import { toast } from 'sonner';
 
 const LoginPage = () => {
   const router = useRouter();
@@ -43,13 +35,16 @@ const LoginPage = () => {
   const setAuthenticated = useAuthStore((state) => state.setAuthenticated);
   const { showPassword, togglePassword, InputIcon } = usePasswordVisibility();
 
-  const { values, errors, handleChange, handleSubmit, setErrors } = useForm(loginSchema);
+  const { values, errors, isSubmitting, handleChange, handleSubmit, setErrors } =
+    useForm(loginSchema);
 
   const onSubmit = async (data: { email: string; password: string }): Promise<void> => {
     try {
       const { user } = await authService.login({ email: data.email, password: data.password });
       setSessionCookie();
       setAuthenticated(user);
+      const currentUser = useAuthStore.getState().user;
+      toast.success(`Bem-vindo, ${currentUser?.name ?? user.name}!`);
       router.push(routes.dashboard);
     } catch {
       setErrors({ email: 'Credenciais invalidas. Tente novamente.' });
@@ -111,8 +106,8 @@ const LoginPage = () => {
 
           {errors.email ? <ErrorMessage role="alert">{errors.email}</ErrorMessage> : null}
 
-          <Button type="submit" disabled={!values.email || !values.password}>
-            Entrar
+          <Button type="submit" disabled={!values.email || !values.password || isSubmitting}>
+            {isSubmitting ? 'Entrando...' : 'Entrar'}
           </Button>
 
           <LinksContainer>

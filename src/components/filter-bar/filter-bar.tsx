@@ -44,9 +44,9 @@ type AccordionSectionProps = {
 
 type SearchableMultiSelectProps = {
   label: string;
+  options: string[];
+  selected: string[];
   searchPlaceholder: string;
-  options: readonly string[];
-  selected: readonly string[];
   onSelectAll: () => void;
   onClearAll: () => void;
   onToggle: (value: string) => void;

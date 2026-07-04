@@ -8,21 +8,20 @@ const emptyFilterState: FilterState = {
   accounts: [],
   industries: [],
   states: [],
-} as const;
+};
 
-type FilterStore = FilterState &
-  Readonly<{
-    resetFilters: () => void;
-    toggleState: (state: string) => void;
-    toggleAccount: (account: string) => void;
-    toggleIndustry: (industry: string) => void;
-    setDateRange: (dateRange: DateRange) => void;
-    setStates: (states: readonly string[]) => void;
-    setAccounts: (accounts: readonly string[]) => void;
-    setIndustries: (industries: readonly string[]) => void;
-  }>;
+type FilterStore = FilterState & {
+  resetFilters: () => void;
+  toggleState: (state: string) => void;
+  toggleAccount: (account: string) => void;
+  toggleIndustry: (industry: string) => void;
+  setDateRange: (dateRange: DateRange) => void;
+  setStates: (states: string[]) => void;
+  setAccounts: (accounts: string[]) => void;
+  setIndustries: (industries: string[]) => void;
+};
 
-const toggleValue = (values: readonly string[], value: string): readonly string[] => {
+const toggleValue = (values: string[], value: string): string[] => {
   if (values.includes(value)) {
     return values.filter((currentValue) => currentValue !== value);
   }
@@ -45,6 +44,15 @@ export const useFilterStore = create<FilterStore>()(
       setStates: (states) => set({ states }),
       resetFilters: () => set({ ...emptyFilterState }),
     }),
-    { name: FILTERS_STORAGE_KEY },
+    {
+      name: FILTERS_STORAGE_KEY,
+      version: 1,
+      migrate: (persistedState: unknown, version: number) => {
+        if (version === 0) {
+          return persistedState as FilterStore;
+        }
+        return persistedState as FilterStore;
+      },
+    },
   ),
 );

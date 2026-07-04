@@ -1,10 +1,11 @@
 'use client';
 
+import { LogoIcon } from '@/components/ui/auth-layout';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { useAuthStore } from '@/modules/auth';
 import { routes } from '@/routes/routes';
-import { useThemeMode } from '@/theme';
 import {
   ArrowRight,
   BarChart3,
@@ -14,7 +15,6 @@ import {
   LayoutDashboard,
   Lock,
   Moon,
-  Sun,
   TrendingUp,
   Wallet,
 } from 'lucide-react';
@@ -59,19 +59,6 @@ const NavLogo = styled.div`
   gap: ${({ theme }) => theme.spacing(3)};
 `;
 
-const LogoIcon = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
-  background-color: ${({ theme }) => theme.colors.primary};
-  color: ${({ theme }) => theme.colors.surface};
-  font-size: 18px;
-  font-weight: 700;
-`;
-
 const LogoText = styled.span`
   font-size: 20px;
   font-weight: 700;
@@ -84,7 +71,7 @@ const NavActions = styled.div`
   gap: ${({ theme }) => theme.spacing(3)};
 `;
 
-const ThemeButton = styled.button`
+const ThemeButton = styled(ThemeToggle)`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -476,10 +463,9 @@ const stats = [
   { value: '4', label: 'Cards de Resumo' },
   { value: '2', label: 'Graficos Interativos' },
   { value: '100%', label: 'Responsivo' },
-];
+] as const;
 
 const HomePage = () => {
-  const { mode, toggleTheme } = useThemeMode();
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
   return (
@@ -490,13 +476,7 @@ const HomePage = () => {
           <LogoText>Financeiro</LogoText>
         </NavLogo>
         <NavActions>
-          <ThemeButton
-            type="button"
-            onClick={toggleTheme}
-            aria-label={mode === 'light' ? 'Ativar modo escuro' : 'Ativar modo claro'}
-          >
-            {mode === 'light' ? <Moon size={18} /> : <Sun size={18} />}
-          </ThemeButton>
+          <ThemeButton />
           <Link href={isAuthenticated ? routes.dashboard : routes.login} passHref>
             <Button as="span">
               {isAuthenticated ? 'Dashboard' : 'Entrar'}

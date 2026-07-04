@@ -17,7 +17,7 @@ export const emptyFilterOptions: FilterOptions = {
   states: [],
   accounts: [],
   industries: [],
-} as const;
+};
 
 export const summaryCardConfig = [
   {
@@ -30,7 +30,7 @@ export const summaryCardConfig = [
   {
     key: 'expenses',
     label: 'Despesas',
-    tone: 'expense' as const,
+    tone: 'expenses' as const,
     icon: ArrowDownLeft,
     description: 'Total de saques realizados',
   },

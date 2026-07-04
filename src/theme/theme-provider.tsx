@@ -1,12 +1,14 @@
 'use client';
 
+import { THEME_STORAGE_KEY } from '@/constants/config';
+import { useLocalStorage } from '@/hooks';
 import { darkTheme } from '@/theme/dark-theme';
 import { lightTheme } from '@/theme/light-theme';
-import type { ThemeMode } from '@/theme/theme-storage';
-import { getStoredTheme, storeTheme } from '@/theme/theme-storage';
 import type { ReactNode } from 'react';
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { ThemeProvider as StyledThemeProvider } from 'styled-components';
+
+export type ThemeMode = 'light' | 'dark';
 
 type ThemeContextValue = Readonly<{
   mode: ThemeMode;
@@ -24,27 +26,39 @@ type ThemeProviderProps = Readonly<{
   children: ReactNode;
 }>;
 
-export const ThemeProvider = ({ children }: ThemeProviderProps) => {
-  const [mode, setMode] = useState<ThemeMode>('light');
+const getInitialTheme = (): ThemeMode => {
+  if (typeof window === 'undefined') {
+    return 'light';
+  }
 
-  useEffect(() => {
-    const stored = getStoredTheme();
-    if (stored !== mode) {
-      setMode(stored);
+  try {
+    const stored = localStorage.getItem(THEME_STORAGE_KEY);
+    if (stored === 'dark' || stored === 'light') {
+      return stored;
     }
-  }, []);
+  } catch {}
 
-  const toggleTheme = useCallback(() => {
-    setMode((previous) => {
-      const next = previous === 'light' ? 'dark' : 'light';
-      storeTheme(next);
-      return next;
-    });
-  }, []);
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+};
+
+export const ThemeProvider = ({ children }: ThemeProviderProps) => {
+  const [mode, setMode] = useLocalStorage<ThemeMode>(THEME_STORAGE_KEY, getInitialTheme());
+  const [isHydrated, setIsHydrated] = useState<boolean>(false);
+
+  const toggleTheme = useCallback(
+    () => setMode((previous) => (previous === 'light' ? 'dark' : 'light')),
+    [setMode],
+  );
 
   const theme = useMemo(() => (mode === 'light' ? lightTheme : darkTheme), [mode]);
 
   const contextValue = useMemo(() => ({ mode, toggleTheme }), [mode, toggleTheme]);
+
+  useEffect(() => setIsHydrated(true), []);
+
+  if (!isHydrated) {
+    return <StyledThemeProvider theme={lightTheme}>{children}</StyledThemeProvider>;
+  }
 
   return (
     <ThemeContext.Provider value={contextValue}>

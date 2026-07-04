@@ -11,8 +11,8 @@ import {
   useSyncFiltersFromUrl,
   useSyncFiltersToUrl,
 } from '@/hooks';
+import { useFilterStore } from '@/modules/filters';
 import { useDashboardData } from '@/modules/transactions/use-dashboard-data';
-import { useThemeMode } from '@/theme';
 import { formatDate } from '@/utils/date';
 import { formatCentsToCurrency } from '@/utils/format';
 import { getVisiblePages } from '@/utils/pagination';
@@ -28,15 +28,12 @@ import {
   Download,
   FileSpreadsheet,
   FileText,
-  Moon,
   Search,
-  Sun,
   X,
 } from 'lucide-react';
 import dynamic from 'next/dynamic';
-import { Suspense, useEffect, useRef, useState } from 'react';
+import { Suspense, useCallback, useRef, useState } from 'react';
 import {
-  ChartsSection,
   ContentWrapper,
   CurrentDate,
   DrilldownActions,
@@ -60,7 +57,6 @@ import {
   ExportMenuHeader,
   ExportMenuItem,
   ExportMenuSeparator,
-  FilterSection,
   HeaderActions,
   HeaderText,
   HeaderTop,
@@ -78,8 +74,6 @@ import {
   QuickFilters,
   SectionDescription,
   SectionTitle,
-  SummarySection,
-  ThemeToggle,
   TransactionAccount,
   TransactionInfo,
   TransactionItem,
@@ -120,24 +114,30 @@ const DashboardContent = () => {
     isLoading,
     filteredTransactions,
   } = useDashboardData();
-  const { mode, toggleTheme } = useThemeMode();
+  const [currentDate] = useState<string>(() => formatDate(new Date()));
   const exportMenuRef = useRef<HTMLDivElement>(null);
-  const [currentDate, setCurrentDate] = useState('');
 
-  useEffect(() => {
-    setCurrentDate(formatDate(new Date()));
-  }, []);
+  const dateRange = useFilterStore((state) => state.dateRange);
+  const setDateRange = useFilterStore((state) => state.setDateRange);
+
+  const isDateRangeActive = dateRange.startDate !== null || dateRange.endDate !== null;
 
   useSyncFiltersFromUrl();
   useSyncFiltersToUrl();
+
   const { activeQuickFilter, handleQuickFilter } = useQuickFilters();
+
   const {
+    isExporting,
     showExportMenu,
     setShowExportMenu,
     handleExportPdf,
     handleExportExcel,
     handleExportFiltered,
   } = useExport(filteredTransactions, currency);
+
+  useClickOutside(exportMenuRef, showExportMenu, () => setShowExportMenu(false));
+
   const {
     drilldownType,
     drilldownSearch,
@@ -159,9 +159,27 @@ const DashboardContent = () => {
     handleDrilldownClose,
   } = useDrilldown(filteredTransactions);
 
-  useClickOutside(exportMenuRef, showExportMenu, () => setShowExportMenu(false));
+  const handleCardClick = useCallback(
+    (type: DrilldownType): void => {
+      setDrilldownType(type);
+    },
+    [setDrilldownType],
+  );
 
-  const handleCardClick = (type: DrilldownType) => setDrilldownType(type);
+  const handleBarClick = useCallback(
+    (month: string): void => {
+      const [year, monthNumber] = month.split('-');
+      const startDate = `${year}-${monthNumber}-01`;
+      const lastDay = new Date(Number(year), Number(monthNumber), 0).getDate();
+      const endDate = `${year}-${monthNumber}-${String(lastDay).padStart(2, '0')}`;
+      setDateRange({ startDate, endDate, startTime: null, endTime: null });
+    },
+    [setDateRange],
+  );
+
+  const handleClearDateFilter = (): void => {
+    setDateRange({ startDate: null, endDate: null, startTime: null, endTime: null });
+  };
 
   const paginationStart = (currentPage - 1) * pageSize + 1;
   const paginationEnd = Math.min(currentPage * pageSize, totalItems);
@@ -190,15 +208,7 @@ const DashboardContent = () => {
               </HeaderText>
               <CurrentDate>{currentDate}</CurrentDate>
             </HeaderTop>
-            <HeaderActions>
-              <ThemeToggle
-                type="button"
-                onClick={toggleTheme}
-                aria-label={mode === 'light' ? 'Ativar modo escuro' : 'Ativar modo claro'}
-              >
-                {mode === 'light' ? <Moon size={18} /> : <Sun size={18} />}
-              </ThemeToggle>
-            </HeaderActions>
+            <HeaderActions></HeaderActions>
           </PageHeader>
 
           <ExportBar>
@@ -206,33 +216,46 @@ const DashboardContent = () => {
               <ExportButton
                 type="button"
                 onClick={() => setShowExportMenu((prev) => !prev)}
+                disabled={isExporting}
                 aria-label="Exportar dados"
               >
                 <Download size={16} />
-                Exportar
+                {isExporting ? 'Exportando...' : 'Exportar'}
               </ExportButton>
               {showExportMenu ? (
                 <ExportMenu>
                   <ExportMenuHeader>Formato</ExportMenuHeader>
-                  <ExportMenuItem type="button" onClick={handleExportPdf}>
+                  <ExportMenuItem type="button" onClick={handleExportPdf} disabled={isExporting}>
                     <FileText size={16} />
                     Exportar como PDF
                   </ExportMenuItem>
-                  <ExportMenuItem type="button" onClick={handleExportExcel}>
+                  <ExportMenuItem type="button" onClick={handleExportExcel} disabled={isExporting}>
                     <FileSpreadsheet size={16} />
                     Exportar como Excel
                   </ExportMenuItem>
                   <ExportMenuSeparator />
                   <ExportMenuHeader>Filtrar por</ExportMenuHeader>
-                  <ExportMenuItem type="button" onClick={() => handleExportFiltered('income')}>
+                  <ExportMenuItem
+                    type="button"
+                    onClick={() => handleExportFiltered('income')}
+                    disabled={isExporting}
+                  >
                     <ArrowUpRight size={16} />
                     Apenas Receitas
                   </ExportMenuItem>
-                  <ExportMenuItem type="button" onClick={() => handleExportFiltered('expenses')}>
+                  <ExportMenuItem
+                    type="button"
+                    onClick={() => handleExportFiltered('expenses')}
+                    disabled={isExporting}
+                  >
                     <ArrowDownLeft size={16} />
                     Apenas Despesas
                   </ExportMenuItem>
-                  <ExportMenuItem type="button" onClick={() => handleExportFiltered('pending')}>
+                  <ExportMenuItem
+                    type="button"
+                    onClick={() => handleExportFiltered('pending')}
+                    disabled={isExporting}
+                  >
                     <Clock size={16} />
                     Apenas Pendentes
                   </ExportMenuItem>
@@ -276,20 +299,20 @@ const DashboardContent = () => {
             </QuickFilterButton>
           </QuickFilters>
 
-          <FilterSection aria-label="Filtros">
+          <section aria-label="Filtros">
             <DynamicFilterBar filterOptions={filterOptions} />
-          </FilterSection>
+          </section>
 
-          <SummarySection aria-label="Resumo financeiro">
+          <section aria-label="Resumo financeiro">
             <DynamicSummaryCards
               summary={summary}
               previousSummary={previousSummary}
               currency={currency}
               onCardClick={handleCardClick}
             />
-          </SummarySection>
+          </section>
 
-          <ChartsSection aria-label="Graficos">
+          <section aria-label="Graficos">
             <SectionTitle>Analises</SectionTitle>
             <SectionDescription>
               Receitas, despesas e saldo acumulado ao longo do tempo.
@@ -299,8 +322,12 @@ const DashboardContent = () => {
               accumulatedBalance={accumulatedBalance}
               summary={summary}
               currency={currency}
+              isDateRangeActive={isDateRangeActive}
+              onBarClick={handleBarClick}
+              onDoughnutClick={handleCardClick}
+              onClearFilter={handleClearDateFilter}
             />
-          </ChartsSection>
+          </section>
         </ContentWrapper>
       </MainContent>
 

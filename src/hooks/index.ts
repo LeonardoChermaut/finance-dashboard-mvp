@@ -1,8 +1,10 @@
 export { useClickOutside } from './use-click-outside';
+export { useDelay } from './use-delay';
 export { useDrilldown } from './use-drilldown';
-export type { DrilldownType } from './use-drilldown';
+export type { DrilldownCategory, DrilldownType } from './use-drilldown';
 export { useExport } from './use-export';
 export { useForm } from './use-form';
+export { useLocalStorage } from './use-local-storage';
 export { usePagination } from './use-pagination';
 export { usePasswordVisibility } from './use-password-visibility';
 export { useQuickFilters } from './use-quick-filters';

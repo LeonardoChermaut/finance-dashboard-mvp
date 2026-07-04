@@ -2,7 +2,7 @@ import type { FilterOptions, FilterState } from '@/modules/filters/filters.types
 import type { Transaction } from '@/modules/transactions/transaction.types';
 import { formatDateToInputValue } from '@/utils/date';
 
-const buildSortedUniqueValues = (values: readonly string[]): readonly string[] =>
+const buildSortedUniqueValues = (values: readonly string[]): string[] =>
   Array.from(new Set(values)).sort((left, right) => left.localeCompare(right));
 
 export const deriveFilterOptions = (transactions: readonly Transaction[]): FilterOptions => {
@@ -70,7 +70,7 @@ const matchesDateRange = (transaction: Transaction, filterState: FilterState): b
 export const applyFilters = (
   transactions: readonly Transaction[],
   filterState: FilterState,
-): readonly Transaction[] => {
+): Transaction[] => {
   return transactions.filter((transaction) => {
     return (
       matchesDateRange(transaction, filterState) &&

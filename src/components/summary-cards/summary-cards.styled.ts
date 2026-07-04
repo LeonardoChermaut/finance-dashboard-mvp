@@ -74,8 +74,8 @@ export const CardHeader = styled.div`
 `;
 
 export const CardIcon = styled.div<{
-  readonly $tone: 'income' | 'expense' | 'pending' | 'balance';
-  readonly $balanceVariant?: 'positive' | 'negative' | 'zero';
+  $tone: 'income' | 'expenses' | 'pending' | 'balance';
+  $balanceVariant?: 'positive' | 'negative' | 'zero';
 }>`
   display: flex;
   align-items: center;
@@ -87,7 +87,7 @@ export const CardIcon = styled.div<{
     if ($tone === 'income') {
       return theme.colors.incomeMuted;
     }
-    if ($tone === 'expense') {
+    if ($tone === 'expenses') {
       return theme.colors.expenseMuted;
     }
     if ($tone === 'pending') {
@@ -107,7 +107,7 @@ export const CardIcon = styled.div<{
     if ($tone === 'income') {
       return theme.colors.income;
     }
-    if ($tone === 'expense') {
+    if ($tone === 'expenses') {
       return theme.colors.expense;
     }
     if ($tone === 'pending') {
@@ -160,7 +160,7 @@ export const CardVariation = styled.span`
   margin-top: ${({ theme }) => theme.spacing(1)};
 `;
 
-export const NavigationButton = styled.button<{ readonly $direction: 'left' | 'right' }>`
+export const NavigationButton = styled.button<{ $direction: 'left' | 'right' }>`
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
@@ -209,7 +209,7 @@ export const DotsContainer = styled.div`
   }
 `;
 
-export const Dot = styled.button<{ readonly $active: boolean }>`
+export const Dot = styled.button<{ $active: boolean }>`
   width: 8px;
   height: 8px;
   border-radius: 50%;
