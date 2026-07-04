@@ -2,8 +2,8 @@ import {
   calculateAccumulatedBalance,
   calculateFinancialSummary,
   calculateMonthlyTotals,
-} from '@/domains/transactions/transaction-metrics';
-import type { Transaction } from '@/domains/transactions/transaction.types';
+} from '@/modules/transactions/transaction-metrics';
+import type { Transaction } from '@/modules/transactions/transaction.types';
 
 const buildTransaction = (overrides: Partial<Transaction>): Transaction => {
   return Object.freeze({

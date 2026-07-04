@@ -22,7 +22,7 @@ import {
 import { Sidebar } from '@/components/sidebar/sidebar';
 import { Button } from '@/components/ui/button';
 
-import { useAuthStore, type UserRole } from '@/domains/auth';
+import { useAuthStore, type UserRole } from '@/modules/auth';
 import { routes } from '@/routes/routes';
 import { getInitials } from '@/utils/transaction';
 import { ArrowLeft, Mail, Save, Shield, User } from 'lucide-react';

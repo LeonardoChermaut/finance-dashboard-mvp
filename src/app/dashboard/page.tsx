@@ -2,7 +2,7 @@
 
 import { DashboardSkeleton } from '@/components/dashboard-skeleton';
 import { drilldownConfig } from '@/constants/drilldown';
-import { useDashboardData } from '@/domains/transactions/use-dashboard-data';
+import type { DrilldownType } from '@/hooks';
 import {
   useClickOutside,
   useDrilldown,
@@ -11,7 +11,7 @@ import {
   useSyncFiltersFromUrl,
   useSyncFiltersToUrl,
 } from '@/hooks';
-import type { DrilldownType } from '@/hooks';
+import { useDashboardData } from '@/modules/transactions/use-dashboard-data';
 import { useThemeMode } from '@/theme';
 import { formatDate } from '@/utils/date';
 import { formatCentsToCurrency } from '@/utils/format';

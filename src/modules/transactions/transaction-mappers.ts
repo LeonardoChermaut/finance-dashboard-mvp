@@ -1,4 +1,4 @@
-import type { RawTransaction, Transaction } from '@/domains/transactions/transaction.types';
+import type { RawTransaction, Transaction } from '@/modules/transactions/transaction.types';
 
 const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
 const PENDING_WINDOW_DAYS = 7;

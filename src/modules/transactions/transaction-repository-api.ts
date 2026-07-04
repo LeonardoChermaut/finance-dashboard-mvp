@@ -1,8 +1,8 @@
-import { normalizeTransactions } from '@/domains/transactions/transaction-mappers';
-import type { ITransactionRepository } from '@/domains/transactions/transaction-repository';
-import type { Transaction } from '@/domains/transactions/transaction.types';
 import type { IPaginatedResponse } from '@/lib/api';
 import { api } from '@/lib/api';
+import { normalizeTransactions } from '@/modules/transactions/transaction-mappers';
+import type { ITransactionRepository } from '@/modules/transactions/transaction-repository';
+import type { Transaction } from '@/modules/transactions/transaction.types';
 
 interface IApiTransaction {
   date: number;

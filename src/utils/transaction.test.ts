@@ -1,4 +1,4 @@
-import type { Transaction } from '@/domains/transactions/transaction.types';
+import type { Transaction } from '@/modules/transactions/transaction.types';
 import { filterTransactionsByType, getInitials } from './transaction';
 
 const createTransaction = (overrides: Partial<Transaction>): Transaction =>

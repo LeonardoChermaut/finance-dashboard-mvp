@@ -1,5 +1,5 @@
-import type { FilterOptions, FilterState } from '@/domains/filters/filters.types';
-import type { Transaction } from '@/domains/transactions/transaction.types';
+import type { FilterOptions, FilterState } from '@/modules/filters/filters.types';
+import type { Transaction } from '@/modules/transactions/transaction.types';
 import { formatDateToInputValue } from '@/utils/date';
 
 const buildSortedUniqueValues = (values: readonly string[]): readonly string[] => {

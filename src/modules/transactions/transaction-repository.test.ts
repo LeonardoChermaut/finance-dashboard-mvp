@@ -1,4 +1,4 @@
-import { createMockTransactionRepository } from '@/domains/transactions/transaction-repository';
+import { createMockTransactionRepository } from '@/modules/transactions/transaction-repository';
 
 const repository = createMockTransactionRepository();
 

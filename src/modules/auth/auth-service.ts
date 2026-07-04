@@ -1,7 +1,7 @@
 import { AUTHENTICATION_COOKIE_NAME } from '@/constants/config';
-import type { AuthSession, Credentials } from '@/domains/auth/auth.types';
 import { api } from '@/lib/api';
 import { MOCK_USERS } from '@/mocks/users';
+import type { AuthSession, Credentials } from '@/modules/auth/auth.types';
 
 const COOKIE_MAX_AGE_SECONDS = 60 * 60 * 24;
 

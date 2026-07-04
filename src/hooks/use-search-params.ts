@@ -1,7 +1,7 @@
 'use client';
 
-import { useFilterStore } from '@/domains/filters';
-import type { DateRange } from '@/domains/filters/filters.types';
+import { useFilterStore } from '@/modules/filters';
+import type { DateRange } from '@/modules/filters/filters.types';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useRef } from 'react';
 

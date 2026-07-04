@@ -12,8 +12,8 @@ import {
 import { Button } from '@/components/ui/button';
 import { FieldWrapper, Input } from '@/components/ui/field';
 import { Form, LinkButton, LinksContainer, SuccessMessage } from '@/components/ui/form';
-import { forgotPasswordSchema } from '@/domains/auth/auth.schemas';
 import { useForm } from '@/hooks/use-form';
+import { forgotPasswordSchema } from '@/modules/auth/auth.schemas';
 import { routes } from '@/routes/routes';
 import { useRouter } from 'next/navigation';
 import type { FormEvent } from 'react';

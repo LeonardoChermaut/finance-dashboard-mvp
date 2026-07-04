@@ -1,4 +1,4 @@
-import type { DateRange, FilterState } from '@/domains/filters/filters.types';
+import type { DateRange, FilterState } from '@/modules/filters/filters.types';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 

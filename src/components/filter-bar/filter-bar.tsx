@@ -1,7 +1,7 @@
 'use client';
 
-import { useFilterStore } from '@/domains/filters';
-import type { FilterOptions } from '@/domains/filters/filters.types';
+import { useFilterStore } from '@/modules/filters';
+import type { FilterOptions } from '@/modules/filters/filters.types';
 import { ChevronDown, Search, X } from 'lucide-react';
 import { useCallback, useMemo, useState, type ReactNode } from 'react';
 

@@ -1,5 +1,5 @@
-import { normalizeTransactions } from '@/domains/transactions/transaction-mappers';
-import type { RawTransaction } from '@/domains/transactions/transaction.types';
+import { normalizeTransactions } from '@/modules/transactions/transaction-mappers';
+import type { RawTransaction } from '@/modules/transactions/transaction.types';
 
 const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
 const LATEST_TIMESTAMP = new Date('2024-06-20T12:00:00.000Z').getTime();

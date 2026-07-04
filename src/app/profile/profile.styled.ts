@@ -1,6 +1,6 @@
 import { Card } from '@/components/ui/card';
 import { breakpoints } from '@/constants/breakpoints';
-import { UserRole } from '@/domains/auth';
+import { UserRole } from '@/modules/auth';
 import styled from 'styled-components';
 
 export const Layout = styled.div`

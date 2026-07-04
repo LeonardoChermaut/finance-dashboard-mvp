@@ -4,7 +4,7 @@ import type {
   AccumulatedBalancePoint,
   FinancialSummary,
   MonthlyTotals,
-} from '@/domains/transactions/transaction.types';
+} from '@/modules/transactions/transaction.types';
 import { formatCentsToCurrency } from '@/utils/format';
 import type { ChartOptions, TooltipItem } from 'chart.js';
 import {

@@ -1,4 +1,4 @@
-import type { AuthState } from '@/domains/auth/auth.types';
+import type { AuthState } from '@/modules/auth/auth.types';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 

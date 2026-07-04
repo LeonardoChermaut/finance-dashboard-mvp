@@ -1,20 +1,20 @@
 'use client';
 
 import { DEFAULT_CURRENCY, emptyFilterOptions, emptySummary } from '@/constants/dashboard';
-import { applyFilters, deriveFilterOptions, useFilterStore } from '@/domains/filters';
-import type { FilterOptions } from '@/domains/filters/filters.types';
+import { applyFilters, deriveFilterOptions, useFilterStore } from '@/modules/filters';
+import type { FilterOptions } from '@/modules/filters/filters.types';
 import {
   calculateAccumulatedBalance,
   calculateFinancialSummary,
   calculateMonthlyTotals,
-} from '@/domains/transactions/transaction-metrics';
-import { getTransactionRepository } from '@/domains/transactions/transaction-repository-factory';
+} from '@/modules/transactions/transaction-metrics';
+import { getTransactionRepository } from '@/modules/transactions/transaction-repository-factory';
 import type {
   AccumulatedBalancePoint,
   FinancialSummary,
   MonthlyTotals,
   Transaction,
-} from '@/domains/transactions/transaction.types';
+} from '@/modules/transactions/transaction.types';
 import { useEffect, useMemo, useState } from 'react';
 
 type DashboardData = {

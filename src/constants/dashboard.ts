@@ -1,5 +1,5 @@
-import type { FilterOptions } from '@/domains/filters/filters.types';
-import type { FinancialSummary } from '@/domains/transactions/transaction.types';
+import type { FilterOptions } from '@/modules/filters/filters.types';
+import type { FinancialSummary } from '@/modules/transactions/transaction.types';
 import { ArrowDownLeft, ArrowUpRight, Clock, TrendingUp } from 'lucide-react';
 
 export const DEFAULT_CURRENCY = 'BRL';

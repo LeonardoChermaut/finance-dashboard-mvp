@@ -20,15 +20,15 @@ import {
 } from '@/components/ui/field';
 import { Form, LinkButton, LinksContainer } from '@/components/ui/form';
 import { env } from '@/constants/config';
+import { useForm } from '@/hooks/use-form';
+import { usePasswordVisibility } from '@/hooks/use-password-visibility';
 import {
   createMockAuthService,
   createRealAuthService,
   setSessionCookie,
   useAuthStore,
-} from '@/domains/auth';
-import { useForm } from '@/hooks/use-form';
-import { usePasswordVisibility } from '@/hooks/use-password-visibility';
-import { loginSchema } from '@/domains/auth/auth.schemas';
+} from '@/modules/auth';
+import { loginSchema } from '@/modules/auth/auth.schemas';
 import { routes } from '@/routes/routes';
 import { useRouter } from 'next/navigation';
 import type { FormEvent } from 'react';

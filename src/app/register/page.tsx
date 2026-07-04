@@ -20,10 +20,10 @@ import {
   Select,
 } from '@/components/ui/field';
 import { Form, LinkButton, LinksContainer, SuccessMessage } from '@/components/ui/form';
-import { useAuthStore } from '@/domains/auth';
 import { useForm } from '@/hooks/use-form';
 import { usePasswordVisibility } from '@/hooks/use-password-visibility';
-import { registerSchema } from '@/domains/auth/auth.schemas';
+import { useAuthStore } from '@/modules/auth';
+import { registerSchema } from '@/modules/auth/auth.schemas';
 import { routes } from '@/routes/routes';
 import { useRouter } from 'next/navigation';
 import type { FormEvent } from 'react';

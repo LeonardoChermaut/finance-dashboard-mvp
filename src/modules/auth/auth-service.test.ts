@@ -2,7 +2,7 @@ import {
   clearSessionCookie,
   createMockAuthService,
   setSessionCookie,
-} from '@/domains/auth/auth-service';
+} from '@/modules/auth/auth-service';
 
 beforeEach(() => {
   jest.clearAllMocks();

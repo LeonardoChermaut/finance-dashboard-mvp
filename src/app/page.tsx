@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { useAuthStore } from '@/domains/auth';
+import { useAuthStore } from '@/modules/auth';
 import { routes } from '@/routes/routes';
 import { useThemeMode } from '@/theme';
 import {

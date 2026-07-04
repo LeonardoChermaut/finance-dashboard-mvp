@@ -1,6 +1,6 @@
-import { normalizeTransactions } from '@/domains/transactions/transaction-mappers';
-import type { ITransactionRepository } from '@/domains/transactions/transaction-repository';
-import type { Transaction } from '@/domains/transactions/transaction.types';
+import { normalizeTransactions } from '@/modules/transactions/transaction-mappers';
+import type { ITransactionRepository } from '@/modules/transactions/transaction-repository';
+import type { Transaction } from '@/modules/transactions/transaction.types';
 
 jest.mock('@/lib/api', () => {
   const mockGet = jest.fn();

@@ -1,4 +1,4 @@
-import type { Transaction } from '@/domains/transactions/transaction.types';
+import type { Transaction } from '@/modules/transactions/transaction.types';
 import { formatCentsToCurrency } from '@/utils/format';
 
 export const exportToExcel = (transactions: readonly Transaction[], currency: string): void => {
