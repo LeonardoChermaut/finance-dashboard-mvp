@@ -2,6 +2,7 @@ import tseslint from '@typescript-eslint/eslint-plugin';
 import tsParser from '@typescript-eslint/parser';
 import prettierConfig from 'eslint-config-prettier';
 import prettierPlugin from 'eslint-plugin-prettier';
+import reactHooksPlugin from 'eslint-plugin-react-hooks';
 
 export default [
   {
@@ -17,9 +18,13 @@ export default [
     plugins: {
       '@typescript-eslint': tseslint,
       prettier: prettierPlugin,
+      'react-hooks': reactHooksPlugin,
     },
     rules: {
       'prettier/prettier': 'error',
+
+      'react-hooks/rules-of-hooks': 'error',
+      'react-hooks/exhaustive-deps': 'warn',
 
       '@typescript-eslint/no-explicit-any': 'error',
       '@typescript-eslint/no-unsafe-assignment': 'error',
@@ -84,9 +89,13 @@ export default [
     plugins: {
       '@typescript-eslint': tseslint,
       prettier: prettierPlugin,
+      'react-hooks': reactHooksPlugin,
     },
     rules: {
       'prettier/prettier': 'error',
+
+      'react-hooks/rules-of-hooks': 'error',
+      'react-hooks/exhaustive-deps': 'warn',
 
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
