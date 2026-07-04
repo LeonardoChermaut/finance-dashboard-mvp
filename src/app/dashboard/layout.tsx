@@ -1,8 +1,8 @@
 'use client';
 
 import { Sidebar } from '@/components/sidebar/sidebar';
-import { Layout } from './dashboard.styled';
 import type { ReactNode } from 'react';
+import { Layout } from './dashboard.styled';
 
 type DashboardLayoutProps = {
   readonly children: ReactNode;

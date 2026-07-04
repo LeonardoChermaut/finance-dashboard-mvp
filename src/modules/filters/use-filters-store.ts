@@ -8,21 +8,20 @@ const emptyFilterState: FilterState = {
   accounts: [],
   industries: [],
   states: [],
-} as const;
+};
 
-type FilterStore = FilterState &
-  Readonly<{
-    resetFilters: () => void;
-    toggleState: (state: string) => void;
-    toggleAccount: (account: string) => void;
-    toggleIndustry: (industry: string) => void;
-    setDateRange: (dateRange: DateRange) => void;
-    setStates: (states: readonly string[]) => void;
-    setAccounts: (accounts: readonly string[]) => void;
-    setIndustries: (industries: readonly string[]) => void;
-  }>;
+type FilterStore = FilterState & {
+  resetFilters: () => void;
+  toggleState: (state: string) => void;
+  toggleAccount: (account: string) => void;
+  toggleIndustry: (industry: string) => void;
+  setDateRange: (dateRange: DateRange) => void;
+  setStates: (states: string[]) => void;
+  setAccounts: (accounts: string[]) => void;
+  setIndustries: (industries: string[]) => void;
+};
 
-const toggleValue = (values: readonly string[], value: string): readonly string[] => {
+const toggleValue = (values: string[], value: string): string[] => {
   if (values.includes(value)) {
     return values.filter((currentValue) => currentValue !== value);
   }

@@ -1,9 +1,11 @@
+import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { breakpoints } from '@/constants/breakpoints';
 import styled from 'styled-components';
 
 export const Layout = styled.div`
   display: flex;
   min-height: 100vh;
+  overflow-x: hidden;
 `;
 
 export const MainContent = styled.main`
@@ -11,6 +13,7 @@ export const MainContent = styled.main`
   display: flex;
   flex-direction: column;
   min-width: 0;
+  overflow-x: hidden;
 
   @media (min-width: ${breakpoints.tablet}) {
     margin-left: 64px;
@@ -21,8 +24,10 @@ export const ContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing(5)};
-  padding: ${({ theme }) => theme.spacing(4)};
+  padding: ${({ theme }) => theme.spacing(3)};
   padding-top: ${({ theme }) => theme.spacing(16)};
+  max-width: 100%;
+  overflow-x: hidden;
 
   @media (min-width: ${breakpoints.tablet}) {
     padding: ${({ theme }) => theme.spacing(6)};
@@ -80,7 +85,7 @@ export const HeaderActions = styled.div`
   flex-shrink: 0;
 `;
 
-export const ThemeToggle = styled.button`
+export const ThemeToggleStyled = styled(ThemeToggle)`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -113,6 +118,19 @@ export const ExportBar = styled.div`
   align-items: center;
   justify-content: flex-end;
   gap: ${({ theme }) => theme.spacing(2)};
+`;
+
+export const SummaryBadge = styled.div<{ $color: string }>`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing(1)};
+  padding: ${({ theme }) => `${theme.spacing(1)} ${theme.spacing(3)}`};
+  border-radius: 999px;
+  background-color: ${({ $color }) => $color}18;
+  color: ${({ $color }) => $color};
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
 `;
 
 export const ExportButton = styled.button`
@@ -204,7 +222,7 @@ export const QuickFilters = styled.div`
   gap: ${({ theme }) => theme.spacing(2)};
 `;
 
-export const QuickFilterButton = styled.button<{ readonly $active: boolean }>`
+export const QuickFilterButton = styled.button<{ $active: boolean }>`
   display: flex;
   align-items: center;
   gap: ${({ theme }) => theme.spacing(1)};
@@ -247,12 +265,6 @@ export const SectionDescription = styled.p`
   color: ${({ theme }) => theme.colors.muted};
   margin-bottom: ${({ theme }) => theme.spacing(4)};
 `;
-
-export const FilterSection = styled.section``;
-
-export const SummarySection = styled.section``;
-
-export const ChartsSection = styled.section``;
 
 export const LoadingWrapper = styled.div`
   display: flex;
@@ -486,14 +498,14 @@ export const TransactionMeta = styled.span`
   color: ${({ theme }) => theme.colors.muted};
 `;
 
-export const TransactionValue = styled.span<{ readonly $type: 'deposit' | 'withdraw' }>`
+export const TransactionValue = styled.span<{ $type: 'deposit' | 'withdraw' }>`
   font-size: 14px;
   font-weight: 700;
   color: ${({ theme, $type }) =>
     $type === 'deposit' ? theme.colors.income : theme.colors.expense};
 `;
 
-export const TransactionBadge = styled.span<{ readonly $pending: boolean }>`
+export const TransactionBadge = styled.span<{ $pending: boolean }>`
   display: inline-flex;
   align-items: center;
   gap: 4px;
@@ -554,7 +566,7 @@ export const PaginationButton = styled.button`
   }
 `;
 
-export const PaginationPageButton = styled.button<{ readonly $active: boolean }>`
+export const PaginationPageButton = styled.button<{ $active: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;

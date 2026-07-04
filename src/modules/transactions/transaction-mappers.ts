@@ -25,7 +25,7 @@ const findLatestTimestamp = (rawTransactions: readonly RawTransaction[]): number
 
 export const normalizeTransactions = (
   rawTransactions: readonly RawTransaction[],
-): readonly Transaction[] => {
+): Transaction[] => {
   if (rawTransactions.length === 0) {
     return [];
   }

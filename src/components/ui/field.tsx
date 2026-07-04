@@ -38,6 +38,11 @@ export const Input = styled.input`
   &::placeholder {
     color: ${({ theme }) => theme.colors.muted};
   }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
 `;
 
 export const PasswordInput = styled(Input)`

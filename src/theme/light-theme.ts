@@ -1,3 +1,5 @@
+import { themeRadius, themeSpacing } from '@/theme/shared';
+
 export const lightTheme = {
   colorScheme: 'light',
   colors: {
@@ -39,11 +41,6 @@ export const lightTheme = {
     skeleton: '#e2e8f0',
     sectionDivider: '#f1f5f9',
   },
-  radius: {
-    input: '12px',
-    card: '16px',
-    button: '12px',
-    drawer: '20px',
-  },
-  spacing: (multiplier: number): string => `${multiplier * 4}px`,
+  radius: themeRadius,
+  spacing: themeSpacing,
 };

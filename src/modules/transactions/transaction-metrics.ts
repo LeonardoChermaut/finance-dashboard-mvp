@@ -38,9 +38,7 @@ export const calculateFinancialSummary = (
   );
 };
 
-export const calculateMonthlyTotals = (
-  transactions: readonly Transaction[],
-): readonly MonthlyTotals[] => {
+export const calculateMonthlyTotals = (transactions: readonly Transaction[]): MonthlyTotals[] => {
   const totalsByMonth = new Map<string, MonthlyTotals>();
 
   transactions.forEach((transaction) => {
@@ -65,7 +63,7 @@ export const calculateMonthlyTotals = (
 
 export const calculateAccumulatedBalance = (
   transactions: readonly Transaction[],
-): readonly AccumulatedBalancePoint[] => {
+): AccumulatedBalancePoint[] => {
   const monthlyTotals = calculateMonthlyTotals(transactions);
 
   const accumulatedPoints: AccumulatedBalancePoint[] = [];

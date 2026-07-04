@@ -1,5 +1,6 @@
 'use client';
 
+import type { DrilldownType } from '@/hooks/use-drilldown';
 import type {
   AccumulatedBalancePoint,
   FinancialSummary,
@@ -18,6 +19,7 @@ import {
   PointElement,
   Tooltip,
 } from 'chart.js';
+import { RotateCcw } from 'lucide-react';
 import { Bar, Doughnut, Line } from 'react-chartjs-2';
 import { useTheme } from 'styled-components';
 
@@ -26,6 +28,8 @@ import {
   ChartCard,
   ChartDescription,
   ChartTitle,
+  ClearFilterInline,
+  ClearFilterInlineButton,
   DoughnutArea,
   FullWidthGrid,
   Grid,
@@ -47,13 +51,26 @@ ChartJS.register(
 );
 
 type ChartsProps = {
-  monthlyTotals: readonly MonthlyTotals[];
-  accumulatedBalance: readonly AccumulatedBalancePoint[];
+  monthlyTotals: MonthlyTotals[];
+  accumulatedBalance: AccumulatedBalancePoint[];
   summary: FinancialSummary;
   currency: string;
+  isDateRangeActive: boolean;
+  onBarClick?: (month: string) => void;
+  onDoughnutClick?: (type: DrilldownType) => void;
+  onClearFilter?: () => void;
 };
 
-export const Charts = ({ monthlyTotals, accumulatedBalance, summary, currency }: ChartsProps) => {
+export const Charts = ({
+  monthlyTotals,
+  accumulatedBalance,
+  summary,
+  currency,
+  isDateRangeActive,
+  onBarClick,
+  onDoughnutClick,
+  onClearFilter,
+}: ChartsProps) => {
   const theme = useTheme();
 
   const barData = {
@@ -96,6 +113,15 @@ export const Charts = ({ monthlyTotals, accumulatedBalance, summary, currency }:
   const barOptions: ChartOptions<'bar'> = {
     responsive: true,
     maintainAspectRatio: false,
+    onClick: (_event, elements) => {
+      if (onBarClick && elements.length > 0) {
+        const index = elements[0].index;
+        const month = monthlyTotals[index]?.month;
+        if (month) {
+          onBarClick(month);
+        }
+      }
+    },
     scales: {
       ['x']: {
         ticks: { color: theme.colors.muted },
@@ -158,12 +184,16 @@ export const Charts = ({ monthlyTotals, accumulatedBalance, summary, currency }:
     },
   };
 
+  const averageMonetary = (summary.incomeInCents + summary.expensesInCents) / 200;
+  const pendingScaled =
+    summary.pendingCount > 0 ? Math.max(averageMonetary * 0.05, summary.pendingCount * 100) : 0;
+
   const doughnutData = {
-    labels: ['Receitas', 'Despesas'],
+    labels: ['Receitas', 'Despesas', 'Pendentes'],
     datasets: [
       {
-        data: [summary.incomeInCents / 100, summary.expensesInCents / 100],
-        backgroundColor: [theme.colors.income, theme.colors.expense],
+        data: [summary.incomeInCents / 100, summary.expensesInCents / 100, pendingScaled],
+        backgroundColor: [theme.colors.income, theme.colors.expense, theme.colors.warning],
         borderWidth: 0,
         hoverOffset: 4,
       },
@@ -174,6 +204,13 @@ export const Charts = ({ monthlyTotals, accumulatedBalance, summary, currency }:
     responsive: true,
     maintainAspectRatio: false,
     cutout: '70%',
+    onClick: (_event, elements) => {
+      if (onDoughnutClick && elements.length > 0) {
+        const index = elements[0].index;
+        const types: DrilldownType[] = ['income', 'expenses', 'pending'];
+        onDoughnutClick(types[index]);
+      }
+    },
     plugins: {
       legend: {
         position: 'bottom',
@@ -190,6 +227,9 @@ export const Charts = ({ monthlyTotals, accumulatedBalance, summary, currency }:
         callbacks: {
           label: (tooltipItem: TooltipItem<'doughnut'>): string => {
             const label = tooltipItem.label ?? '';
+            if (label === 'Pendentes') {
+              return `${label}: ${summary.pendingCount}`;
+            }
             const value = tooltipItem.parsed ?? 0;
             return `${label}: ${formatCentsToCurrency(Math.round(value * 100), currency)}`;
           },
@@ -204,6 +244,14 @@ export const Charts = ({ monthlyTotals, accumulatedBalance, summary, currency }:
         <ChartCard>
           <ChartTitle>Receitas vs Despesas</ChartTitle>
           <ChartDescription>Comparativo mensal entre receitas e despesas.</ChartDescription>
+          {isDateRangeActive && onClearFilter ? (
+            <ClearFilterInline>
+              <ClearFilterInlineButton type="button" onClick={onClearFilter}>
+                <RotateCcw size={12} />
+                Limpar filtro
+              </ClearFilterInlineButton>
+            </ClearFilterInline>
+          ) : null}
           <ChartArea>
             <Bar data={barData} options={barOptions} />
           </ChartArea>
@@ -218,7 +266,7 @@ export const Charts = ({ monthlyTotals, accumulatedBalance, summary, currency }:
       </ChartCard>
       <ChartCard>
         <ChartTitle>Distribuição</ChartTitle>
-        <ChartDescription>Proporcao entre receitas e despesas.</ChartDescription>
+        <ChartDescription>Proporcao entre receitas, despesas e pendentes.</ChartDescription>
         <DoughnutArea>
           <Doughnut data={doughnutData} options={doughnutOptions} />
         </DoughnutArea>

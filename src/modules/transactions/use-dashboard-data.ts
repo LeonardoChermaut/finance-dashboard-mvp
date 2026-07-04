@@ -1,7 +1,8 @@
 'use client';
 
 import { DEFAULT_CURRENCY, emptyFilterOptions, emptySummary } from '@/constants/dashboard';
-import { applyFilters, deriveFilterOptions, useFilterStore } from '@/modules/filters';
+import { useFilterStore } from '@/modules/filters';
+import { applyFilters, deriveFilterOptions } from '@/modules/filters/apply-filters';
 import type { FilterOptions } from '@/modules/filters/filters.types';
 import {
   calculateAccumulatedBalance,
@@ -24,13 +25,13 @@ type DashboardData = {
   summary: FinancialSummary;
   filterOptions: FilterOptions;
   previousSummary: FinancialSummary;
-  monthlyTotals: readonly MonthlyTotals[];
-  accumulatedBalance: readonly AccumulatedBalancePoint[];
-  filteredTransactions: readonly Transaction[];
+  monthlyTotals: MonthlyTotals[];
+  filteredTransactions: Transaction[];
+  accumulatedBalance: AccumulatedBalancePoint[];
 };
 
 export const useDashboardData = (): DashboardData => {
-  const [transactions, setTransactions] = useState<readonly Transaction[]>([]);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 

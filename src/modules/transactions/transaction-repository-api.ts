@@ -15,7 +15,7 @@ interface IApiTransaction {
 }
 
 export const createApiTransactionRepository = (): ITransactionRepository => ({
-  getAll: async (): Promise<readonly Transaction[]> => {
+  getAll: async (): Promise<Transaction[]> => {
     const response = await api.get<IPaginatedResponse<IApiTransaction>>('/transactions', {
       page: 1,
       pageSize: 10000,

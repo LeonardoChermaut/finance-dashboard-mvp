@@ -1,10 +1,10 @@
-const MAX_VISIBLE_PAGES = 5;
-const EDGE_THRESHOLD = 3;
 const HALF_WINDOW = 2;
+const EDGE_THRESHOLD = 3;
+const MAX_VISIBLE_PAGES = 5;
 
-export const getVisiblePages = (current: number, total: number): readonly number[] => {
+export const getVisiblePages = (current: number, total: number): number[] => {
   if (total <= MAX_VISIBLE_PAGES) {
-    return Array.from({ length: total }, (_unused, index) => index + 1);
+    return Array.from({ length: total }, (__, index) => index + 1);
   }
   if (current <= EDGE_THRESHOLD) {
     return [1, 2, 3, 4, 5];

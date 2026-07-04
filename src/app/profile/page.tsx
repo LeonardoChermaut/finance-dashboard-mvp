@@ -5,29 +5,34 @@ import {
   AvatarSection,
   BackButton,
   Divider,
-  FieldWrapper,
-  Form,
-  Input,
   InputIcon,
   Layout,
   MainContent,
   ProfileCard,
   ProfileHeader,
   RoleBadge,
-  Select,
-  SuccessMessage,
+  Tooltip,
+  TooltipContainer,
   UserEmail,
   UserName,
 } from '@/app/profile/profile.styled';
 import { Sidebar } from '@/components/sidebar/sidebar';
 import { Button } from '@/components/ui/button';
+import { FieldWrapper, Form, Input, Select, SuccessMessage } from '@/components/ui';
+import {
+  NAME_CHANGE_LIMIT,
+  NAME_CHANGES_STORAGE_KEY,
+  USER_NAME_STORAGE_KEY,
+} from '@/constants/config';
+import { useLocalStorage } from '@/hooks';
 
 import { useAuthStore, type UserRole } from '@/modules/auth';
 import { routes } from '@/routes/routes';
-import { getInitials } from '@/utils/transaction';
-import { ArrowLeft, Mail, Save, Shield, User } from 'lucide-react';
+import { filterRecentTimestamps } from '@/utils/profile';
+import { getInitials } from '@/utils/string';
+import { AlertTriangle, ArrowLeft, Mail, Save, Shield, User } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState, type FormEvent } from 'react';
+import { useEffect, useMemo, useState, type FormEvent } from 'react';
 
 const ProfilePage = () => {
   const router = useRouter();
@@ -35,15 +40,23 @@ const ProfilePage = () => {
   const user = useAuthStore((state) => state.user);
   const updateUser = useAuthStore((state) => state.updateUser);
 
+  const [nameChangeTimestamps, setNameChangeTimestamps] = useLocalStorage<number[]>(
+    NAME_CHANGES_STORAGE_KEY,
+    [],
+  );
+
+  const [persistedName, setPersistedName] = useLocalStorage<string>(
+    USER_NAME_STORAGE_KEY,
+    user?.name ?? '',
+  );
+
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
   const [isHydrated, setIsHydrated] = useState<boolean>(false);
-  const [name, setName] = useState<string>(user?.name ?? '');
+  const [name, setName] = useState<string>(persistedName || (user?.name ?? ''));
   const [email, setEmail] = useState<string>(user?.email ?? '');
   const [role, setRole] = useState<UserRole>(user?.role ?? 'user');
 
-  useEffect(() => {
-    setIsHydrated(true);
-  }, []);
+  useEffect(() => setIsHydrated(true), []);
 
   useEffect(() => {
     if (isHydrated && !user) {
@@ -51,17 +64,39 @@ const ProfilePage = () => {
     }
   }, [isHydrated, user, router]);
 
+  const nameChangeInfo = useMemo(() => {
+    const recentTimestamps = filterRecentTimestamps(nameChangeTimestamps);
+    const remaining = NAME_CHANGE_LIMIT - recentTimestamps.length;
+
+    return {
+      canChange: remaining > 0,
+      remaining,
+      timestamps: recentTimestamps,
+    };
+  }, [nameChangeTimestamps]);
+
   if (!isHydrated || !user) {
     return null;
   }
 
-  const initials = getInitials(name);
+  const initials = getInitials(persistedName || user.name);
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
+
+    const nameChanged = name !== user.name;
+
+    if (nameChanged) {
+      if (!nameChangeInfo.canChange) {
+        return;
+      }
+
+      setNameChangeTimestamps([...nameChangeInfo.timestamps, Date.now()]);
+      setPersistedName(name);
+    }
+
     updateUser({ name, email, role });
     setIsSuccess(true);
-    setTimeout(() => setIsSuccess(false), 3000);
   };
 
   return (
@@ -77,7 +112,7 @@ const ProfilePage = () => {
 
             <AvatarSection>
               <Avatar aria-hidden="true">{initials}</Avatar>
-              <UserName>{user.name}</UserName>
+              <UserName>{persistedName || user.name}</UserName>
               <UserEmail>{user.email}</UserEmail>
               <RoleBadge $role={user.role}>
                 <Shield size={12} />
@@ -93,6 +128,24 @@ const ProfilePage = () => {
               <InputIcon>
                 <User size={14} />
                 Nome completo
+                {nameChangeInfo.remaining <= 1 && nameChangeInfo.remaining > 0 ? (
+                  <TooltipContainer>
+                    <AlertTriangle size={14} color="currentColor" />
+                    <Tooltip>
+                      {nameChangeInfo.remaining === 1
+                        ? 'Ultima alteracao de nome disponivel esta semana'
+                        : `Restam ${nameChangeInfo.remaining} alteracoes esta semana`}
+                    </Tooltip>
+                  </TooltipContainer>
+                ) : null}
+                {!nameChangeInfo.canChange ? (
+                  <TooltipContainer>
+                    <AlertTriangle size={14} color="currentColor" />
+                    <Tooltip>
+                      Limite de alteracoes atingido. Tente novamente na proxima semana.
+                    </Tooltip>
+                  </TooltipContainer>
+                ) : null}
               </InputIcon>
               <Input
                 id="profile-name"
@@ -100,6 +153,7 @@ const ProfilePage = () => {
                 value={name}
                 autoComplete="name"
                 placeholder="Seu nome"
+                disabled={!nameChangeInfo.canChange && name !== user.name}
                 onChange={(event) => setName(event.target.value)}
                 required
               />

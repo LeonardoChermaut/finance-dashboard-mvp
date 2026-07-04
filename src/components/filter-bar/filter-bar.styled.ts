@@ -1,4 +1,5 @@
 import { Card } from '@/components/ui/card';
+import { breakpoints } from '@/constants/breakpoints';
 import styled from 'styled-components';
 
 export const Wrapper = styled(Card)`
@@ -69,7 +70,7 @@ export const Badge = styled.span`
   font-weight: 700;
 `;
 
-export const ChevronIcon = styled.span<{ readonly $isOpen: boolean }>`
+export const ChevronIcon = styled.span<{ $isOpen: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -79,7 +80,7 @@ export const ChevronIcon = styled.span<{ readonly $isOpen: boolean }>`
   transform: ${({ $isOpen }) => ($isOpen ? 'rotate(180deg)' : 'rotate(0deg)')};
 `;
 
-export const AccordionContent = styled.div<{ readonly $isOpen: boolean }>`
+export const AccordionContent = styled.div<{ $isOpen: boolean }>`
   display: ${({ $isOpen }) => ($isOpen ? 'flex' : 'none')};
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing(2)};
@@ -91,7 +92,7 @@ export const DateRow = styled.div`
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing(2)};
 
-  @media (min-width: 480px) {
+  @media (min-width: ${breakpoints.mobile}) {
     flex-direction: row;
   }
 `;
@@ -243,7 +244,7 @@ export const Chips = styled.div`
   gap: ${({ theme }) => theme.spacing(2)};
 `;
 
-export const Chip = styled.button<{ readonly $active: boolean }>`
+export const Chip = styled.button<{ $active: boolean }>`
   display: flex;
   align-items: center;
   gap: ${({ theme }) => theme.spacing(1)};

@@ -9,7 +9,7 @@ export const Form = styled.form`
 `;
 
 type LinksContainerProps = {
-  readonly $justify?: 'center' | 'space-between';
+  $justify?: 'center' | 'space-between' | 'flex-start';
 };
 
 export const LinksContainer = styled.div<LinksContainerProps>`
@@ -42,7 +42,7 @@ export const LinkButton = styled.button`
 `;
 
 type SuccessMessageProps = {
-  readonly $padding?: boolean;
+  $padding?: boolean;
 };
 
 export const SuccessMessage = styled.p<SuccessMessageProps>`

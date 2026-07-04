@@ -16,15 +16,6 @@ const fadeIn = keyframes`
   }
 `;
 
-const slideIn = keyframes`
-  from {
-    transform: translateX(-100%);
-  }
-  to {
-    transform: translateX(0);
-  }
-`;
-
 export const SidebarOverlay = styled.div`
   position: fixed;
   inset: 0;
@@ -38,8 +29,8 @@ export const SidebarOverlay = styled.div`
 `;
 
 type SidebarContainerProps = {
-  readonly $isExpanded: boolean;
-  readonly $isMobileOpen: boolean;
+  $isExpanded: boolean;
+  $isMobileOpen: boolean;
 };
 
 export const SidebarContainer = styled.aside<SidebarContainerProps>`
@@ -60,8 +51,11 @@ export const SidebarContainer = styled.aside<SidebarContainerProps>`
 
   @media (max-width: ${breakpoints.tablet}) {
     width: ${EXPANDED_WIDTH};
-    animation: ${({ $isMobileOpen }) => ($isMobileOpen ? slideIn : 'none')} 0.3s ease;
+    height: 100vh;
+    height: 100dvh;
     transform: ${({ $isMobileOpen }) => ($isMobileOpen ? 'translateX(0)' : 'translateX(-100%)')};
+    overflow-y: auto;
+    overscroll-behavior: contain;
   }
 
   @media (min-width: ${breakpoints.tablet}) {
@@ -70,7 +64,7 @@ export const SidebarContainer = styled.aside<SidebarContainerProps>`
   }
 `;
 
-export const SidebarHeader = styled.div<{ readonly $isExpanded: boolean }>`
+export const SidebarHeader = styled.div<{ $isExpanded: boolean }>`
   display: flex;
   align-items: center;
   justify-content: ${({ $isExpanded }) => ($isExpanded ? 'space-between' : 'center')};
@@ -109,7 +103,7 @@ const sidebarTextCollapsed = css`
   white-space: nowrap;
 `;
 
-export const LogoText = styled.span<{ readonly $isExpanded: boolean }>`
+export const LogoText = styled.span<{ $isExpanded: boolean }>`
   font-size: 18px;
   font-weight: 700;
   color: ${({ theme }) => theme.colors.sidebarText};
@@ -157,17 +151,22 @@ export const CollapseButton = styled.button`
   }
 `;
 
-export const SidebarNav = styled.nav<{ readonly $isExpanded?: boolean }>`
+export const SidebarNav = styled.nav<{ $isExpanded?: boolean }>`
   display: flex;
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing(1)};
   padding: ${({ theme, $isExpanded }) => ($isExpanded ? `0 ${theme.spacing(3)}` : '0')};
   flex: 1;
+
+  @media (max-width: ${breakpoints.tablet}) {
+    padding: ${({ theme }) => `0 ${theme.spacing(3)}`};
+    gap: ${({ theme }) => theme.spacing(2)};
+  }
 `;
 
 type NavItemProps = {
-  readonly $isActive?: boolean;
-  readonly $isExpanded: boolean;
+  $isActive?: boolean;
+  $isExpanded: boolean;
 };
 
 export const NavItem = styled.button<NavItemProps>`
@@ -205,6 +204,12 @@ export const NavItem = styled.button<NavItemProps>`
     outline-offset: 2px;
   }
 
+  @media (max-width: ${breakpoints.tablet}) {
+    padding: ${({ theme }) => `${theme.spacing(3)} ${theme.spacing(4)}`};
+    justify-content: flex-start;
+    gap: ${({ theme }) => theme.spacing(3)};
+  }
+
   @media (min-width: ${breakpoints.tablet}) {
     ${({ $isExpanded }) =>
       !$isExpanded &&
@@ -224,7 +229,7 @@ export const NavIcon = styled.span`
   flex-shrink: 0;
 `;
 
-export const NavLabel = styled.span<{ readonly $isExpanded: boolean }>`
+export const NavLabel = styled.span<{ $isExpanded: boolean }>`
   white-space: nowrap;
   transition:
     opacity 0.2s ease,
@@ -236,17 +241,22 @@ export const NavLabel = styled.span<{ readonly $isExpanded: boolean }>`
   }
 `;
 
-export const SidebarFooter = styled.div<{ readonly $isExpanded?: boolean }>`
+export const SidebarFooter = styled.div<{ $isExpanded?: boolean }>`
   display: flex;
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing(1)};
   padding: ${({ theme, $isExpanded }) =>
     $isExpanded ? `${theme.spacing(3)} ${theme.spacing(3)}` : `${theme.spacing(3)} 0`};
   border-top: 1px solid ${({ theme }) => theme.colors.border};
+
+  @media (max-width: ${breakpoints.tablet}) {
+    padding: ${({ theme }) => `${theme.spacing(3)} ${theme.spacing(3)}`};
+    gap: ${({ theme }) => theme.spacing(2)};
+  }
 `;
 
 type FooterItemProps = {
-  readonly $isExpanded: boolean;
+  $isExpanded: boolean;
 };
 
 export const FooterItem = styled.button<FooterItemProps>`
@@ -279,6 +289,12 @@ export const FooterItem = styled.button<FooterItemProps>`
     outline-offset: 2px;
   }
 
+  @media (max-width: ${breakpoints.tablet}) {
+    padding: ${({ theme }) => `${theme.spacing(3)} ${theme.spacing(4)}`};
+    justify-content: flex-start;
+    gap: ${({ theme }) => theme.spacing(3)};
+  }
+
   @media (min-width: ${breakpoints.tablet}) {
     ${({ $isExpanded }) =>
       !$isExpanded &&
@@ -289,7 +305,7 @@ export const FooterItem = styled.button<FooterItemProps>`
   }
 `;
 
-export const FooterLabel = styled.span<{ readonly $isExpanded: boolean }>`
+export const FooterLabel = styled.span<{ $isExpanded: boolean }>`
   white-space: nowrap;
   transition:
     opacity 0.2s ease,
@@ -301,7 +317,7 @@ export const FooterLabel = styled.span<{ readonly $isExpanded: boolean }>`
   }
 `;
 
-export const LogoutButton = styled.button<{ readonly $isExpanded: boolean }>`
+export const LogoutButton = styled.button<{ $isExpanded: boolean }>`
   display: flex;
   align-items: center;
   gap: ${({ theme, $isExpanded }) => ($isExpanded ? theme.spacing(3) : '0')};
@@ -327,6 +343,12 @@ export const LogoutButton = styled.button<{ readonly $isExpanded: boolean }>`
   &:focus-visible {
     outline: 2px solid ${({ theme }) => theme.colors.danger};
     outline-offset: 2px;
+  }
+
+  @media (max-width: ${breakpoints.tablet}) {
+    padding: ${({ theme }) => `${theme.spacing(3)} ${theme.spacing(4)}`};
+    justify-content: flex-start;
+    gap: ${({ theme }) => theme.spacing(3)};
   }
 
   @media (min-width: ${breakpoints.tablet}) {
@@ -356,7 +378,7 @@ export const Tooltip = styled.span`
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 `;
 
-export const UserAvatarContainer = styled.div<{ readonly $isExpanded: boolean }>`
+export const UserAvatarContainer = styled.div<{ $isExpanded: boolean }>`
   display: flex;
   align-items: center;
   gap: ${({ theme, $isExpanded }) => ($isExpanded ? theme.spacing(3) : '0')};
@@ -375,6 +397,12 @@ export const UserAvatarContainer = styled.div<{ readonly $isExpanded: boolean }>
     outline: 2px solid ${({ theme }) => theme.colors.primary};
     outline-offset: 2px;
   }
+
+  @media (max-width: ${breakpoints.tablet}) {
+    padding: ${({ theme }) => `${theme.spacing(2)} ${theme.spacing(4)}`};
+    justify-content: flex-start;
+    gap: ${({ theme }) => theme.spacing(3)};
+  }
 `;
 
 export const Avatar = styled.div`
@@ -391,7 +419,7 @@ export const Avatar = styled.div`
   flex-shrink: 0;
 `;
 
-export const UserInfo = styled.div<{ readonly $isExpanded: boolean }>`
+export const UserInfo = styled.div<{ $isExpanded: boolean }>`
   display: flex;
   flex-direction: column;
   overflow: hidden;

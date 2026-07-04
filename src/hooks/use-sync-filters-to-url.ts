@@ -1,18 +1,17 @@
 'use client';
 
 import { useFilterStore } from '@/modules/filters';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { useEffect, useRef } from 'react';
 
 export const useSyncFiltersToUrl = (): void => {
-  const router = useRouter();
   const pathname = usePathname();
   const hasSyncedRef = useRef(false);
 
-  const dateRange = useFilterStore((state) => state.dateRange);
-  const accounts = useFilterStore((state) => state.accounts);
-  const industries = useFilterStore((state) => state.industries);
   const states = useFilterStore((state) => state.states);
+  const accounts = useFilterStore((state) => state.accounts);
+  const dateRange = useFilterStore((state) => state.dateRange);
+  const industries = useFilterStore((state) => state.industries);
 
   useEffect(() => {
     if (!hasSyncedRef.current) {
@@ -46,6 +45,6 @@ export const useSyncFiltersToUrl = (): void => {
 
     const queryString = params.toString();
     const newUrl = queryString !== '' ? `${pathname}?${queryString}` : pathname;
-    router.replace(newUrl);
-  }, [dateRange, accounts, industries, states, router, pathname]);
+    window.history.replaceState(null, '', newUrl);
+  }, [dateRange, accounts, industries, states, pathname]);
 };

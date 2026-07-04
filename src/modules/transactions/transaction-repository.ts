@@ -3,7 +3,7 @@ import { normalizeTransactions } from '@/modules/transactions/transaction-mapper
 import type { Transaction } from '@/modules/transactions/transaction.types';
 
 export interface ITransactionRepository {
-  getAll(): Promise<readonly Transaction[]>;
+  getAll(): Promise<Transaction[]>;
 }
 
 const toTransactionType = (value: string): 'deposit' | 'withdraw' => {

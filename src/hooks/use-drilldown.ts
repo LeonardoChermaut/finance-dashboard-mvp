@@ -6,7 +6,9 @@ import { filterTransactionsByType } from '@/utils/transaction';
 import { usePathname, useRouter } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-export type DrilldownType = 'income' | 'expenses' | 'pending' | 'balance' | null;
+export type DrilldownCategory = 'income' | 'expenses' | 'pending' | 'balance';
+
+export type DrilldownType = DrilldownCategory | null;
 
 type DrilldownData = {
   drilldownType: DrilldownType;

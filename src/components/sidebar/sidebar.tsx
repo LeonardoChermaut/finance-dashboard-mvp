@@ -24,40 +24,37 @@ import {
   UserInfo,
   UserName,
 } from '@/components/sidebar/sidebar.styled';
-import { SIDEBAR_STATE_KEY } from '@/constants/config';
-import { useClickOutside } from '@/hooks';
+import { SIDEBAR_STATE_KEY, USER_NAME_STORAGE_KEY } from '@/constants/config';
+import { useClickOutside, useDelay, useLocalStorage } from '@/hooks';
 import { clearSessionCookie, createMockAuthService, useAuthStore } from '@/modules/auth';
 import { useFilterStore } from '@/modules/filters';
 import { routes } from '@/routes/routes';
 import { useThemeMode } from '@/theme';
-import { getInitials } from '@/utils/transaction';
+import { getInitials } from '@/utils/string';
 import { ChevronLeft, Home, LayoutDashboard, LogOut, Menu, Moon, Sun } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 export const Sidebar = () => {
-  const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const [isMobileOpen, setIsMobileOpen] = useState<boolean>(false);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const [shouldResetFilters, setShouldResetFilters] = useState<boolean>(false);
 
-  const router = useRouter();
-  const pathname = usePathname();
-  const authService = useMemo(() => createMockAuthService(), []);
-
-  const { user, clearAuth } = useAuthStore();
   const { resetFilters } = useFilterStore();
+  const { user, clearAuth } = useAuthStore();
   const { mode, toggleTheme } = useThemeMode();
 
+  const router = useRouter();
+  const pathname = usePathname();
   const sidebarRef = useRef<HTMLElement>(null);
 
-  useEffect(() => {
-    const stored = window.localStorage.getItem(SIDEBAR_STATE_KEY);
-    if (stored !== null) {
-      setIsExpanded(stored === 'true');
-    }
-  }, []);
+  const [persistedName] = useLocalStorage<string>(USER_NAME_STORAGE_KEY, '');
+  const [isExpanded, setIsExpanded] = useLocalStorage<boolean>(SIDEBAR_STATE_KEY, false);
+
+  const { isLoading: isLoggingOut, execute: executeLogout } = useDelay<void>(2000);
+
+  const authService = useMemo(() => createMockAuthService(), []);
 
   useEffect(() => {
     if (shouldResetFilters && pathname === routes.home) {
@@ -66,13 +63,32 @@ export const Sidebar = () => {
     }
   }, [shouldResetFilters, pathname, resetFilters]);
 
-  const toggleExpanded = useCallback(() => {
-    setIsExpanded((previous) => {
-      const next = !previous;
-      window.localStorage.setItem(SIDEBAR_STATE_KEY, String(next));
-      return next;
-    });
-  }, []);
+  useEffect(() => {
+    if (isMobileOpen) {
+      const scrollY = window.scrollY;
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = '100%';
+      document.body.style.overflow = 'hidden';
+    } else {
+      const scrollY = document.body.style.top;
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+      document.body.style.overflow = '';
+      if (scrollY) {
+        window.scrollTo(0, -parseInt(scrollY || '0', 10));
+      }
+    }
+    return () => {
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+      document.body.style.overflow = '';
+    };
+  }, [isMobileOpen]);
+
+  const toggleExpanded = useCallback(() => setIsExpanded((previous) => !previous), [setIsExpanded]);
 
   const handleHomeClick = useCallback(() => {
     setShouldResetFilters(true);
@@ -80,13 +96,15 @@ export const Sidebar = () => {
   }, []);
 
   const handleLogout = useCallback(async () => {
-    await authService.logout();
-    clearSessionCookie();
-    clearAuth();
-    resetFilters();
-    router.push(routes.login);
-    setIsMobileOpen(false);
-  }, [authService, clearAuth, resetFilters, router]);
+    await executeLogout(async () => {
+      await authService.logout();
+      clearSessionCookie();
+      clearAuth();
+      resetFilters();
+      router.push(routes.login);
+      setIsMobileOpen(false);
+    });
+  }, [authService, clearAuth, resetFilters, router, executeLogout]);
 
   useClickOutside(sidebarRef, isMobileOpen, () => setIsMobileOpen(false));
 
@@ -101,7 +119,7 @@ export const Sidebar = () => {
     return () => document.removeEventListener('keydown', handleEscape);
   }, [isMobileOpen]);
 
-  const userName = user?.name ?? '';
+  const userName = persistedName || (user?.name ?? '');
   const userEmail = user?.email ?? '';
   const initials = getInitials(userName);
 
@@ -225,6 +243,7 @@ export const Sidebar = () => {
             type="button"
             aria-label="Sair"
             onClick={handleLogout}
+            disabled={isLoggingOut}
             $isExpanded={isExpanded}
             onMouseEnter={() => setHoveredItem('logout')}
             onMouseLeave={() => setHoveredItem(null)}
@@ -234,8 +253,12 @@ export const Sidebar = () => {
             <NavIcon>
               <LogOut size={18} />
             </NavIcon>
-            <FooterLabel $isExpanded={isExpanded}>Sair</FooterLabel>
-            {showTooltip('logout') && <Tooltip role="tooltip">Sair</Tooltip>}
+            <FooterLabel $isExpanded={isExpanded}>
+              {isLoggingOut ? 'Saindo...' : 'Sair'}
+            </FooterLabel>
+            {showTooltip('logout') && (
+              <Tooltip role="tooltip">{isLoggingOut ? 'Saindo...' : 'Sair'}</Tooltip>
+            )}
           </LogoutButton>
         </SidebarFooter>
       </SidebarContainer>

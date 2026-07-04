@@ -1,21 +1,21 @@
-export type DateRange = Readonly<{
+export type DateRange = {
   endDate: string | null;
   startDate: string | null;
   startTime: string | null;
   endTime: string | null;
-}>;
+};
 
-export type FilterState = Readonly<{
+export type FilterState = {
   dateRange: DateRange;
-  states: readonly string[];
-  accounts: readonly string[];
-  industries: readonly string[];
-}>;
+  states: string[];
+  accounts: string[];
+  industries: string[];
+};
 
-export type FilterOptions = Readonly<{
+export type FilterOptions = {
   minDate: string | null;
   maxDate: string | null;
-  states: readonly string[];
-  accounts: readonly string[];
-  industries: readonly string[];
-}>;
+  states: string[];
+  accounts: string[];
+  industries: string[];
+};

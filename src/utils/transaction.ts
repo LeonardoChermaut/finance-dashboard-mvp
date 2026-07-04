@@ -1,22 +1,12 @@
+import type { DrilldownCategory } from '@/hooks/use-drilldown';
 import type { Transaction } from '@/modules/transactions/transaction.types';
 
-export const getInitials = (name: string): string => {
-  if (name === '') {
-    return '';
-  }
-
-  return name
-    .split(' ')
-    .map((part) => part.charAt(0))
-    .join('')
-    .toUpperCase()
-    .slice(0, 2);
-};
+export { getInitials } from '@/utils/string';
 
 export const filterTransactionsByType = (
   transactions: readonly Transaction[],
-  type: 'income' | 'expenses' | 'pending' | 'balance',
-): readonly Transaction[] => {
+  type: DrilldownCategory,
+): Transaction[] => {
   if (transactions.length === 0) {
     return [];
   }
