@@ -1,7 +1,16 @@
-import { AUTHENTICATION_COOKIE_NAME } from '@/constants/config';
+import { AUTHENTICATION_COOKIE_NAME, USER_NAME_STORAGE_KEY } from '@/constants/config';
+import { clearSessionCookie } from '@/modules/auth';
 import type { AuthState } from '@/modules/auth/auth.types';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+
+const getPersistedName = (): string | null => {
+  try {
+    return localStorage.getItem(USER_NAME_STORAGE_KEY)?.replace(/"/g, '') ?? null;
+  } catch {
+    return null;
+  }
+};
 
 export const useAuthStore = create<AuthState>()(
   persist(
@@ -9,10 +18,20 @@ export const useAuthStore = create<AuthState>()(
       user: null,
       isAuthenticated: false,
 
-      clearAuth: () => set({ isAuthenticated: false, user: null }),
+      clearAuth: () => {
+        clearSessionCookie();
+        set({ isAuthenticated: false, user: null });
+      },
 
       setAuthenticated: (user) =>
-        set({ isAuthenticated: true, user: { ...user, role: user.role ?? 'user' } }),
+        set((state) => ({
+          isAuthenticated: true,
+          user: {
+            name: state.user?.name ?? getPersistedName() ?? user.name,
+            email: user.email,
+            role: user.role ?? state.user?.role ?? 'user',
+          },
+        })),
 
       updateUser: (updates) =>
         set((state) => ({
@@ -20,6 +39,20 @@ export const useAuthStore = create<AuthState>()(
         })),
     }),
 
-    { name: AUTHENTICATION_COOKIE_NAME },
+    {
+      name: AUTHENTICATION_COOKIE_NAME,
+      version: 1,
+      migrate: (persistedState: unknown, version: number) => {
+        if (version === 0) {
+          return persistedState as AuthState;
+        }
+        return persistedState as AuthState;
+      },
+      onRehydrateStorage: () => (state) => {
+        if (state && !state.isAuthenticated) {
+          clearSessionCookie();
+        }
+      },
+    },
   ),
 );

@@ -1,4 +1,6 @@
+export const AUTHENTICATED_COOKIE_VALUE = 'authenticated';
 export const NAME_CHANGE_LIMIT = 3;
+export const API_PAGE_SIZE = 10000;
 export const COOKIE_MAX_AGE_SECONDS = 60 * 60 * 24;
 export const NAME_CHANGE_WINDOW_MS = 24 * 60 * 60 * 1000;
 

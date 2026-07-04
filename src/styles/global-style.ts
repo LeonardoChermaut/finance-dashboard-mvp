@@ -22,6 +22,10 @@ export const GlobalStyle = createGlobalStyle`
     overflow-x: hidden;
   }
 
+  html {
+    background-color: ${({ theme }) => theme.colors.background};
+  }
+
   body {
     background-color: ${({ theme }) => theme.colors.background};
     color: ${({ theme }) => theme.colors.text};

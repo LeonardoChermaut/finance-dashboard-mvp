@@ -26,14 +26,14 @@ import {
 } from '@/components/sidebar/sidebar.styled';
 import { SIDEBAR_STATE_KEY, USER_NAME_STORAGE_KEY } from '@/constants/config';
 import { useClickOutside, useDelay, useLocalStorage } from '@/hooks';
-import { clearSessionCookie, createMockAuthService, useAuthStore } from '@/modules/auth';
+import { clearSessionCookie, getAuthService, useAuthStore } from '@/modules/auth';
 import { useFilterStore } from '@/modules/filters';
 import { routes } from '@/routes/routes';
 import { useThemeMode } from '@/theme';
 import { getInitials } from '@/utils/string';
 import { ChevronLeft, Home, LayoutDashboard, LogOut, Menu, Moon, Sun } from 'lucide-react';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 export const Sidebar = () => {
@@ -45,7 +45,6 @@ export const Sidebar = () => {
   const { user, clearAuth } = useAuthStore();
   const { mode, toggleTheme } = useThemeMode();
 
-  const router = useRouter();
   const pathname = usePathname();
   const sidebarRef = useRef<HTMLElement>(null);
 
@@ -54,7 +53,7 @@ export const Sidebar = () => {
 
   const { isLoading: isLoggingOut, execute: executeLogout } = useDelay<void>(2000);
 
-  const authService = useMemo(() => createMockAuthService(), []);
+  const authService = useMemo(() => getAuthService(), []);
 
   useEffect(() => {
     if (shouldResetFilters && pathname === routes.home) {
@@ -101,10 +100,10 @@ export const Sidebar = () => {
       clearSessionCookie();
       clearAuth();
       resetFilters();
-      router.push(routes.login);
       setIsMobileOpen(false);
+      window.location.href = routes.login;
     });
-  }, [authService, clearAuth, resetFilters, router, executeLogout]);
+  }, [authService, clearAuth, resetFilters, executeLogout]);
 
   useClickOutside(sidebarRef, isMobileOpen, () => setIsMobileOpen(false));
 

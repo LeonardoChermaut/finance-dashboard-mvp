@@ -44,6 +44,15 @@ export const useFilterStore = create<FilterStore>()(
       setStates: (states) => set({ states }),
       resetFilters: () => set({ ...emptyFilterState }),
     }),
-    { name: FILTERS_STORAGE_KEY },
+    {
+      name: FILTERS_STORAGE_KEY,
+      version: 1,
+      migrate: (persistedState: unknown, version: number) => {
+        if (version === 0) {
+          return persistedState as FilterStore;
+        }
+        return persistedState as FilterStore;
+      },
+    },
   ),
 );

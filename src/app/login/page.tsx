@@ -43,7 +43,8 @@ const LoginPage = () => {
       const { user } = await authService.login({ email: data.email, password: data.password });
       setSessionCookie();
       setAuthenticated(user);
-      toast.success(`Bem-vindo, ${user.name}!`);
+      const currentUser = useAuthStore.getState().user;
+      toast.success(`Bem-vindo, ${currentUser?.name ?? user.name}!`);
       router.push(routes.dashboard);
     } catch {
       setErrors({ email: 'Credenciais invalidas. Tente novamente.' });

@@ -58,12 +58,6 @@ const ProfilePage = () => {
 
   useEffect(() => setIsHydrated(true), []);
 
-  useEffect(() => {
-    if (isHydrated && !user) {
-      router.push(routes.login);
-    }
-  }, [isHydrated, user, router]);
-
   const nameChangeInfo = useMemo(() => {
     const recentTimestamps = filterRecentTimestamps(nameChangeTimestamps);
     const remaining = NAME_CHANGE_LIMIT - recentTimestamps.length;

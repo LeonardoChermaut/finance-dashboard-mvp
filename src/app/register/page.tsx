@@ -22,8 +22,8 @@ import {
 import { Form, LinkButton, LinksContainer, SuccessMessage } from '@/components/ui/form';
 import { useForm } from '@/hooks/use-form';
 import { usePasswordVisibility } from '@/hooks/use-password-visibility';
-import { useAuthStore } from '@/modules/auth';
 import { registerSchema } from '@/modules/auth/auth.schemas';
+import { setSessionCookie, useAuthStore } from '@/modules/auth';
 import { routes } from '@/routes/routes';
 import { useRouter } from 'next/navigation';
 import type { FormEvent } from 'react';
@@ -43,6 +43,7 @@ const RegisterPage = () => {
     confirmPassword: string;
     role: 'admin' | 'user';
   }): Promise<void> => {
+    setSessionCookie();
     setAuthenticated({ name: data.name, email: data.email, role: data.role });
 
     setTimeout(() => {
