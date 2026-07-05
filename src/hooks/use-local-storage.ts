@@ -1,10 +1,8 @@
-'use client';
-
 import { useCallback, useState } from 'react';
 
 type SetValue<T> = (value: T | ((previous: T) => T)) => void;
 
-type UseLocalStorageReturn<T> = readonly [T, SetValue<T>];
+type UseLocalStorageReturn<T> = [T, SetValue<T>];
 
 export const useLocalStorage = <T>(key: string, initialValue: T): UseLocalStorageReturn<T> => {
   const [storedValue, setStoredValue] = useState<T>(() => {
@@ -35,5 +33,5 @@ export const useLocalStorage = <T>(key: string, initialValue: T): UseLocalStorag
     [key],
   );
 
-  return [storedValue, setValue] as const;
+  return [storedValue, setValue];
 };
