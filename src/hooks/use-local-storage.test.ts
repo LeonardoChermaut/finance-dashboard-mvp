@@ -50,18 +50,14 @@ describe('useLocalStorage', () => {
 
   it('Persists value to storage when setter is called', () => {
     const { result } = renderHook(() => useLocalStorage<number>('counter', 0));
-    act(() => {
-      result.current[1](5);
-    });
+    act(() => result.current[1](5));
     expect(result.current[0]).toBe(5);
     expect(mockStorage.setItem).toHaveBeenCalledWith('counter', '5');
   });
 
   it('Supports functional update pattern', () => {
     const { result } = renderHook(() => useLocalStorage<number>('counter', 10));
-    act(() => {
-      result.current[1]((prev) => prev + 5);
-    });
+    act(() => result.current[1]((prev) => prev + 5));
     expect(result.current[0]).toBe(15);
   });
 

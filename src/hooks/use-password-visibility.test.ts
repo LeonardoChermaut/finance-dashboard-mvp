@@ -15,22 +15,16 @@ describe('usePasswordVisibility', () => {
 
   it('Shows EyeOff icon when password is visible', () => {
     const { result } = renderHook(() => usePasswordVisibility());
-    act(() => {
-      result.current.togglePassword();
-    });
+    act(() => result.current.togglePassword());
     expect(result.current.InputIcon).toBe(EyeOff);
   });
 
   it('Toggles showPassword state', () => {
     const { result } = renderHook(() => usePasswordVisibility());
     expect(result.current.showPassword).toBe(false);
-    act(() => {
-      result.current.togglePassword();
-    });
+    act(() => result.current.togglePassword());
     expect(result.current.showPassword).toBe(true);
-    act(() => {
-      result.current.togglePassword();
-    });
+    act(() => result.current.togglePassword());
     expect(result.current.showPassword).toBe(false);
   });
 

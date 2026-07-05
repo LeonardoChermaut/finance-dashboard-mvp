@@ -1,5 +1,5 @@
-import { renderHook, act } from '@testing-library/react';
 import type { Transaction } from '@/modules/transactions/transaction.types';
+import { act, renderHook } from '@testing-library/react';
 import { useDrilldown } from './use-drilldown';
 
 const SAMPLE_TRANSACTIONS: readonly Transaction[] = Object.freeze([
@@ -46,9 +46,7 @@ jest.mock('next/navigation', () => ({
   usePathname: () => mockPathname,
 }));
 
-beforeEach(() => {
-  jest.clearAllMocks();
-});
+beforeEach(() => jest.clearAllMocks());
 
 describe('useDrilldown', () => {
   it('Starts with drilldownType set to null', () => {
@@ -90,54 +88,36 @@ describe('useDrilldown', () => {
 
   it('Filters transactions by pending status', () => {
     const { result } = renderHook(() => useDrilldown(SAMPLE_TRANSACTIONS));
-    act(() => {
-      result.current.setDrilldownType('pending');
-    });
+    act(() => result.current.setDrilldownType('pending'));
     expect(result.current.drilldownTransactions).toHaveLength(1);
     expect(result.current.drilldownTransactions[0].isPending).toBe(true);
   });
 
   it('Calculates drilldownTotal as sum of filtered amounts', () => {
     const { result } = renderHook(() => useDrilldown(SAMPLE_TRANSACTIONS));
-    act(() => {
-      result.current.setDrilldownType('income');
-    });
+    act(() => result.current.setDrilldownType('income'));
     expect(result.current.drilldownTotal).toBe(13000);
   });
 
   it('Resets drilldownSearch when type changes', () => {
     const { result } = renderHook(() => useDrilldown(SAMPLE_TRANSACTIONS));
-    act(() => {
-      result.current.setDrilldownType('income');
-    });
-    act(() => {
-      result.current.setDrilldownSearch('Acme');
-    });
-    act(() => {
-      result.current.setDrilldownType('expenses');
-    });
+    act(() => result.current.setDrilldownType('income'));
+    act(() => result.current.setDrilldownSearch('Acme'));
+    act(() => result.current.setDrilldownType('expenses'));
     expect(result.current.drilldownSearch).toBe('');
   });
 
   it('Filters by search term matching account name', () => {
     const { result } = renderHook(() => useDrilldown(SAMPLE_TRANSACTIONS));
-    act(() => {
-      result.current.setDrilldownType('income');
-    });
-    act(() => {
-      result.current.setDrilldownSearch('Acme');
-    });
+    act(() => result.current.setDrilldownType('income'));
+    act(() => result.current.setDrilldownSearch('Acme'));
     expect(result.current.filteredDrilldownTransactions).toHaveLength(2);
   });
 
   it('Clears all filters and calls router.replace', () => {
     const { result } = renderHook(() => useDrilldown(SAMPLE_TRANSACTIONS));
-    act(() => {
-      result.current.setDrilldownType('income');
-    });
-    act(() => {
-      result.current.clearAllFilters();
-    });
+    act(() => result.current.setDrilldownType('income'));
+    act(() => result.current.clearAllFilters());
     expect(result.current.drilldownType).toBeNull();
     expect(result.current.drilldownSearch).toBe('');
     expect(mockReplace).toHaveBeenCalledWith(mockPathname);
@@ -145,15 +125,9 @@ describe('useDrilldown', () => {
 
   it('HandleDrilldownClose resets type and search', () => {
     const { result } = renderHook(() => useDrilldown(SAMPLE_TRANSACTIONS));
-    act(() => {
-      result.current.setDrilldownType('income');
-    });
-    act(() => {
-      result.current.setDrilldownSearch('test');
-    });
-    act(() => {
-      result.current.handleDrilldownClose();
-    });
+    act(() => result.current.setDrilldownType('income'));
+    act(() => result.current.setDrilldownSearch('test'));
+    act(() => result.current.handleDrilldownClose());
     expect(result.current.drilldownType).toBeNull();
     expect(result.current.drilldownSearch).toBe('');
   });
