@@ -4,7 +4,6 @@ import {
   Avatar,
   AvatarSection,
   BackButton,
-  Divider,
   InputIcon,
   Layout,
   MainContent,
@@ -17,8 +16,8 @@ import {
   UserName,
 } from '@/app/profile/profile.styled';
 import { Sidebar } from '@/components/sidebar/sidebar';
-import { Button } from '@/components/ui/button';
 import { FieldWrapper, Form, Input, Select, SuccessMessage } from '@/components/ui';
+import { Button } from '@/components/ui/button';
 import {
   NAME_CHANGE_LIMIT,
   NAME_CHANGES_STORAGE_KEY,
@@ -33,28 +32,36 @@ import { getInitials } from '@/utils/string';
 import { AlertTriangle, ArrowLeft, Mail, Save, Shield, User } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState, type FormEvent } from 'react';
+import { useTheme } from 'styled-components';
 
 const ProfilePage = () => {
-  const router = useRouter();
+  const [isSuccess, setIsSuccess] = useState<boolean>(false);
+  const [isHydrated, setIsHydrated] = useState<boolean>(false);
 
   const user = useAuthStore((state) => state.user);
   const updateUser = useAuthStore((state) => state.updateUser);
-
-  const [nameChangeTimestamps, setNameChangeTimestamps] = useLocalStorage<number[]>(
-    NAME_CHANGES_STORAGE_KEY,
-    [],
-  );
 
   const [persistedName, setPersistedName] = useLocalStorage<string>(
     USER_NAME_STORAGE_KEY,
     user?.name ?? '',
   );
 
-  const [isSuccess, setIsSuccess] = useState<boolean>(false);
-  const [isHydrated, setIsHydrated] = useState<boolean>(false);
-  const [name, setName] = useState<string>(persistedName || (user?.name ?? ''));
-  const [email, setEmail] = useState<string>(user?.email ?? '');
-  const [role, setRole] = useState<UserRole>(user?.role ?? 'user');
+  const [profile, setProfile] = useState<{ email: string; name: string; role: UserRole }>(() => {
+    const name = (persistedName || user?.name) ?? '';
+    return {
+      email: user?.email ?? '',
+      name,
+      role: user?.role ?? 'user',
+    };
+  });
+
+  const [nameChangeTimestamps, setNameChangeTimestamps] = useLocalStorage<number[]>(
+    NAME_CHANGES_STORAGE_KEY,
+    [],
+  );
+
+  const router = useRouter();
+  const theme = useTheme();
 
   useEffect(() => setIsHydrated(true), []);
 
@@ -78,7 +85,7 @@ const ProfilePage = () => {
   const handleSubmit = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
 
-    const nameChanged = name !== user.name;
+    const nameChanged = profile.name !== user.name;
 
     if (nameChanged) {
       if (!nameChangeInfo.canChange) {
@@ -86,10 +93,10 @@ const ProfilePage = () => {
       }
 
       setNameChangeTimestamps([...nameChangeInfo.timestamps, Date.now()]);
-      setPersistedName(name);
+      setPersistedName(profile.name);
     }
 
-    updateUser({ name, email, role });
+    updateUser({ name: profile.name, email: profile.email, role: profile.role });
     setIsSuccess(true);
   };
 
@@ -115,8 +122,6 @@ const ProfilePage = () => {
             </AvatarSection>
           </ProfileHeader>
 
-          <Divider />
-
           <Form onSubmit={handleSubmit}>
             <FieldWrapper htmlFor="profile-name">
               <InputIcon>
@@ -134,8 +139,8 @@ const ProfilePage = () => {
                 ) : null}
                 {!nameChangeInfo.canChange ? (
                   <TooltipContainer>
-                    <AlertTriangle size={14} color="currentColor" />
-                    <Tooltip>
+                    <AlertTriangle size={14} color={theme.colors.danger} />
+                    <Tooltip role="tooltip">
                       Limite de alteracoes atingido. Tente novamente na proxima semana.
                     </Tooltip>
                   </TooltipContainer>
@@ -144,11 +149,11 @@ const ProfilePage = () => {
               <Input
                 id="profile-name"
                 type="text"
-                value={name}
+                value={profile.name}
                 autoComplete="name"
                 placeholder="Seu nome"
-                disabled={!nameChangeInfo.canChange && name !== user.name}
-                onChange={(event) => setName(event.target.value)}
+                disabled={!nameChangeInfo.canChange}
+                onChange={(event) => setProfile({ ...profile, name: event.target.value })}
                 required
               />
             </FieldWrapper>
@@ -161,10 +166,10 @@ const ProfilePage = () => {
               <Input
                 id="profile-email"
                 type="email"
-                value={email}
+                value={profile.email}
                 autoComplete="email"
                 placeholder="seu@email.com"
-                onChange={(event) => setEmail(event.target.value)}
+                onChange={(event) => setProfile({ ...profile, email: event.target.value })}
                 required
               />
             </FieldWrapper>
@@ -176,8 +181,11 @@ const ProfilePage = () => {
               </InputIcon>
               <Select
                 id="profile-role"
-                value={role}
-                onChange={(event) => setRole(event.target.value as UserRole)}
+                value={profile.role}
+                disabled={!nameChangeInfo.canChange}
+                onChange={(event) =>
+                  setProfile({ ...profile, role: event.target.value as UserRole })
+                }
               >
                 <option value="user">Usuario</option>
                 <option value="admin">Administrador</option>

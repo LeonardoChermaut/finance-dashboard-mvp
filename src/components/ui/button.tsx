@@ -1,5 +1,3 @@
-'use client';
-
 import styled, { css } from 'styled-components';
 
 type ButtonVariant = 'primary' | 'ghost' | 'danger';

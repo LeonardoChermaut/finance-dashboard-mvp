@@ -24,8 +24,8 @@ import {
   UserInfo,
   UserName,
 } from '@/components/sidebar/sidebar.styled';
-import { SIDEBAR_STATE_KEY, USER_NAME_STORAGE_KEY } from '@/constants/config';
-import { useClickOutside, useDelay, useLocalStorage } from '@/hooks';
+import { USER_NAME_STORAGE_KEY } from '@/constants/config';
+import { useDelay, useLocalStorage, useMobileNav, usePreventScroll } from '@/hooks';
 import { clearSessionCookie, getAuthService, useAuthStore } from '@/modules/auth';
 import { useFilterStore } from '@/modules/filters';
 import { routes } from '@/routes/routes';
@@ -37,6 +37,7 @@ import { usePathname } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 export const Sidebar = () => {
+  const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const [isMobileOpen, setIsMobileOpen] = useState<boolean>(false);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const [shouldResetFilters, setShouldResetFilters] = useState<boolean>(false);
@@ -49,7 +50,6 @@ export const Sidebar = () => {
   const sidebarRef = useRef<HTMLElement>(null);
 
   const [persistedName] = useLocalStorage<string>(USER_NAME_STORAGE_KEY, '');
-  const [isExpanded, setIsExpanded] = useLocalStorage<boolean>(SIDEBAR_STATE_KEY, false);
 
   const { isLoading: isLoggingOut, execute: executeLogout } = useDelay<void>(2000);
 
@@ -62,32 +62,10 @@ export const Sidebar = () => {
     }
   }, [shouldResetFilters, pathname, resetFilters]);
 
-  useEffect(() => {
-    if (isMobileOpen) {
-      const scrollY = window.scrollY;
-      document.body.style.position = 'fixed';
-      document.body.style.top = `-${scrollY}px`;
-      document.body.style.width = '100%';
-      document.body.style.overflow = 'hidden';
-    } else {
-      const scrollY = document.body.style.top;
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.width = '';
-      document.body.style.overflow = '';
-      if (scrollY) {
-        window.scrollTo(0, -parseInt(scrollY || '0', 10));
-      }
-    }
-    return () => {
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.width = '';
-      document.body.style.overflow = '';
-    };
-  }, [isMobileOpen]);
+  useMobileNav(sidebarRef, isMobileOpen, () => setIsMobileOpen(false));
+  usePreventScroll(isMobileOpen);
 
-  const toggleExpanded = useCallback(() => setIsExpanded((previous) => !previous), [setIsExpanded]);
+  const toggleExpanded = useCallback(() => setIsExpanded((previous) => !previous), []);
 
   const handleHomeClick = useCallback(() => {
     setShouldResetFilters(true);
@@ -104,19 +82,6 @@ export const Sidebar = () => {
       window.location.href = routes.login;
     });
   }, [authService, clearAuth, resetFilters, executeLogout]);
-
-  useClickOutside(sidebarRef, isMobileOpen, () => setIsMobileOpen(false));
-
-  useEffect(() => {
-    const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && isMobileOpen) {
-        setIsMobileOpen(false);
-      }
-    };
-
-    document.addEventListener('keydown', handleEscape);
-    return () => document.removeEventListener('keydown', handleEscape);
-  }, [isMobileOpen]);
 
   const userName = persistedName || (user?.name ?? '');
   const userEmail = user?.email ?? '';

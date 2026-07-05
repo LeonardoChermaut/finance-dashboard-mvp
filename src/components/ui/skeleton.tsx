@@ -1,5 +1,3 @@
-'use client';
-
 import styled, { css, keyframes } from 'styled-components';
 
 const shimmerAnimation = keyframes`

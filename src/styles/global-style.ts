@@ -1,5 +1,3 @@
-'use client';
-
 import { mediaQuery } from '@/constants/breakpoints';
 import { createGlobalStyle } from 'styled-components';
 
