@@ -168,7 +168,7 @@ const SearchableMultiSelect = ({
 
 export const FilterBar = ({ filterOptions }: FilterBarProps) => {
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
-    dates: true,
+    dates: false,
     accounts: false,
     industries: false,
     states: false,

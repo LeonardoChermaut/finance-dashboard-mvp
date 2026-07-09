@@ -112,11 +112,6 @@ export const InputIcon = styled.span`
   color: ${({ theme }) => theme.colors.muted};
 `;
 
-export const Divider = styled.div`
-  height: 1px;
-  background-color: ${({ theme }) => theme.colors.border};
-`;
-
 export const TooltipContainer = styled.span`
   position: relative;
   display: inline-flex;

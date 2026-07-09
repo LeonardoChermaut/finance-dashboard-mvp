@@ -1,4 +1,9 @@
-import { AUTHENTICATED_COOKIE_VALUE, AUTHENTICATION_COOKIE_NAME } from '@/constants/config';
+import {
+  AUTHENTICATED_COOKIE_VALUE,
+  AUTHENTICATION_COOKIE_NAME,
+  AUTH_ONLY_ROUTE,
+  PROTECTED_PREFIXES,
+} from '@/constants/config';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
@@ -7,22 +12,21 @@ const hasValidSession = (request: NextRequest): boolean => {
   return sessionToken?.value === AUTHENTICATED_COOKIE_VALUE;
 };
 
+const matchesAnyPrefix = (pathname: string, prefixes: readonly string[]): boolean =>
+  prefixes.some((prefix) => pathname.startsWith(prefix));
+
 export const middleware = (request: NextRequest): NextResponse => {
   const isAuthenticated = hasValidSession(request);
+  const { pathname } = request.nextUrl;
 
-  if (
-    request.nextUrl.pathname.startsWith('/dashboard') ||
-    request.nextUrl.pathname.startsWith('/profile')
-  ) {
+  if (matchesAnyPrefix(pathname, PROTECTED_PREFIXES)) {
     if (!isAuthenticated) {
-      return NextResponse.redirect(new URL('/login', request.url));
+      return NextResponse.redirect(new URL(AUTH_ONLY_ROUTE, request.url));
     }
   }
 
-  if (request.nextUrl.pathname === '/login') {
-    if (isAuthenticated) {
-      return NextResponse.redirect(new URL('/dashboard', request.url));
-    }
+  if (pathname === AUTH_ONLY_ROUTE && isAuthenticated) {
+    return NextResponse.redirect(new URL('/dashboard', request.url));
   }
 
   return NextResponse.next();

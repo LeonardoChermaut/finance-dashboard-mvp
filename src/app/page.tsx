@@ -1,5 +1,6 @@
 'use client';
 
+import { Sidebar } from '@/components/sidebar/sidebar';
 import { LogoIcon } from '@/components/ui/auth-layout';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -19,57 +20,35 @@ import {
   Wallet,
 } from 'lucide-react';
 import Link from 'next/link';
-import styled, { keyframes } from 'styled-components';
-
-const fadeInUp = keyframes`
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-`;
-
-const PageWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  background-color: ${({ theme }) => theme.colors.background};
-`;
-
-const Nav = styled.nav`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: ${({ theme }) => `${theme.spacing(4)} ${theme.spacing(4)}`};
-  max-width: 1200px;
-  margin: 0 auto;
-  width: 100%;
-
-  @media (min-width: 768px) {
-    padding: ${({ theme }) => `${theme.spacing(5)} ${theme.spacing(6)}`};
-  }
-`;
-
-const NavLogo = styled.div`
-  display: flex;
-  align-items: center;
-  gap: ${({ theme }) => theme.spacing(3)};
-`;
-
-const LogoText = styled.span`
-  font-size: 20px;
-  font-weight: 700;
-  color: ${({ theme }) => theme.colors.text};
-`;
-
-const NavActions = styled.div`
-  display: flex;
-  align-items: center;
-  gap: ${({ theme }) => theme.spacing(3)};
-`;
+import styled from 'styled-components';
+import {
+  CtaDescription,
+  CtaSection,
+  CtaTitle,
+  FeaturesGrid,
+  FeaturesSection,
+  Footer,
+  FooterText,
+  HeroActions,
+  HeroBadge,
+  HeroDescription,
+  HeroHighlight,
+  HeroSection,
+  HeroTitle,
+  LogoText,
+  Nav,
+  NavActions,
+  NavLogo,
+  PageWrapper,
+  SectionDescription,
+  SectionDivider,
+  SectionLabel,
+  SectionTitle,
+  StatsSection,
+  StatItem,
+  StatLabel,
+  StatValue,
+} from './page.styled';
 
 const ThemeButton = styled(ThemeToggle)`
   display: flex;
@@ -91,195 +70,6 @@ const ThemeButton = styled(ThemeToggle)`
   &:focus-visible {
     outline: 2px solid ${({ theme }) => theme.colors.primary};
     outline-offset: 2px;
-  }
-`;
-
-const HeroSection = styled.section`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  padding: ${({ theme }) => `${theme.spacing(10)} ${theme.spacing(4)}`};
-  max-width: 800px;
-  margin: 0 auto;
-  animation: ${fadeInUp} 0.6s ease;
-
-  @media (min-width: 768px) {
-    padding: ${({ theme }) => `${theme.spacing(16)} ${theme.spacing(6)}`};
-  }
-`;
-
-const HeroBadge = styled.div`
-  display: inline-flex;
-  align-items: center;
-  gap: ${({ theme }) => theme.spacing(2)};
-  padding: ${({ theme }) => `${theme.spacing(1)} ${theme.spacing(3)}`};
-  border-radius: 999px;
-  background-color: ${({ theme }) => theme.colors.primaryMuted};
-  color: ${({ theme }) => theme.colors.primary};
-  font-size: 13px;
-  font-weight: 600;
-  margin-bottom: ${({ theme }) => theme.spacing(6)};
-`;
-
-const HeroTitle = styled.h1`
-  font-size: 36px;
-  font-weight: 800;
-  color: ${({ theme }) => theme.colors.text};
-  line-height: 1.15;
-  letter-spacing: -0.03em;
-  margin-bottom: ${({ theme }) => theme.spacing(4)};
-
-  @media (min-width: 768px) {
-    font-size: 52px;
-  }
-`;
-
-const HeroHighlight = styled.span`
-  color: ${({ theme }) => theme.colors.primary};
-`;
-
-const HeroDescription = styled.p`
-  font-size: 16px;
-  color: ${({ theme }) => theme.colors.textSecondary};
-  line-height: 1.6;
-  max-width: 560px;
-  margin-bottom: ${({ theme }) => theme.spacing(8)};
-
-  @media (min-width: 768px) {
-    font-size: 18px;
-  }
-`;
-
-const HeroActions = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: ${({ theme }) => theme.spacing(3)};
-  width: 100%;
-
-  @media (min-width: 480px) {
-    flex-direction: row;
-    justify-content: center;
-  }
-`;
-
-const SecondaryButton = styled(Button)`
-  background-color: ${({ theme }) => theme.colors.surface};
-  color: ${({ theme }) => theme.colors.text};
-  border: 1px solid ${({ theme }) => theme.colors.border};
-
-  &:hover {
-    background-color: ${({ theme }) => theme.colors.sidebarHover};
-  }
-`;
-
-const SectionDivider = styled.div`
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  height: 1px;
-  background: linear-gradient(
-    to right,
-    transparent,
-    ${({ theme }) => theme.colors.border},
-    transparent
-  );
-`;
-
-const StatsSection = styled.section`
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: ${({ theme }) => theme.spacing(4)};
-  padding: ${({ theme }) => `${theme.spacing(10)} ${theme.spacing(4)}`};
-  max-width: 800px;
-  margin: 0 auto;
-  width: 100%;
-
-  @media (min-width: 768px) {
-    grid-template-columns: repeat(4, 1fr);
-    padding: ${({ theme }) => `${theme.spacing(12)} ${theme.spacing(6)}`};
-  }
-`;
-
-const StatItem = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: ${({ theme }) => theme.spacing(1)};
-`;
-
-const StatValue = styled.p`
-  font-size: 28px;
-  font-weight: 800;
-  color: ${({ theme }) => theme.colors.primary};
-
-  @media (min-width: 768px) {
-    font-size: 36px;
-  }
-`;
-
-const StatLabel = styled.p`
-  font-size: 13px;
-  color: ${({ theme }) => theme.colors.muted};
-  font-weight: 500;
-`;
-
-const FeaturesSection = styled.section`
-  display: flex;
-  flex-direction: column;
-  gap: ${({ theme }) => theme.spacing(6)};
-  padding: ${({ theme }) => `${theme.spacing(12)} ${theme.spacing(4)}`};
-  max-width: 1200px;
-  margin: 0 auto;
-  width: 100%;
-  background-color: ${({ theme }) => theme.colors.sectionDivider};
-
-  @media (min-width: 768px) {
-    padding: ${({ theme }) => `${theme.spacing(16)} ${theme.spacing(6)}`};
-  }
-`;
-
-const SectionLabel = styled.p`
-  font-size: 13px;
-  font-weight: 700;
-  color: ${({ theme }) => theme.colors.primary};
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  text-align: center;
-  margin-bottom: ${({ theme }) => theme.spacing(2)};
-`;
-
-const SectionTitle = styled.h2`
-  font-size: 28px;
-  font-weight: 700;
-  color: ${({ theme }) => theme.colors.text};
-  text-align: center;
-  letter-spacing: -0.02em;
-
-  @media (min-width: 768px) {
-    font-size: 36px;
-  }
-`;
-
-const SectionDescription = styled.p`
-  font-size: 15px;
-  color: ${({ theme }) => theme.colors.textSecondary};
-  text-align: center;
-  max-width: 560px;
-  margin: 0 auto;
-  line-height: 1.6;
-`;
-
-const FeaturesGrid = styled.div`
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: ${({ theme }) => theme.spacing(4)};
-  margin-top: ${({ theme }) => theme.spacing(8)};
-
-  @media (min-width: 768px) {
-    grid-template-columns: repeat(3, 1fr);
-    gap: ${({ theme }) => theme.spacing(5)};
   }
 `;
 
@@ -350,75 +140,25 @@ const FeatureDescription = styled.p`
   z-index: 1;
 `;
 
-const CtaSection = styled.section`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  padding: ${({ theme }) => `${theme.spacing(16)} ${theme.spacing(4)}`};
-  max-width: 700px;
-  margin: 0 auto;
-  width: 100%;
-
-  @media (min-width: 768px) {
-    padding: ${({ theme }) => `${theme.spacing(20)} ${theme.spacing(6)}`};
-  }
-`;
-
-const CtaTitle = styled.h2`
-  font-size: 28px;
-  font-weight: 700;
+const SecondaryButton = styled(Button)`
+  background-color: ${({ theme }) => theme.colors.surface};
   color: ${({ theme }) => theme.colors.text};
-  letter-spacing: -0.02em;
-  margin-bottom: ${({ theme }) => theme.spacing(3)};
-
-  @media (min-width: 768px) {
-    font-size: 36px;
-  }
-`;
-
-const CtaDescription = styled.p`
-  font-size: 15px;
-  color: ${({ theme }) => theme.colors.textSecondary};
-  line-height: 1.6;
-  margin-bottom: ${({ theme }) => theme.spacing(6)};
-`;
-
-const Footer = styled.footer`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: ${({ theme }) => theme.spacing(3)};
-  padding: ${({ theme }) => `${theme.spacing(8)} ${theme.spacing(4)}`};
-  border-top: 1px solid ${({ theme }) => theme.colors.border};
-  margin-top: auto;
-  background-color: ${({ theme }) => theme.colors.background};
-`;
-
-const FooterText = styled.p`
-  font-size: 13px;
-  color: ${({ theme }) => theme.colors.muted};
-`;
-
-const FooterLinks = styled.div`
-  display: flex;
-  gap: ${({ theme }) => theme.spacing(4)};
-`;
-
-const FooterLink = styled.button`
-  font-size: 13px;
-  color: ${({ theme }) => theme.colors.textSecondary};
-  transition: color 0.15s ease;
+  border: 1px solid ${({ theme }) => theme.colors.border};
 
   &:hover {
-    color: ${({ theme }) => theme.colors.primary};
+    background-color: ${({ theme }) => theme.colors.sidebarHover};
   }
+`;
 
-  &:focus-visible {
-    outline: 2px solid ${({ theme }) => theme.colors.primary};
-    outline-offset: 2px;
-    border-radius: 4px;
-  }
+const AuthenticatedLayout = styled.div`
+  display: flex;
+  min-height: 100vh;
+`;
+
+const AuthenticatedContent = styled.main`
+  flex: 1;
+  margin-left: 64px;
+  transition: margin-left 0.3s ease;
 `;
 
 const features = [
@@ -468,6 +208,95 @@ const stats = [
 const HomePage = () => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
+  if (isAuthenticated) {
+    return (
+      <AuthenticatedLayout>
+        <Sidebar />
+        <AuthenticatedContent>
+          <PageWrapper>
+            <HeroSection>
+              <HeroBadge>
+                <TrendingUp size={14} />
+                Dashboard Financeiro MVP
+              </HeroBadge>
+              <HeroTitle>
+                Controle financeiro <HeroHighlight>simples e poderoso</HeroHighlight>
+              </HeroTitle>
+              <HeroDescription>
+                Acompanhe suas receitas, despesas e saldo acumulado com uma interface moderna,
+                responsiva e com suporte completo a tema claro e escuro.
+              </HeroDescription>
+              <HeroActions>
+                <Link href={routes.dashboard} passHref>
+                  <Button as="span">
+                    Ir para o Dashboard
+                    <ChevronRight size={16} />
+                  </Button>
+                </Link>
+              </HeroActions>
+            </HeroSection>
+
+            <SectionDivider />
+
+            <StatsSection>
+              {stats.map((stat) => (
+                <StatItem key={stat.label}>
+                  <StatValue>{stat.value}</StatValue>
+                  <StatLabel>{stat.label}</StatLabel>
+                </StatItem>
+              ))}
+            </StatsSection>
+
+            <SectionDivider />
+
+            <FeaturesSection id="features">
+              <SectionLabel>Funcionalidades</SectionLabel>
+              <SectionTitle>Tudo que voce precisa</SectionTitle>
+              <SectionDescription>
+                Um sistema financeiro completo com visual profissional, filtros dinamicos e graficos
+                reativos.
+              </SectionDescription>
+              <FeaturesGrid>
+                {features.map((feature) => {
+                  const Icon = feature.icon;
+                  return (
+                    <FeatureCard key={feature.title}>
+                      <FeatureIcon>
+                        <Icon size={24} />
+                      </FeatureIcon>
+                      <FeatureTitle>{feature.title}</FeatureTitle>
+                      <FeatureDescription>{feature.description}</FeatureDescription>
+                    </FeatureCard>
+                  );
+                })}
+              </FeaturesGrid>
+            </FeaturesSection>
+
+            <SectionDivider />
+
+            <CtaSection>
+              <CtaTitle>Pronto para comecar?</CtaTitle>
+              <CtaDescription>
+                Acesse o dashboard com as credenciais mockadas e explore todos os recursos
+                disponiveis.
+              </CtaDescription>
+              <Link href={routes.dashboard} passHref>
+                <Button as="span">
+                  <LayoutDashboard size={16} />
+                  Abrir Dashboard
+                </Button>
+              </Link>
+            </CtaSection>
+
+            <Footer>
+              <FooterText>Dashboard Financeiro MVP — Projeto de demonstracao</FooterText>
+            </Footer>
+          </PageWrapper>
+        </AuthenticatedContent>
+      </AuthenticatedLayout>
+    );
+  }
+
   return (
     <PageWrapper>
       <Nav>
@@ -477,9 +306,9 @@ const HomePage = () => {
         </NavLogo>
         <NavActions>
           <ThemeButton />
-          <Link href={isAuthenticated ? routes.dashboard : routes.login} passHref>
+          <Link href={routes.login} passHref>
             <Button as="span">
-              {isAuthenticated ? 'Dashboard' : 'Entrar'}
+              Entrar
               <ArrowRight size={16} />
             </Button>
           </Link>
@@ -499,9 +328,9 @@ const HomePage = () => {
           e com suporte completo a tema claro e escuro.
         </HeroDescription>
         <HeroActions>
-          <Link href={isAuthenticated ? routes.dashboard : routes.login} passHref>
+          <Link href={routes.login} passHref>
             <Button as="span">
-              {isAuthenticated ? 'Ir para o Dashboard' : 'Comecar Agora'}
+              Comecar Agora
               <ChevronRight size={16} />
             </Button>
           </Link>
@@ -554,23 +383,16 @@ const HomePage = () => {
         <CtaDescription>
           Acesse o dashboard com as credenciais mockadas e explore todos os recursos disponiveis.
         </CtaDescription>
-        <Link href={isAuthenticated ? routes.dashboard : routes.login} passHref>
+        <Link href={routes.login} passHref>
           <Button as="span">
             <LayoutDashboard size={16} />
-            {isAuthenticated ? 'Abrir Dashboard' : 'Acessar Agora'}
+            Acessar Agora
           </Button>
         </Link>
       </CtaSection>
 
       <Footer>
         <FooterText>Dashboard Financeiro MVP — Projeto de demonstracao</FooterText>
-        <FooterLinks>
-          {!isAuthenticated ? (
-            <Link href={routes.login}>
-              <FooterLink>Entrar</FooterLink>
-            </Link>
-          ) : null}
-        </FooterLinks>
       </Footer>
     </PageWrapper>
   );

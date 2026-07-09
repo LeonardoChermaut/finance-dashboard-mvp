@@ -9,6 +9,7 @@ import {
   calculateFinancialSummary,
   calculateMonthlyTotals,
 } from '@/modules/transactions/transaction-metrics';
+import type { ITransactionRepository } from '@/modules/transactions/transaction-repository';
 import { getTransactionRepository } from '@/modules/transactions/transaction-repository-factory';
 import type {
   AccumulatedBalancePoint,
@@ -30,7 +31,7 @@ type DashboardData = {
   accumulatedBalance: AccumulatedBalancePoint[];
 };
 
-export const useDashboardData = (): DashboardData => {
+export const useDashboardData = (repository?: ITransactionRepository): DashboardData => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -44,7 +45,8 @@ export const useDashboardData = (): DashboardData => {
     let isMounted = true;
     const fetchData = async (): Promise<void> => {
       try {
-        const data = await getTransactionRepository().getAll();
+        const repo = repository ?? getTransactionRepository();
+        const data = await repo.getAll();
         if (isMounted) {
           setTransactions(data);
         }
@@ -63,7 +65,7 @@ export const useDashboardData = (): DashboardData => {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [repository]);
 
   const filterOptions = useMemo(() => deriveFilterOptions(transactions), [transactions]);
 

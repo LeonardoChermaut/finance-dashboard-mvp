@@ -1,5 +1,5 @@
 import { AUTHENTICATION_COOKIE_NAME, USER_NAME_STORAGE_KEY } from '@/constants/config';
-import { clearSessionCookie } from '@/modules/auth';
+import { clearSessionCookie } from '@/modules/auth/session-cookie';
 import type { AuthState } from '@/modules/auth/auth.types';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';

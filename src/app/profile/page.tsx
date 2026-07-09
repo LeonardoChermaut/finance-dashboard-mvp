@@ -12,20 +12,19 @@ import {
   RoleBadge,
   Tooltip,
   TooltipContainer,
-  UserEmail,
   UserName,
 } from '@/app/profile/profile.styled';
 import { Sidebar } from '@/components/sidebar/sidebar';
-import { FieldWrapper, Form, Input, Select, SuccessMessage } from '@/components/ui';
+import { FieldWrapper, Form, Input, SuccessMessage } from '@/components/ui';
 import { Button } from '@/components/ui/button';
 import {
-  NAME_CHANGE_LIMIT,
   NAME_CHANGES_STORAGE_KEY,
+  NAME_CHANGE_LIMIT,
   USER_NAME_STORAGE_KEY,
 } from '@/constants/config';
 import { useLocalStorage } from '@/hooks';
 
-import { useAuthStore, type UserRole } from '@/modules/auth';
+import { useAuthStore } from '@/modules/auth';
 import { routes } from '@/routes/routes';
 import { filterRecentTimestamps } from '@/utils/profile';
 import { getInitials } from '@/utils/string';
@@ -46,12 +45,11 @@ const ProfilePage = () => {
     user?.name ?? '',
   );
 
-  const [profile, setProfile] = useState<{ email: string; name: string; role: UserRole }>(() => {
+  const [profile, setProfile] = useState<{ email: string; name: string }>(() => {
     const name = (persistedName || user?.name) ?? '';
     return {
       email: user?.email ?? '',
       name,
-      role: user?.role ?? 'user',
     };
   });
 
@@ -96,7 +94,7 @@ const ProfilePage = () => {
       setPersistedName(profile.name);
     }
 
-    updateUser({ name: profile.name, email: profile.email, role: profile.role });
+    updateUser({ name: profile.name, email: profile.email });
     setIsSuccess(true);
   };
 
@@ -114,7 +112,6 @@ const ProfilePage = () => {
             <AvatarSection>
               <Avatar aria-hidden="true">{initials}</Avatar>
               <UserName>{persistedName || user.name}</UserName>
-              <UserEmail>{user.email}</UserEmail>
               <RoleBadge $role={user.role}>
                 <Shield size={12} />
                 {user.role === 'admin' ? 'Administrador' : 'Usuario'}
@@ -172,24 +169,6 @@ const ProfilePage = () => {
                 onChange={(event) => setProfile({ ...profile, email: event.target.value })}
                 required
               />
-            </FieldWrapper>
-
-            <FieldWrapper htmlFor="profile-role">
-              <InputIcon>
-                <Shield size={14} />
-                Perfil de acesso
-              </InputIcon>
-              <Select
-                id="profile-role"
-                value={profile.role}
-                disabled={!nameChangeInfo.canChange}
-                onChange={(event) =>
-                  setProfile({ ...profile, role: event.target.value as UserRole })
-                }
-              >
-                <option value="user">Usuario</option>
-                <option value="admin">Administrador</option>
-              </Select>
             </FieldWrapper>
 
             {isSuccess ? (

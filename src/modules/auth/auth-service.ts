@@ -1,9 +1,4 @@
-import {
-  AUTHENTICATED_COOKIE_VALUE,
-  AUTHENTICATION_COOKIE_NAME,
-  COOKIE_MAX_AGE_SECONDS,
-  env,
-} from '@/constants/config';
+import { env } from '@/constants/config';
 import { api } from '@/lib/api';
 import { MOCK_USERS } from '@/mocks/users';
 import type { AuthSession, Credentials } from '@/modules/auth/auth.types';
@@ -40,11 +35,3 @@ export const createRealAuthService = (): AuthService => ({
 
 export const getAuthService = (): AuthService =>
   env.NEXT_PUBLIC_DATA_SOURCE === 'api' ? createRealAuthService() : createMockAuthService();
-
-export const setSessionCookie = (): void => {
-  document.cookie = `${AUTHENTICATION_COOKIE_NAME}=${AUTHENTICATED_COOKIE_VALUE}; path=/; max-age=${COOKIE_MAX_AGE_SECONDS}; SameSite=Lax`;
-};
-
-export const clearSessionCookie = (): void => {
-  document.cookie = `${AUTHENTICATION_COOKIE_NAME}=; path=/; max-age=0; SameSite=Lax`;
-};

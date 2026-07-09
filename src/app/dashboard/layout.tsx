@@ -1,9 +1,9 @@
 'use client';
 
+import { Layout } from '@/components/dashboard/dashboard.styled';
 import { Sidebar } from '@/components/sidebar/sidebar';
 import { useAuthStore } from '@/modules/auth';
 import type { ReactNode } from 'react';
-import { Layout } from './dashboard.styled';
 
 type DashboardLayoutProps = {
   readonly children: ReactNode;

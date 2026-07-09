@@ -47,7 +47,7 @@ const RegisterPage = () => {
     setAuthenticated({ name: data.name, email: data.email, role: data.role });
 
     setTimeout(() => {
-      router.push(routes.dashboard);
+      window.location.href = routes.dashboard;
     }, 1500);
   };
 
