@@ -20,13 +20,23 @@ export const GlobalStyle = createGlobalStyle`
     overflow-x: hidden;
   }
 
+  body.theme-light {
+    --color-background: #f8fafc;
+    --color-text: #0f172a;
+  }
+
+  body.theme-dark {
+    --color-background: #0f172a;
+    --color-text: #f1f5f9;
+  }
+
   html {
-    background-color: ${({ theme }) => theme.colors.background};
+    background-color: var(--color-background, #f8fafc);
   }
 
   body {
-    background-color: ${({ theme }) => theme.colors.background};
-    color: ${({ theme }) => theme.colors.text};
+    background-color: var(--color-background, #f8fafc);
+    color: var(--color-text, #0f172a);
     font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;

@@ -54,7 +54,11 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
 
   const contextValue = useMemo(() => ({ mode, toggleTheme }), [mode, toggleTheme]);
 
-  useEffect(() => setIsHydrated(true), []);
+  useEffect(() => {
+    document.body.classList.remove('theme-light', 'theme-dark');
+    document.body.classList.add(`theme-${mode}`);
+    setIsHydrated(true);
+  }, [mode]);
 
   if (!isHydrated) {
     return <StyledThemeProvider theme={lightTheme}>{children}</StyledThemeProvider>;
