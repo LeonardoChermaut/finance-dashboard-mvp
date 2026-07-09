@@ -1,8 +1,8 @@
 import {
   AUTHENTICATED_COOKIE_VALUE,
   AUTHENTICATION_COOKIE_NAME,
-  AUTH_ONLY_ROUTE,
-  PROTECTED_PREFIXES,
+  PROTECTED_ROUTES,
+  PUBLIC_ROUTES,
 } from '@/constants/config';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
@@ -19,13 +19,11 @@ export const middleware = (request: NextRequest): NextResponse => {
   const isAuthenticated = hasValidSession(request);
   const { pathname } = request.nextUrl;
 
-  if (matchesAnyPrefix(pathname, PROTECTED_PREFIXES)) {
-    if (!isAuthenticated) {
-      return NextResponse.redirect(new URL(AUTH_ONLY_ROUTE, request.url));
-    }
+  if (matchesAnyPrefix(pathname, PROTECTED_ROUTES) && !isAuthenticated) {
+    return NextResponse.redirect(new URL('/login', request.url));
   }
 
-  if (pathname === AUTH_ONLY_ROUTE && isAuthenticated) {
+  if (matchesAnyPrefix(pathname, PUBLIC_ROUTES) && isAuthenticated) {
     return NextResponse.redirect(new URL('/dashboard', request.url));
   }
 
