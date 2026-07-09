@@ -19,6 +19,7 @@ import {
   PasswordToggle,
 } from '@/components/ui/field';
 import { Form, LinkButton, LinksContainer } from '@/components/ui/form';
+import { useLocalStorage } from '@/hooks';
 import { useForm } from '@/hooks/use-form';
 import { usePasswordVisibility } from '@/hooks/use-password-visibility';
 import { getAuthService, setSessionCookie, useAuthStore } from '@/modules/auth';
@@ -26,13 +27,12 @@ import { loginSchema } from '@/modules/auth/auth.schemas';
 import { routes } from '@/routes/routes';
 import { useRouter } from 'next/navigation';
 import type { FormEvent } from 'react';
-import { toast } from 'sonner';
-
 const LoginPage = () => {
   const router = useRouter();
   const authService = getAuthService();
 
   const setAuthenticated = useAuthStore((state) => state.setAuthenticated);
+  const [, setShowWelcomeToast] = useLocalStorage('showWelcomeToast', false);
   const { showPassword, togglePassword, InputIcon } = usePasswordVisibility();
 
   const { values, errors, isSubmitting, handleChange, handleSubmit, setErrors } =
@@ -43,9 +43,8 @@ const LoginPage = () => {
       const { user } = await authService.login({ email: data.email, password: data.password });
       setSessionCookie();
       setAuthenticated(user);
-      const currentUser = useAuthStore.getState().user;
-      toast.success(`Bem-vindo, ${currentUser?.name ?? user.name}!`);
-      router.push(routes.dashboard);
+      setShowWelcomeToast(true);
+      window.location.href = routes.dashboard;
     } catch {
       setErrors({ email: 'Credenciais invalidas. Tente novamente.' });
     }

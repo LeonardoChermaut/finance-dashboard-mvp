@@ -3,7 +3,7 @@
 import { useFilterStore } from '@/modules/filters';
 import { useCallback, useState } from 'react';
 
-type QuickFilterPeriod = '7d' | '1m' | '3m' | '1y';
+export type QuickFilterPeriod = '7d' | '1m' | '3m' | '1y';
 
 type QuickFilterData = {
   activeQuickFilter: string | null;

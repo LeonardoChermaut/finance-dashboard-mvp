@@ -1,30 +1,29 @@
 import { ApiService } from '@/lib/api';
 
-const mockFetch = jest.fn();
+const mockApi = {
+  fetch: jest.fn(),
+  endpoint: '/test-endpoint',
+  baseUrl: 'http://test-api.com',
+  url: 'http://test-api.com/test-endpoint',
+};
 
-beforeEach(() => {
-  jest.clearAllMocks();
-});
+beforeEach(() => jest.clearAllMocks());
 
-const createTestApi = () =>
-  new ApiService({
-    baseUrl: 'http://test-api.com',
-    fetch: mockFetch,
-  });
+const createTestApi = () => new ApiService(mockApi);
 
 describe('ApiService', () => {
   describe('get', () => {
     it('Fetches data from correct endpoint', async () => {
       const api = createTestApi();
-      mockFetch.mockResolvedValueOnce({
+      mockApi.fetch.mockResolvedValueOnce({
         ok: true,
         json: async () => ({ data: 'test' }),
       });
 
-      await api.get('/test-endpoint');
+      await api.get(mockApi.endpoint);
 
-      expect(mockFetch).toHaveBeenCalledWith(
-        'http://test-api.com/test-endpoint',
+      expect(mockApi.fetch).toHaveBeenCalledWith(
+        mockApi.url,
         expect.objectContaining({
           method: 'GET',
           headers: expect.objectContaining({
@@ -36,15 +35,15 @@ describe('ApiService', () => {
 
     it('Appends query params to URL', async () => {
       const api = createTestApi();
-      mockFetch.mockResolvedValueOnce({
+      mockApi.fetch.mockResolvedValueOnce({
         ok: true,
         json: async () => ({ data: 'test' }),
       });
 
-      await api.get('/test-endpoint', { page: 1, pageSize: 10 });
+      await api.get(mockApi.endpoint, { page: 1, pageSize: 10 });
 
-      expect(mockFetch).toHaveBeenCalledWith(
-        'http://test-api.com/test-endpoint?page=1&pageSize=10',
+      expect(mockApi.fetch).toHaveBeenCalledWith(
+        `${mockApi.url}?page=1&pageSize=10`,
         expect.any(Object),
       );
     });
@@ -52,25 +51,25 @@ describe('ApiService', () => {
     it('Returns parsed JSON response', async () => {
       const api = createTestApi();
       const responseData = { data: 'test', total: 100 };
-      mockFetch.mockResolvedValueOnce({
+      mockApi.fetch.mockResolvedValueOnce({
         ok: true,
         json: async () => responseData,
       });
 
-      const result = await api.get('/test-endpoint');
+      const result = await api.get(mockApi.endpoint);
 
       expect(result).toEqual(responseData);
     });
 
     it('Throws error for non-ok response', async () => {
       const api = createTestApi();
-      mockFetch.mockResolvedValueOnce({
+      mockApi.fetch.mockResolvedValueOnce({
         ok: false,
         status: 404,
         text: async () => 'Not Found',
       });
 
-      await expect(api.get('/test-endpoint')).rejects.toEqual({
+      await expect(api.get(mockApi.endpoint)).rejects.toEqual({
         message: 'Not Found',
         status: 404,
       });
@@ -81,15 +80,15 @@ describe('ApiService', () => {
     it('Sends POST request with data', async () => {
       const api = createTestApi();
       const postData = { name: 'test' };
-      mockFetch.mockResolvedValueOnce({
+      mockApi.fetch.mockResolvedValueOnce({
         ok: true,
         json: async () => ({ id: 1, ...postData }),
       });
 
-      await api.post('/test-endpoint', postData);
+      await api.post(mockApi.endpoint, postData);
 
-      expect(mockFetch).toHaveBeenCalledWith(
-        'http://test-api.com/test-endpoint',
+      expect(mockApi.fetch).toHaveBeenCalledWith(
+        mockApi.url,
         expect.objectContaining({
           method: 'POST',
           body: JSON.stringify(postData),
@@ -100,12 +99,12 @@ describe('ApiService', () => {
     it('Returns parsed JSON response', async () => {
       const api = createTestApi();
       const responseData = { id: 1, name: 'test' };
-      mockFetch.mockResolvedValueOnce({
+      mockApi.fetch.mockResolvedValueOnce({
         ok: true,
         json: async () => responseData,
       });
 
-      const result = await api.post('/test-endpoint', { name: 'test' });
+      const result = await api.post(mockApi.endpoint, { name: 'test' });
 
       expect(result).toEqual(responseData);
     });
@@ -115,15 +114,15 @@ describe('ApiService', () => {
     it('Sends PUT request with data', async () => {
       const api = createTestApi();
       const putData = { id: 1, name: 'updated' };
-      mockFetch.mockResolvedValueOnce({
+      mockApi.fetch.mockResolvedValueOnce({
         ok: true,
         json: async () => putData,
       });
 
-      await api.put('/test-endpoint/1', putData);
+      await api.put(mockApi.endpoint, putData);
 
-      expect(mockFetch).toHaveBeenCalledWith(
-        'http://test-api.com/test-endpoint/1',
+      expect(mockApi.fetch).toHaveBeenCalledWith(
+        mockApi.url,
         expect.objectContaining({
           method: 'PUT',
           body: JSON.stringify(putData),
@@ -135,15 +134,15 @@ describe('ApiService', () => {
   describe('delete', () => {
     it('Sends DELETE request', async () => {
       const api = createTestApi();
-      mockFetch.mockResolvedValueOnce({
+      mockApi.fetch.mockResolvedValueOnce({
         ok: true,
         json: async () => ({}),
       });
 
       await api.delete('/test-endpoint/1');
 
-      expect(mockFetch).toHaveBeenCalledWith(
-        'http://test-api.com/test-endpoint/1',
+      expect(mockApi.fetch).toHaveBeenCalledWith(
+        `${mockApi.url}/1`,
         expect.objectContaining({
           method: 'DELETE',
         }),
@@ -153,15 +152,15 @@ describe('ApiService', () => {
     it('Sends DELETE request with data', async () => {
       const api = createTestApi();
       const deleteData = { id: 1 };
-      mockFetch.mockResolvedValueOnce({
+      mockApi.fetch.mockResolvedValueOnce({
         ok: true,
         json: async () => ({}),
       });
 
-      await api.delete('/test-endpoint/1', deleteData);
+      await api.delete(`${mockApi.endpoint}/1`, deleteData);
 
-      expect(mockFetch).toHaveBeenCalledWith(
-        'http://test-api.com/test-endpoint/1',
+      expect(mockApi.fetch).toHaveBeenCalledWith(
+        `${mockApi.url}/1`,
         expect.objectContaining({
           method: 'DELETE',
           body: JSON.stringify(deleteData),

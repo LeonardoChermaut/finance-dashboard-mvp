@@ -1,86 +1,34 @@
 'use client';
 
-import { DashboardSkeleton } from '@/components/dashboard-skeleton';
-import { drilldownConfig } from '@/constants/drilldown';
+import { DashboardDrilldownPanel } from '@/components/dashboard/dashboard-drilldown-panel';
+import { DashboardExportBar } from '@/components/dashboard/dashboard-export-bar';
+import { DashboardHeader } from '@/components/dashboard/dashboard-header';
+import { DashboardQuickFilters } from '@/components/dashboard/dashboard-quick-filters';
+import { DashboardSkeleton } from '@/components/dashboard/dashboard-skeleton';
+import {
+  ContentWrapper,
+  MainContent,
+  SectionDescription,
+  SectionTitle,
+} from '@/components/dashboard/dashboard.styled';
 import type { DrilldownType } from '@/hooks';
 import {
   useClickOutside,
   useDrilldown,
   useExport,
+  useLocalStorage,
   useQuickFilters,
   useSyncFiltersFromUrl,
   useSyncFiltersToUrl,
 } from '@/hooks';
+import { useAuthStore } from '@/modules/auth';
 import { useFilterStore } from '@/modules/filters';
+import { getTransactionRepository } from '@/modules/transactions/transaction-repository-factory';
 import { useDashboardData } from '@/modules/transactions/use-dashboard-data';
 import { formatDate } from '@/utils/date';
-import { formatCentsToCurrency } from '@/utils/format';
-import { getVisiblePages } from '@/utils/pagination';
-import {
-  ArrowDownLeft,
-  ArrowUpRight,
-  Calendar,
-  ChevronLeft,
-  ChevronRight,
-  ChevronsLeft,
-  ChevronsRight,
-  Clock,
-  Download,
-  FileSpreadsheet,
-  FileText,
-  Search,
-  X,
-} from 'lucide-react';
 import dynamic from 'next/dynamic';
-import { Suspense, useCallback, useRef, useState } from 'react';
-import {
-  ContentWrapper,
-  CurrentDate,
-  DrilldownActions,
-  DrilldownClearSearch,
-  DrilldownClose,
-  DrilldownExportBtn,
-  DrilldownHeader,
-  DrilldownOverlay,
-  DrilldownPanel,
-  DrilldownSearchContainer,
-  DrilldownSearchIcon,
-  DrilldownSearchInput,
-  DrilldownTitle,
-  DrilldownTotal,
-  DrilldownTotalLabel,
-  DrilldownTotalValue,
-  ExportBar,
-  ExportButton,
-  ExportDropdown,
-  ExportMenu,
-  ExportMenuHeader,
-  ExportMenuItem,
-  ExportMenuSeparator,
-  HeaderActions,
-  HeaderText,
-  HeaderTop,
-  LoadingWrapper,
-  MainContent,
-  PageDescription,
-  PageHeader,
-  PageTitle,
-  PaginationButton,
-  PaginationButtons,
-  PaginationContainer,
-  PaginationInfo,
-  PaginationPageButton,
-  QuickFilterButton,
-  QuickFilters,
-  SectionDescription,
-  SectionTitle,
-  TransactionAccount,
-  TransactionInfo,
-  TransactionItem,
-  TransactionList,
-  TransactionMeta,
-  TransactionValue,
-} from './dashboard.styled';
+import { Suspense, useCallback, useEffect, useRef, useState } from 'react';
+import { toast } from 'sonner';
 
 const DynamicCharts = dynamic(
   () => import('@/components/charts/charts').then((module) => ({ default: module.Charts })),
@@ -95,6 +43,13 @@ const DynamicSummaryCards = dynamic(
   { ssr: false, loading: () => null },
 );
 
+const dateFilterInitialState = {
+  startDate: null,
+  endDate: null,
+  startTime: null,
+  endTime: null,
+} as const;
+
 const DynamicFilterBar = dynamic(
   () =>
     import('@/components/filter-bar/filter-bar').then((module) => ({
@@ -103,7 +58,19 @@ const DynamicFilterBar = dynamic(
   { ssr: false, loading: () => null },
 );
 
+const repository = getTransactionRepository();
+
 const DashboardContent = () => {
+  const user = useAuthStore((state) => state.user);
+  const [showWelcomeToast, setShowWelcomeToast] = useLocalStorage('showWelcomeToast', false);
+
+  useEffect(() => {
+    if (showWelcomeToast) {
+      setShowWelcomeToast(false);
+      toast.success(`Bem-vindo, ${user?.name ?? 'usuario'}!`);
+    }
+  }, [showWelcomeToast, setShowWelcomeToast, user?.name]);
+
   const {
     summary,
     previousSummary,
@@ -113,7 +80,7 @@ const DashboardContent = () => {
     currency,
     isLoading,
     filteredTransactions,
-  } = useDashboardData();
+  } = useDashboardData(repository);
   const [currentDate] = useState<string>(() => formatDate(new Date()));
   const exportMenuRef = useRef<HTMLDivElement>(null);
 
@@ -177,12 +144,7 @@ const DashboardContent = () => {
     [setDateRange],
   );
 
-  const handleClearDateFilter = (): void => {
-    setDateRange({ startDate: null, endDate: null, startTime: null, endTime: null });
-  };
-
-  const paginationStart = (currentPage - 1) * pageSize + 1;
-  const paginationEnd = Math.min(currentPage * pageSize, totalItems);
+  const handleClearDateFilter = (): void => setDateRange(dateFilterInitialState);
 
   if (isLoading) {
     return (
@@ -198,106 +160,22 @@ const DashboardContent = () => {
     <>
       <MainContent>
         <ContentWrapper data-dashboard-content>
-          <PageHeader>
-            <HeaderTop>
-              <HeaderText>
-                <PageTitle>Visão Geral</PageTitle>
-                <PageDescription>
-                  Resumo financeiro atualizado conforme os filtros selecionados.
-                </PageDescription>
-              </HeaderText>
-              <CurrentDate>{currentDate}</CurrentDate>
-            </HeaderTop>
-            <HeaderActions></HeaderActions>
-          </PageHeader>
+          <DashboardHeader currentDate={currentDate} />
 
-          <ExportBar>
-            <ExportDropdown ref={exportMenuRef}>
-              <ExportButton
-                type="button"
-                onClick={() => setShowExportMenu((prev) => !prev)}
-                disabled={isExporting}
-                aria-label="Exportar dados"
-              >
-                <Download size={16} />
-                {isExporting ? 'Exportando...' : 'Exportar'}
-              </ExportButton>
-              {showExportMenu ? (
-                <ExportMenu>
-                  <ExportMenuHeader>Formato</ExportMenuHeader>
-                  <ExportMenuItem type="button" onClick={handleExportPdf} disabled={isExporting}>
-                    <FileText size={16} />
-                    Exportar como PDF
-                  </ExportMenuItem>
-                  <ExportMenuItem type="button" onClick={handleExportExcel} disabled={isExporting}>
-                    <FileSpreadsheet size={16} />
-                    Exportar como Excel
-                  </ExportMenuItem>
-                  <ExportMenuSeparator />
-                  <ExportMenuHeader>Filtrar por</ExportMenuHeader>
-                  <ExportMenuItem
-                    type="button"
-                    onClick={() => handleExportFiltered('income')}
-                    disabled={isExporting}
-                  >
-                    <ArrowUpRight size={16} />
-                    Apenas Receitas
-                  </ExportMenuItem>
-                  <ExportMenuItem
-                    type="button"
-                    onClick={() => handleExportFiltered('expenses')}
-                    disabled={isExporting}
-                  >
-                    <ArrowDownLeft size={16} />
-                    Apenas Despesas
-                  </ExportMenuItem>
-                  <ExportMenuItem
-                    type="button"
-                    onClick={() => handleExportFiltered('pending')}
-                    disabled={isExporting}
-                  >
-                    <Clock size={16} />
-                    Apenas Pendentes
-                  </ExportMenuItem>
-                </ExportMenu>
-              ) : null}
-            </ExportDropdown>
-          </ExportBar>
+          <DashboardExportBar
+            isExporting={isExporting}
+            showExportMenu={showExportMenu}
+            exportMenuRef={exportMenuRef}
+            onToggleMenu={() => setShowExportMenu((prev) => !prev)}
+            onExportPdf={handleExportPdf}
+            onExportExcel={handleExportExcel}
+            onExportFiltered={handleExportFiltered}
+          />
 
-          <QuickFilters aria-label="Filtros rapidos">
-            <QuickFilterButton
-              type="button"
-              $active={activeQuickFilter === '7d'}
-              onClick={() => handleQuickFilter('7d')}
-            >
-              <Calendar size={12} />
-              Ultimos 7 dias
-            </QuickFilterButton>
-            <QuickFilterButton
-              type="button"
-              $active={activeQuickFilter === '1m'}
-              onClick={() => handleQuickFilter('1m')}
-            >
-              <Calendar size={12} />
-              Ultimo mes
-            </QuickFilterButton>
-            <QuickFilterButton
-              type="button"
-              $active={activeQuickFilter === '3m'}
-              onClick={() => handleQuickFilter('3m')}
-            >
-              <Calendar size={12} />
-              Ultimo trimestre
-            </QuickFilterButton>
-            <QuickFilterButton
-              type="button"
-              $active={activeQuickFilter === '1y'}
-              onClick={() => handleQuickFilter('1y')}
-            >
-              <Calendar size={12} />
-              Ano atual
-            </QuickFilterButton>
-          </QuickFilters>
+          <DashboardQuickFilters
+            activeQuickFilter={activeQuickFilter}
+            onQuickFilter={handleQuickFilter}
+          />
 
           <section aria-label="Filtros">
             <DynamicFilterBar filterOptions={filterOptions} />
@@ -331,133 +209,28 @@ const DashboardContent = () => {
         </ContentWrapper>
       </MainContent>
 
-      {drilldownType !== null ? (
-        <DrilldownOverlay>
-          <DrilldownPanel>
-            <DrilldownHeader>
-              <DrilldownTitle>{drilldownConfig[drilldownType]?.label}</DrilldownTitle>
-              <DrilldownActions>
-                <DrilldownExportBtn
-                  type="button"
-                  onClick={() => handleExportFiltered(drilldownType)}
-                >
-                  <FileSpreadsheet size={14} />
-                  Exportar Excel
-                </DrilldownExportBtn>
-                <DrilldownClose type="button" onClick={handleDrilldownClose} aria-label="Fechar">
-                  <X size={18} />
-                </DrilldownClose>
-              </DrilldownActions>
-            </DrilldownHeader>
-
-            <DrilldownSearchContainer>
-              <DrilldownSearchIcon>
-                <Search size={14} />
-              </DrilldownSearchIcon>
-              <DrilldownSearchInput
-                type="text"
-                placeholder="Buscar por conta, industria, estado ou data..."
-                value={drilldownSearch}
-                onChange={(event) => setDrilldownSearch(event.target.value)}
-                aria-label="Buscar transacoes"
-              />
-              {drilldownSearch !== '' ? (
-                <DrilldownClearSearch
-                  type="button"
-                  onClick={() => setDrilldownSearch('')}
-                  aria-label="Limpar busca"
-                >
-                  <X size={14} />
-                </DrilldownClearSearch>
-              ) : null}
-            </DrilldownSearchContainer>
-
-            <DrilldownTotal>
-              <DrilldownTotalLabel>Total</DrilldownTotalLabel>
-              <DrilldownTotalValue>
-                {drilldownType === 'pending'
-                  ? String(drilldownTransactions.length)
-                  : formatCentsToCurrency(drilldownTotal, currency)}
-              </DrilldownTotalValue>
-            </DrilldownTotal>
-
-            <TransactionList>
-              {paginatedItems.map((transaction) => (
-                <TransactionItem key={transaction.id}>
-                  <TransactionInfo>
-                    <TransactionAccount>{transaction.account}</TransactionAccount>
-                    <TransactionMeta>
-                      {transaction.date.toLocaleDateString('pt-BR')} - {transaction.industry} -{' '}
-                      {transaction.state}
-                    </TransactionMeta>
-                  </TransactionInfo>
-                  <TransactionValue $type={transaction.transactionType}>
-                    {transaction.transactionType === 'deposit' ? '+' : '-'}{' '}
-                    {formatCentsToCurrency(transaction.amountInCents, currency)}
-                  </TransactionValue>
-                </TransactionItem>
-              ))}
-              {filteredDrilldownTransactions.length === 0 ? (
-                <LoadingWrapper>Nenhuma transacao encontrada</LoadingWrapper>
-              ) : null}
-            </TransactionList>
-
-            {totalItems > 0 ? (
-              <PaginationContainer>
-                <PaginationInfo>
-                  {paginationStart}-{paginationEnd} de {totalItems} transacoes
-                </PaginationInfo>
-                <PaginationButtons>
-                  <PaginationButton
-                    type="button"
-                    onClick={goToFirstPage}
-                    disabled={currentPage === 1}
-                    aria-label="Primeira pagina"
-                  >
-                    <ChevronsLeft size={16} />
-                  </PaginationButton>
-                  <PaginationButton
-                    type="button"
-                    onClick={goToPreviousPage}
-                    disabled={currentPage === 1}
-                    aria-label="Pagina anterior"
-                  >
-                    <ChevronLeft size={16} />
-                  </PaginationButton>
-                  {getVisiblePages(currentPage, totalPages).map((page) => (
-                    <PaginationPageButton
-                      key={page}
-                      type="button"
-                      $active={page === currentPage}
-                      onClick={() => goToPage(page)}
-                      aria-label={`Pagina ${page}`}
-                      aria-current={page === currentPage ? 'page' : undefined}
-                    >
-                      {page}
-                    </PaginationPageButton>
-                  ))}
-                  <PaginationButton
-                    type="button"
-                    onClick={goToNextPage}
-                    disabled={currentPage === totalPages}
-                    aria-label="Proxima pagina"
-                  >
-                    <ChevronRight size={16} />
-                  </PaginationButton>
-                  <PaginationButton
-                    type="button"
-                    onClick={goToLastPage}
-                    disabled={currentPage === totalPages}
-                    aria-label="Ultima pagina"
-                  >
-                    <ChevronsRight size={16} />
-                  </PaginationButton>
-                </PaginationButtons>
-              </PaginationContainer>
-            ) : null}
-          </DrilldownPanel>
-        </DrilldownOverlay>
-      ) : null}
+      <DashboardDrilldownPanel
+        data={{
+          type: drilldownType,
+          search: drilldownSearch,
+          transactions: drilldownTransactions,
+          filteredTransactions: filteredDrilldownTransactions,
+          paginatedTransactions: paginatedItems,
+          total: drilldownTotal,
+          currency,
+        }}
+        actions={{
+          onSearchChange: setDrilldownSearch,
+          onClose: handleDrilldownClose,
+          onExportFiltered: handleExportFiltered,
+          goToPage,
+          goToNextPage,
+          goToPreviousPage,
+          goToFirstPage,
+          goToLastPage,
+        }}
+        pagination={{ currentPage, pageSize, totalItems, totalPages }}
+      />
     </>
   );
 };

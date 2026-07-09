@@ -26,8 +26,11 @@ import {
 } from '@/components/sidebar/sidebar.styled';
 import { USER_NAME_STORAGE_KEY } from '@/constants/config';
 import { useDelay, useLocalStorage, useMobileNav, usePreventScroll } from '@/hooks';
-import { clearSessionCookie, getAuthService, useAuthStore } from '@/modules/auth';
-import { useFilterStore } from '@/modules/filters';
+import type { AuthService } from '@/modules/auth/auth-service';
+import { getAuthService } from '@/modules/auth/auth-service';
+import { clearSessionCookie } from '@/modules/auth/session-cookie';
+import { useAuthStore } from '@/modules/auth/use-auth-store';
+import { useFilterStore } from '@/modules/filters/use-filters-store';
 import { routes } from '@/routes/routes';
 import { useThemeMode } from '@/theme';
 import { getInitials } from '@/utils/string';
@@ -36,7 +39,11 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-export const Sidebar = () => {
+type SidebarProps = {
+  authService?: AuthService;
+};
+
+export const Sidebar = ({ authService: authServiceProp }: SidebarProps = {}) => {
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const [isMobileOpen, setIsMobileOpen] = useState<boolean>(false);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
@@ -53,7 +60,7 @@ export const Sidebar = () => {
 
   const { isLoading: isLoggingOut, execute: executeLogout } = useDelay<void>(2000);
 
-  const authService = useMemo(() => getAuthService(), []);
+  const authService = useMemo(() => authServiceProp ?? getAuthService(), [authServiceProp]);
 
   useEffect(() => {
     if (shouldResetFilters && pathname === routes.home) {

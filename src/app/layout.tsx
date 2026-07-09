@@ -16,13 +16,18 @@ export const metadata: Metadata = {
 const themeScript = `
   (function() {
     try {
-      var stored = localStorage.getItem('financial_dashboard_theme');
-      var theme = stored === 'dark' || stored === 'light' ? stored : 'light';
-      if (theme === 'dark') {
-        document.documentElement.style.backgroundColor = '#0a0a0f';
-        document.documentElement.style.color = '#e5e5e5';
+      var mode = localStorage.getItem('financial_dashboard_theme');
+      var supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+      if (!mode && supportDarkMode) {
+        document.body.classList.add('theme-dark');
+      } else if (mode === 'dark') {
+        document.body.classList.add('theme-dark');
+      } else {
+        document.body.classList.add('theme-light');
       }
-    } catch(e) {}
+    } catch(e) {
+      document.body.classList.add('theme-light');
+    }
   })();
 `;
 
