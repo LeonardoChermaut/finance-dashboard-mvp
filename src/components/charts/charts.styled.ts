@@ -26,7 +26,6 @@ export const ChartCard = styled(Card)`
   overflow: hidden;
   min-width: 0;
   max-width: 100%;
-  cursor: pointer;
 `;
 
 export const ChartTitle = styled.h3`
@@ -45,6 +44,7 @@ export const ChartArea = styled.div`
   width: 100%;
   min-width: 0;
   overflow: hidden;
+  cursor: pointer;
 
   canvas {
     max-width: 100% !important;
@@ -65,6 +65,7 @@ export const DoughnutArea = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
 
   canvas {
     max-width: 100% !important;
