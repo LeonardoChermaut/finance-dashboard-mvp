@@ -10,7 +10,7 @@ const geistSans = Geist({
 
 export const metadata: Metadata = {
   title: 'Dashboard Financeiro',
-  description: 'Dashboard financeiro com filtros dinamicos, cards de resumo e graficos reativos.',
+  description: 'Dashboard financeiro com filtros dinâmicos, cards de resumo e gráficos reativos.',
 };
 
 const themeScript = `

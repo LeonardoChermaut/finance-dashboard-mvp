@@ -159,7 +159,7 @@ export const SummaryCards = ({
               key={pageIndex}
               $active={currentIndex < 2 ? pageIndex === 0 : pageIndex === 1}
               onClick={() => setCurrentIndex(pageIndex === 0 ? 0 : 2)}
-              aria-label={`Ir para pagina ${pageIndex + 1}`}
+              aria-label={`Ir para página ${pageIndex + 1}`}
             />
           ))}
         </DotsContainer>

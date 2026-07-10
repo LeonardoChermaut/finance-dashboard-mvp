@@ -41,7 +41,7 @@ export const DrilldownTransactions = ({
         </TransactionItem>
       ))}
       {!hasFilteredTransactions ? (
-        <LoadingWrapper>Nenhuma transacao encontrada</LoadingWrapper>
+        <LoadingWrapper>Nenhuma transação encontrada</LoadingWrapper>
       ) : null}
     </TransactionList>
   );

@@ -103,7 +103,7 @@ export const exportToPdf = (): void => {
         }
       }
 
-      pdf.save('financeiro-relatorio.pdf');
+      pdf.save('financeiro-relatório.pdf');
     });
   });
 };

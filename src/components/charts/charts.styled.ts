@@ -26,6 +26,7 @@ export const ChartCard = styled(Card)`
   overflow: hidden;
   min-width: 0;
   max-width: 100%;
+  cursor: pointer;
 `;
 
 export const ChartTitle = styled.h3`

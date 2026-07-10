@@ -7,12 +7,12 @@ export const calculateVariation = (current: number, previous: number): string =>
   const percentage = Math.round((Math.abs(change) / Math.abs(previous)) * 100);
 
   if (change > 0) {
-    return `+${percentage}% vs periodo anterior`;
+    return `+${percentage}% vs período anterior`;
   }
   if (change < 0) {
-    return `-${percentage}% vs periodo anterior`;
+    return `-${percentage}% vs período anterior`;
   }
-  return 'Sem alteracao vs periodo anterior';
+  return 'Sem alteração vs período anterior';
 };
 
 export const calculatePendingVariation = (current: number, previous: number): string => {
@@ -22,14 +22,14 @@ export const calculatePendingVariation = (current: number, previous: number): st
     return 'Sem dados';
   }
   if (previous === 0) {
-    return `+${change} vs periodo anterior`;
+    return `+${change} vs período anterior`;
   }
 
   if (change > 0) {
-    return `+${change} vs periodo anterior`;
+    return `+${change} vs período anterior`;
   }
   if (change < 0) {
-    return `${change} vs periodo anterior`;
+    return `${change} vs período anterior`;
   }
-  return 'Sem alteracao vs periodo anterior';
+  return 'Sem alteração vs período anterior';
 };

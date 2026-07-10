@@ -43,14 +43,14 @@ export const DrilldownPagination = ({
   return (
     <PaginationContainer>
       <PaginationInfo>
-        {paginationStart}-{paginationEnd} de {totalItems} transacoes
+        {paginationStart}-{paginationEnd} de {totalItems} transações
       </PaginationInfo>
       <PaginationButtons>
         <PaginationButton
           type="button"
           onClick={goToFirstPage}
           disabled={currentPage === 1}
-          aria-label="Primeira pagina"
+          aria-label="Primeira página"
         >
           <ChevronsLeft size={16} />
         </PaginationButton>
@@ -58,7 +58,7 @@ export const DrilldownPagination = ({
           type="button"
           onClick={goToPreviousPage}
           disabled={currentPage === 1}
-          aria-label="Pagina anterior"
+          aria-label="Página anterior"
         >
           <ChevronLeft size={16} />
         </PaginationButton>
@@ -68,7 +68,7 @@ export const DrilldownPagination = ({
             type="button"
             $active={page === currentPage}
             onClick={() => goToPage(page)}
-            aria-label={`Pagina ${page}`}
+            aria-label={`Página ${page}`}
             aria-current={page === currentPage ? 'page' : undefined}
           >
             {page}
@@ -78,7 +78,7 @@ export const DrilldownPagination = ({
           type="button"
           onClick={goToNextPage}
           disabled={currentPage === totalPages}
-          aria-label="Proxima pagina"
+          aria-label="Próxima página"
         >
           <ChevronRight size={16} />
         </PaginationButton>
@@ -86,7 +86,7 @@ export const DrilldownPagination = ({
           type="button"
           onClick={goToLastPage}
           disabled={currentPage === totalPages}
-          aria-label="Ultima pagina"
+          aria-label="Última página"
         >
           <ChevronsRight size={16} />
         </PaginationButton>

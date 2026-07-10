@@ -172,29 +172,29 @@ const features = [
     icon: Filter,
     title: 'Filtros Dinamicos',
     description:
-      'Filtre por datas, contas, industrias e estados. Todos os dados atualizam instantaneamente.',
+      'Filtre por datas, contas, indústrias e estados. Todos os dados atualizam instantaneamente.',
   },
   {
     icon: Wallet,
     title: 'Cards de Resumo',
     description:
-      'Resumo visual com receitas, despesas, pendencias e saldo total em um unico painel.',
+      'Resumo visual com receitas, despesas, pendências e saldo total em um único painel.',
   },
   {
     icon: Lock,
     title: 'Sessao Segura',
-    description: 'Autenticacao mockada com persistencia de sessao e protecao de rotas no servidor.',
+    description: 'Autenticação mockada com persistência de sessão e proteção de rotas no servidor.',
   },
   {
     icon: Moon,
     title: 'Dark Mode',
-    description: 'Tema claro e escuro com persistencia da escolha do usuario e transicoes suaves.',
+    description: 'Tema claro e escuro com persistência da escolha do usuário e transições suaves.',
   },
   {
     icon: Bell,
     title: 'Transacoes Pendentes',
     description:
-      'Identificacao automatica de transacoes recentes com indicador visual de pendencia.',
+      'Identificação automática de transações recentes com indicador visual de pendência.',
   },
 ];
 
@@ -251,9 +251,9 @@ const HomePage = () => {
 
             <FeaturesSection id="features">
               <SectionLabel>Funcionalidades</SectionLabel>
-              <SectionTitle>Tudo que voce precisa</SectionTitle>
+              <SectionTitle>Tudo que você precisa</SectionTitle>
               <SectionDescription>
-                Um sistema financeiro completo com visual profissional, filtros dinamicos e graficos
+                Um sistema financeiro completo com visual profissional, filtros dinâmicos e gráficos
                 reativos.
               </SectionDescription>
               <FeaturesGrid>
@@ -275,10 +275,10 @@ const HomePage = () => {
             <SectionDivider />
 
             <CtaSection>
-              <CtaTitle>Pronto para comecar?</CtaTitle>
+              <CtaTitle>Pronto para começar?</CtaTitle>
               <CtaDescription>
                 Acesse o dashboard com as credenciais mockadas e explore todos os recursos
-                disponiveis.
+                disponíveis.
               </CtaDescription>
               <Link href={routes.dashboard} passHref>
                 <Button as="span">
@@ -289,7 +289,7 @@ const HomePage = () => {
             </CtaSection>
 
             <Footer>
-              <FooterText>Dashboard Financeiro MVP — Projeto de demonstracao</FooterText>
+              <FooterText>Dashboard Financeiro MVP — Projeto de demonstração</FooterText>
             </Footer>
           </PageWrapper>
         </AuthenticatedContent>
@@ -330,7 +330,7 @@ const HomePage = () => {
         <HeroActions>
           <Link href={routes.login} passHref>
             <Button as="span">
-              Comecar Agora
+              Começar Agora
               <ChevronRight size={16} />
             </Button>
           </Link>
@@ -355,9 +355,9 @@ const HomePage = () => {
 
       <FeaturesSection id="features">
         <SectionLabel>Funcionalidades</SectionLabel>
-        <SectionTitle>Tudo que voce precisa</SectionTitle>
+        <SectionTitle>Tudo que você precisa</SectionTitle>
         <SectionDescription>
-          Um sistema financeiro completo com visual profissional, filtros dinamicos e graficos
+          Um sistema financeiro completo com visual profissional, filtros dinâmicos e gráficos
           reativos.
         </SectionDescription>
         <FeaturesGrid>
@@ -379,9 +379,9 @@ const HomePage = () => {
       <SectionDivider />
 
       <CtaSection>
-        <CtaTitle>Pronto para comecar?</CtaTitle>
+        <CtaTitle>Pronto para começar?</CtaTitle>
         <CtaDescription>
-          Acesse o dashboard com as credenciais mockadas e explore todos os recursos disponiveis.
+          Acesse o dashboard com as credenciais mockadas e explore todos os recursos disponíveis.
         </CtaDescription>
         <Link href={routes.login} passHref>
           <Button as="span">
@@ -392,7 +392,7 @@ const HomePage = () => {
       </CtaSection>
 
       <Footer>
-        <FooterText>Dashboard Financeiro MVP — Projeto de demonstracao</FooterText>
+        <FooterText>Dashboard Financeiro MVP — Projeto de demonstração</FooterText>
       </Footer>
     </PageWrapper>
   );
