@@ -1,6 +1,6 @@
 'use client';
 
-import { useFilterStore } from '@/modules/filters';
+import { useFilters } from '@/modules/filters';
 import { usePathname } from 'next/navigation';
 import { useEffect, useRef } from 'react';
 
@@ -8,10 +8,7 @@ export const useSyncFiltersToUrl = (): void => {
   const pathname = usePathname();
   const hasSyncedRef = useRef(false);
 
-  const states = useFilterStore((state) => state.states);
-  const accounts = useFilterStore((state) => state.accounts);
-  const dateRange = useFilterStore((state) => state.dateRange);
-  const industries = useFilterStore((state) => state.industries);
+  const { dateRange, accounts, industries, states } = useFilters();
 
   useEffect(() => {
     if (!hasSyncedRef.current) {

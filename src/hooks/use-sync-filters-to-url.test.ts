@@ -25,9 +25,7 @@ const mockStoreState = {
 };
 
 jest.mock('@/modules/filters', () => ({
-  useFilterStore: jest.fn((selector: (state: typeof mockStoreState) => unknown) =>
-    selector(mockStoreState),
-  ),
+  useFilters: jest.fn(() => mockStoreState),
 }));
 
 beforeEach(() => {

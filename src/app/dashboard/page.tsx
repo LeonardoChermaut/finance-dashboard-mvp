@@ -22,7 +22,7 @@ import {
   useSyncFiltersToUrl,
 } from '@/hooks';
 import { useAuthStore } from '@/modules/auth';
-import { useFilterStore } from '@/modules/filters';
+import { useFilters } from '@/modules/filters';
 import { getTransactionRepository } from '@/modules/transactions/transaction-repository-factory';
 import { useDashboardData } from '@/modules/transactions/use-dashboard-data';
 import { formatDate } from '@/utils/date';
@@ -84,8 +84,7 @@ const DashboardContent = () => {
   const [currentDate] = useState<string>(() => formatDate(new Date()));
   const exportMenuRef = useRef<HTMLDivElement>(null);
 
-  const dateRange = useFilterStore((state) => state.dateRange);
-  const setDateRange = useFilterStore((state) => state.setDateRange);
+  const { dateRange, setDateRange } = useFilters();
 
   const isDateRangeActive = dateRange.startDate !== null || dateRange.endDate !== null;
 

@@ -30,7 +30,7 @@ import type { AuthService } from '@/modules/auth/auth-service';
 import { getAuthService } from '@/modules/auth/auth-service';
 import { clearSessionCookie } from '@/modules/auth/session-cookie';
 import { useAuthStore } from '@/modules/auth/use-auth-store';
-import { useFilterStore } from '@/modules/filters/use-filters-store';
+import { useFilters } from '@/modules/filters';
 import { routes } from '@/routes/routes';
 import { useThemeMode } from '@/theme';
 import { getInitials } from '@/utils/string';
@@ -49,7 +49,7 @@ export const Sidebar = ({ authService: authServiceProp }: SidebarProps = {}) => 
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const [shouldResetFilters, setShouldResetFilters] = useState<boolean>(false);
 
-  const { resetFilters } = useFilterStore();
+  const { resetFilters } = useFilters();
   const { user, clearAuth } = useAuthStore();
   const { mode, toggleTheme } = useThemeMode();
 

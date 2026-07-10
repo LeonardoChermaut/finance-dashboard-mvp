@@ -1,6 +1,6 @@
 'use client';
 
-import { useFilterStore } from '@/modules/filters';
+import { useFilters } from '@/modules/filters';
 import type { FilterOptions } from '@/modules/filters/filters.types';
 import { ChevronDown, Search, X } from 'lucide-react';
 import { useCallback, useMemo, useState, type ReactNode } from 'react';
@@ -174,19 +174,20 @@ export const FilterBar = ({ filterOptions }: FilterBarProps) => {
     states: false,
   });
 
-  const states = useFilterStore((state) => state.states);
-  const accounts = useFilterStore((state) => state.accounts);
-  const dateRange = useFilterStore((state) => state.dateRange);
-  const industries = useFilterStore((state) => state.industries);
-  const toggleState = useFilterStore((state) => state.toggleState);
-  const toggleAccount = useFilterStore((state) => state.toggleAccount);
-  const toggleIndustry = useFilterStore((state) => state.toggleIndustry);
-
-  const setStates = useFilterStore((state) => state.setStates);
-  const setAccounts = useFilterStore((state) => state.setAccounts);
-  const setDateRange = useFilterStore((state) => state.setDateRange);
-  const resetFilters = useFilterStore((state) => state.resetFilters);
-  const setIndustries = useFilterStore((state) => state.setIndustries);
+  const {
+    dateRange,
+    accounts,
+    industries,
+    states,
+    setDateRange,
+    toggleAccount,
+    toggleIndustry,
+    toggleState,
+    setAccounts,
+    setIndustries,
+    setStates,
+    resetFilters,
+  } = useFilters();
 
   const hasActiveFilters =
     dateRange.startDate !== null ||

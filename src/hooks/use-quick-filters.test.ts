@@ -5,12 +5,10 @@ const mockSetDateRange = jest.fn();
 const mockResetFilters = jest.fn();
 
 jest.mock('@/modules/filters', () => ({
-  useFilterStore: jest.fn((selector) =>
-    selector({
-      setDateRange: mockSetDateRange,
-      resetFilters: mockResetFilters,
-    }),
-  ),
+  useFilters: jest.fn(() => ({
+    setDateRange: mockSetDateRange,
+    resetFilters: mockResetFilters,
+  })),
 }));
 
 beforeEach(() => {
