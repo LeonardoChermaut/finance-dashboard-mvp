@@ -1,6 +1,6 @@
 'use client';
 
-import { useFilterStore } from '@/modules/filters';
+import { useFilters } from '@/modules/filters';
 import type { DateRange } from '@/modules/filters/filters.types';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useRef } from 'react';
@@ -35,10 +35,7 @@ export const useSearchParamsState = (): DashboardSearchParams => {
 
 export const useSyncFiltersFromUrl = (): void => {
   const searchParams = useSearchParams();
-  const setDateRange = useFilterStore((state) => state.setDateRange);
-  const setAccounts = useFilterStore((state) => state.setAccounts);
-  const setIndustries = useFilterStore((state) => state.setIndustries);
-  const setStates = useFilterStore((state) => state.setStates);
+  const { setDateRange, setAccounts, setIndustries, setStates } = useFilters();
   const hasSyncedRef = useRef(false);
 
   useEffect(() => {

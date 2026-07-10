@@ -1,6 +1,6 @@
 'use client';
 
-import { useFilterStore } from '@/modules/filters';
+import { useFilters } from '@/modules/filters';
 import { useCallback, useState } from 'react';
 
 export type QuickFilterPeriod = '7d' | '1m' | '3m' | '1y';
@@ -41,8 +41,7 @@ const getQuickRange = (period: QuickFilterPeriod): { startDate: string; endDate:
 
 export const useQuickFilters = (): QuickFilterData => {
   const [activeQuickFilter, setActiveQuickFilter] = useState<string | null>(null);
-  const setDateRange = useFilterStore((state) => state.setDateRange);
-  const resetFilters = useFilterStore((state) => state.resetFilters);
+  const { setDateRange, resetFilters } = useFilters();
 
   const handleQuickFilter = useCallback(
     (period: QuickFilterPeriod) => {

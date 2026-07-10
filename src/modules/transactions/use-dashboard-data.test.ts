@@ -47,14 +47,12 @@ jest.mock('@/modules/transactions/transaction-repository-factory', () => ({
 }));
 
 jest.mock('@/modules/filters', () => ({
-  useFilterStore: jest.fn((selector) =>
-    selector({
-      states: [],
-      accounts: [],
-      industries: [],
-      dateRange: { startDate: null, endDate: null, startTime: null, endTime: null },
-    }),
-  ),
+  useFilters: jest.fn(() => ({
+    states: [],
+    accounts: [],
+    industries: [],
+    dateRange: { startDate: null, endDate: null, startTime: null, endTime: null },
+  })),
 }));
 
 const getTransactionRepositoryMock = jest.mocked(

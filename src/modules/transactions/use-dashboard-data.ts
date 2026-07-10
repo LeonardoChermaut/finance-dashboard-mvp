@@ -1,7 +1,7 @@
 'use client';
 
 import { DEFAULT_CURRENCY, emptyFilterOptions, emptySummary } from '@/constants/dashboard';
-import { useFilterStore } from '@/modules/filters';
+import { useFilters } from '@/modules/filters';
 import { applyFilters, deriveFilterOptions } from '@/modules/filters/apply-filters';
 import type { FilterOptions } from '@/modules/filters/filters.types';
 import {
@@ -36,10 +36,7 @@ export const useDashboardData = (repository?: ITransactionRepository): Dashboard
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  const states = useFilterStore((state) => state.states);
-  const accounts = useFilterStore((state) => state.accounts);
-  const dateRange = useFilterStore((state) => state.dateRange);
-  const industries = useFilterStore((state) => state.industries);
+  const { dateRange, accounts, industries, states } = useFilters();
 
   useEffect(() => {
     let isMounted = true;

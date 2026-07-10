@@ -26,14 +26,12 @@ const mockSetIndustries = jest.fn();
 const mockSetStates = jest.fn();
 
 jest.mock('@/modules/filters', () => ({
-  useFilterStore: jest.fn((selector: (state: Record<string, unknown>) => unknown) =>
-    selector({
-      setDateRange: mockSetDateRange,
-      setAccounts: mockSetAccounts,
-      setIndustries: mockSetIndustries,
-      setStates: mockSetStates,
-    }),
-  ),
+  useFilters: jest.fn(() => ({
+    setDateRange: mockSetDateRange,
+    setAccounts: mockSetAccounts,
+    setIndustries: mockSetIndustries,
+    setStates: mockSetStates,
+  })),
 }));
 
 beforeEach(() => {
