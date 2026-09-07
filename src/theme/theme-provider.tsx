@@ -35,10 +35,17 @@ const getInitialTheme = (): ThemeMode => {
     const stored = localStorage.getItem(THEME_STORAGE_KEY);
     if (stored) {
       const parsed = stored.replace(/"/g, '');
+      if (parsed === 'dark' || parsed === 'light') {
+        return parsed;
+      }
+    }
+
+    if (window.matchMedia?.('(prefers-color-scheme: dark)')?.matches) {
+      return 'dark';
     }
   } catch {}
 
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  return 'light';
 };
 
 export const ThemeProvider = ({ children }: ThemeProviderProps) => {
