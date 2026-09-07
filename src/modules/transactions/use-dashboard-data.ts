@@ -27,6 +27,7 @@ type DashboardData = {
   filterOptions: FilterOptions;
   previousSummary: FinancialSummary;
   monthlyTotals: MonthlyTotals[];
+  allTransactions: Transaction[];
   filteredTransactions: Transaction[];
   accumulatedBalance: AccumulatedBalancePoint[];
 };
@@ -111,6 +112,7 @@ export const useDashboardData = (repository?: ITransactionRepository): Dashboard
     currency,
     isLoading,
     error,
+    allTransactions: transactions,
     filteredTransactions,
   };
 };

@@ -18,7 +18,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
 
   return (
     <Layout>
-      <Sidebar />
+      {isAuthenticated && <Sidebar />}
       {children}
     </Layout>
   );

@@ -5,7 +5,7 @@ import { LogoIcon } from '@/components/ui/auth-layout';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
-import { useAuthStore } from '@/modules/auth';
+import { hasSessionCookie, useAuthStore } from '@/modules/auth';
 import { routes } from '@/routes/routes';
 import {
   ArrowRight,
@@ -20,6 +20,7 @@ import {
   Wallet,
 } from 'lucide-react';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import {
   CtaDescription,
@@ -44,9 +45,9 @@ import {
   SectionDivider,
   SectionLabel,
   SectionTitle,
-  StatsSection,
   StatItem,
   StatLabel,
+  StatsSection,
   StatValue,
 } from './page.styled';
 
@@ -206,9 +207,20 @@ const stats = [
 ] as const;
 
 const HomePage = () => {
+  const [isHydrated, setIsHydrated] = useState<boolean>(false);
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const clearAuth = useAuthStore((state) => state.clearAuth);
 
-  if (isAuthenticated) {
+  useEffect(() => {
+    setIsHydrated(true);
+    if (!hasSessionCookie() && isAuthenticated) {
+      clearAuth();
+    }
+  }, [isAuthenticated, clearAuth]);
+
+  const showAuthenticated = isHydrated && isAuthenticated && hasSessionCookie();
+
+  if (showAuthenticated) {
     return (
       <AuthenticatedLayout>
         <Sidebar />

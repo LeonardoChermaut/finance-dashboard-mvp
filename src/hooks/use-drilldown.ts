@@ -1,5 +1,6 @@
 'use client';
 
+import { useDebounce } from '@/hooks/use-debounce';
 import { usePagination } from '@/hooks/use-pagination';
 import type { Transaction } from '@/modules/transactions/transaction.types';
 import { filterTransactionsByType } from '@/utils/transaction';
@@ -41,6 +42,8 @@ export const useDrilldown = (filteredTransactions: readonly Transaction[]): Dril
   const [drilldownSearch, setDrilldownSearch] = useState<string>('');
   const [drilldownType, setDrilldownType] = useState<DrilldownType>(null);
 
+  const debouncedSearch = useDebounce(drilldownSearch, 300);
+
   const drilldownTransactions = useMemo(() => {
     if (drilldownType === null) {
       return [];
@@ -49,11 +52,11 @@ export const useDrilldown = (filteredTransactions: readonly Transaction[]): Dril
   }, [filteredTransactions, drilldownType]);
 
   const filteredDrilldownTransactions = useMemo(() => {
-    if (drilldownSearch === '') {
+    if (debouncedSearch === '') {
       return drilldownTransactions;
     }
 
-    const lowerSearch = drilldownSearch.toLowerCase();
+    const lowerSearch = debouncedSearch.toLowerCase();
 
     return drilldownTransactions.filter((transaction) => {
       const dateStr = transaction.date.toLocaleDateString('pt-BR');
@@ -69,7 +72,7 @@ export const useDrilldown = (filteredTransactions: readonly Transaction[]): Dril
         dateTimeStr.toLowerCase().includes(lowerSearch)
       );
     });
-  }, [drilldownTransactions, drilldownSearch]);
+  }, [drilldownTransactions, debouncedSearch]);
 
   const {
     currentPage,
@@ -90,7 +93,7 @@ export const useDrilldown = (filteredTransactions: readonly Transaction[]): Dril
     setDrilldownSearch('');
   }, [drilldownType, resetPage]);
 
-  const drilldownTotal = drilldownTransactions.reduce(
+  const drilldownTotal = filteredDrilldownTransactions.reduce(
     (sum, transaction) => sum + transaction.amountInCents,
     0,
   );

@@ -13,24 +13,36 @@ import {
 
 type DrilldownHeaderProps = {
   drilldownType: DrilldownType;
-  onExportFiltered: (type: DrilldownCategory) => void;
+  hasActiveFilters: boolean;
+  onExportFiltered: (type?: DrilldownCategory) => void;
+  onOpenExportDialog: () => void;
   onClose: () => void;
 };
 
 export const DrilldownHeader = ({
   drilldownType,
+  hasActiveFilters,
   onExportFiltered,
+  onOpenExportDialog,
   onClose,
 }: DrilldownHeaderProps) => {
   if (drilldownType === null) {
     return null;
   }
 
+  const handleExport = (): void => {
+    if (hasActiveFilters) {
+      onOpenExportDialog();
+    } else {
+      onExportFiltered(drilldownType);
+    }
+  };
+
   return (
     <StyledDrilldownHeader>
       <DrilldownTitle>{drilldownConfig[drilldownType]?.label}</DrilldownTitle>
       <DrilldownActions>
-        <DrilldownExportBtn type="button" onClick={() => onExportFiltered(drilldownType)}>
+        <DrilldownExportBtn type="button" onClick={handleExport}>
           <FileSpreadsheet size={14} />
           Exportar Excel
         </DrilldownExportBtn>

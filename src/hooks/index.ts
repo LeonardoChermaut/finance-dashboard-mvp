@@ -1,4 +1,5 @@
 export { useClickOutside } from './use-click-outside';
+export { useDebounce } from './use-debounce';
 export { useDelay } from './use-delay';
 export { useDrilldown } from './use-drilldown';
 export type { DrilldownCategory, DrilldownType } from './use-drilldown';
