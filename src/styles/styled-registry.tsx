@@ -1,6 +1,7 @@
 'use client';
 
 import { GlobalStyle } from '@/styles/global-style';
+import type { ThemeMode } from '@/theme/theme-provider';
 import { ThemeProvider } from '@/theme/theme-provider';
 import { useServerInsertedHTML } from 'next/navigation';
 import type { ReactNode } from 'react';
@@ -10,10 +11,11 @@ import { ServerStyleSheet, StyleSheetManager } from 'styled-components';
 
 type StyledRegistryProps = {
   children: ReactNode;
+  initialTheme?: ThemeMode;
 };
 
-export const StyledRegistry = ({ children }: StyledRegistryProps) => {
-  const [styledComponentsStyleSheet, __] = useState(() => new ServerStyleSheet());
+export const StyledRegistry = ({ children, initialTheme }: StyledRegistryProps) => {
+  const [styledComponentsStyleSheet] = useState(() => new ServerStyleSheet());
 
   useServerInsertedHTML(() => {
     const styles = styledComponentsStyleSheet.getStyleElement();
@@ -23,7 +25,7 @@ export const StyledRegistry = ({ children }: StyledRegistryProps) => {
 
   return (
     <StyleSheetManager sheet={styledComponentsStyleSheet.instance}>
-      <ThemeProvider>
+      <ThemeProvider initialTheme={initialTheme}>
         <GlobalStyle />
         <Toaster richColors position="top-right" expand={false} visibleToasts={1} duration={1500} />
         {children}
