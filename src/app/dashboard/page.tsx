@@ -12,6 +12,7 @@ import {
   SectionTitle,
 } from '@/components/dashboard/dashboard.styled';
 import type { DrilldownType } from '@/hooks';
+import type { DrilldownCategory } from '@/hooks/use-drilldown';
 import {
   useClickOutside,
   useDrilldown,
@@ -25,6 +26,8 @@ import { useAuthStore } from '@/modules/auth';
 import { useFilters } from '@/modules/filters';
 import { getTransactionRepository } from '@/modules/transactions/transaction-repository-factory';
 import { useDashboardData } from '@/modules/transactions/use-dashboard-data';
+import { exportToExcel } from '@/lib/export';
+import { filterTransactionsByType } from '@/utils/transaction';
 import { formatDate } from '@/utils/date';
 import dynamic from 'next/dynamic';
 import { Suspense, useCallback, useEffect, useRef, useState } from 'react';
@@ -60,6 +63,19 @@ const DynamicFilterBar = dynamic(
 
 const repository = getTransactionRepository();
 
+const buildDrilldownSuffix = (type?: DrilldownCategory): string => {
+  if (type === 'income') {
+    return 'receitas-filtrado';
+  }
+  if (type === 'expenses') {
+    return 'despesas-filtrado';
+  }
+  if (type === 'pending') {
+    return 'pendentes-filtrado';
+  }
+  return 'filtrado';
+};
+
 const DashboardContent = () => {
   const user = useAuthStore((state) => state.user);
   const [showWelcomeToast, setShowWelcomeToast] = useLocalStorage('showWelcomeToast', false);
@@ -67,7 +83,7 @@ const DashboardContent = () => {
   useEffect(() => {
     if (showWelcomeToast) {
       setShowWelcomeToast(false);
-      toast.success(`Bem-vindo, ${user?.name ?? 'usuario'}!`);
+      toast.success(`Bem-vindo, ${user?.name ?? 'usuário'}!`);
     }
   }, [showWelcomeToast, setShowWelcomeToast, user?.name]);
 
@@ -79,6 +95,7 @@ const DashboardContent = () => {
     filterOptions,
     currency,
     isLoading,
+    allTransactions,
     filteredTransactions,
   } = useDashboardData(repository);
   const [currentDate] = useState<string>(() => formatDate(new Date()));
@@ -96,11 +113,18 @@ const DashboardContent = () => {
   const {
     isExporting,
     showExportMenu,
+    showExportDialog,
+    hasActiveFilters,
+    filteredCount,
+    totalCount,
     setShowExportMenu,
     handleExportPdf,
     handleExportExcel,
     handleExportFiltered,
-  } = useExport(filteredTransactions, currency);
+    handleExportAll,
+    openExportDialog,
+    closeExportDialog,
+  } = useExport(filteredTransactions, allTransactions, currency);
 
   useClickOutside(exportMenuRef, showExportMenu, () => setShowExportMenu(false));
 
@@ -124,6 +148,33 @@ const DashboardContent = () => {
     setDrilldownSearch,
     handleDrilldownClose,
   } = useDrilldown(filteredTransactions);
+
+  const [showDrilldownExportDialog, setShowDrilldownExportDialog] = useState<boolean>(false);
+
+  const openDrilldownExportDialog = useCallback(() => {
+    setShowDrilldownExportDialog(true);
+  }, []);
+
+  const closeDrilldownExportDialog = useCallback(() => {
+    setShowDrilldownExportDialog(false);
+  }, []);
+
+  const handleDrilldownExportFiltered = useCallback(
+    (type?: DrilldownCategory) => {
+      const transactions = type
+        ? filterTransactionsByType(filteredDrilldownTransactions, type)
+        : filteredDrilldownTransactions;
+      const suffix = buildDrilldownSuffix(type);
+      exportToExcel(transactions, currency, suffix);
+      setShowDrilldownExportDialog(false);
+    },
+    [filteredDrilldownTransactions, currency],
+  );
+
+  const handleDrilldownExportAll = useCallback(() => {
+    exportToExcel(allTransactions, currency, 'todos');
+    setShowDrilldownExportDialog(false);
+  }, [allTransactions, currency]);
 
   const handleCardClick = useCallback(
     (type: DrilldownType): void => {
@@ -164,11 +215,18 @@ const DashboardContent = () => {
           <DashboardExportBar
             isExporting={isExporting}
             showExportMenu={showExportMenu}
+            showExportDialog={showExportDialog}
+            hasActiveFilters={hasActiveFilters}
+            filteredCount={filteredCount}
+            totalCount={totalCount}
             exportMenuRef={exportMenuRef}
             onToggleMenu={() => setShowExportMenu((prev) => !prev)}
             onExportPdf={handleExportPdf}
             onExportExcel={handleExportExcel}
             onExportFiltered={handleExportFiltered}
+            onExportAll={handleExportAll}
+            onOpenExportDialog={openExportDialog}
+            onCloseExportDialog={closeExportDialog}
           />
 
           <DashboardQuickFilters
@@ -209,6 +267,7 @@ const DashboardContent = () => {
       </MainContent>
 
       <DashboardDrilldownPanel
+        showDrilldownExportDialog={showDrilldownExportDialog}
         data={{
           type: drilldownType,
           search: drilldownSearch,
@@ -217,11 +276,17 @@ const DashboardContent = () => {
           paginatedTransactions: paginatedItems,
           total: drilldownTotal,
           currency,
+          hasActiveFilters,
+          filteredCount: filteredDrilldownTransactions.length,
+          totalCount: allTransactions.length,
         }}
         actions={{
           onSearchChange: setDrilldownSearch,
           onClose: handleDrilldownClose,
-          onExportFiltered: handleExportFiltered,
+          onExportFiltered: handleDrilldownExportFiltered,
+          onExportAll: handleDrilldownExportAll,
+          onOpenDrilldownExportDialog: openDrilldownExportDialog,
+          onCloseDrilldownExportDialog: closeDrilldownExportDialog,
           goToPage,
           goToNextPage,
           goToPreviousPage,

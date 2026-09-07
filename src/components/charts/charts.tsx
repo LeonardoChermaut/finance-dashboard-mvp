@@ -259,14 +259,14 @@ export const Charts = ({
       </FullWidthGrid>
       <ChartCard>
         <ChartTitle>Saldo Acumulado</ChartTitle>
-        <ChartDescription>Evolucao do saldo ao longo do tempo.</ChartDescription>
+        <ChartDescription>Evolução do saldo ao longo do tempo.</ChartDescription>
         <ChartArea>
           <Line data={lineData} options={lineOptions} />
         </ChartArea>
       </ChartCard>
       <ChartCard>
         <ChartTitle>Distribuição</ChartTitle>
-        <ChartDescription>Proporcao entre receitas, despesas e pendentes.</ChartDescription>
+        <ChartDescription>Proporção entre receitas, despesas e pendentes.</ChartDescription>
         <DoughnutArea>
           <Doughnut data={doughnutData} options={doughnutOptions} />
         </DoughnutArea>

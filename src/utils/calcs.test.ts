@@ -10,23 +10,23 @@ describe('calculateVariation', () => {
   });
 
   it('Returns "Sem alteracao" when values are equal', () => {
-    expect(calculateVariation(50, 50)).toBe('Sem alteracao vs periodo anterior');
+    expect(calculateVariation(50, 50)).toBe('Sem alteração vs período anterior');
   });
 
   it('Calculates positive variation with integer percentage', () => {
-    expect(calculateVariation(100, 80)).toBe('+25% vs periodo anterior');
+    expect(calculateVariation(100, 80)).toBe('+25% vs período anterior');
   });
 
   it('Calculates negative variation with integer percentage', () => {
-    expect(calculateVariation(80, 100)).toBe('-20% vs periodo anterior');
+    expect(calculateVariation(80, 100)).toBe('-20% vs período anterior');
   });
 
   it('Rounds percentage up for positive variation', () => {
-    expect(calculateVariation(133, 100)).toBe('+33% vs periodo anterior');
+    expect(calculateVariation(133, 100)).toBe('+33% vs período anterior');
   });
 
   it('Rounds percentage up for negative variation', () => {
-    expect(calculateVariation(67, 100)).toBe('-33% vs periodo anterior');
+    expect(calculateVariation(67, 100)).toBe('-33% vs período anterior');
   });
 
   it('Does not mutate input arguments', () => {
@@ -44,19 +44,19 @@ describe('calculatePendingVariation', () => {
   });
 
   it('Returns absolute change when previous is zero and current is not', () => {
-    expect(calculatePendingVariation(5, 0)).toBe('+5 vs periodo anterior');
+    expect(calculatePendingVariation(5, 0)).toBe('+5 vs período anterior');
   });
 
   it('Calculates positive variation', () => {
-    expect(calculatePendingVariation(10, 5)).toBe('+5 vs periodo anterior');
+    expect(calculatePendingVariation(10, 5)).toBe('+5 vs período anterior');
   });
 
   it('Calculates negative variation', () => {
-    expect(calculatePendingVariation(3, 8)).toBe('-5 vs periodo anterior');
+    expect(calculatePendingVariation(3, 8)).toBe('-5 vs período anterior');
   });
 
   it('Returns "Sem alteracao" when non-zero values are equal', () => {
-    expect(calculatePendingVariation(7, 7)).toBe('Sem alteracao vs periodo anterior');
+    expect(calculatePendingVariation(7, 7)).toBe('Sem alteração vs período anterior');
   });
 
   it('Does not mutate input arguments', () => {

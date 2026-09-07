@@ -1,5 +1,9 @@
 import { createMockAuthService } from '@/modules/auth/auth-service';
-import { clearSessionCookie, setSessionCookie } from '@/modules/auth/session-cookie';
+import {
+  clearSessionCookie,
+  hasSessionCookie,
+  setSessionCookie,
+} from '@/modules/auth/session-cookie';
 
 beforeEach(() => {
   jest.clearAllMocks();
@@ -67,5 +71,17 @@ describe('clearSessionCookie', () => {
     clearSessionCookie();
 
     expect(document.cookie).not.toContain('financial_dashboard_session=authenticated');
+  });
+});
+
+describe('hasSessionCookie', () => {
+  it('Returns true when session cookie is present and authenticated', () => {
+    document.cookie = 'financial_dashboard_session=authenticated; path=/';
+    expect(hasSessionCookie()).toBe(true);
+  });
+
+  it('Returns false when session cookie is absent or invalid', () => {
+    document.cookie = 'other_cookie=value; path=/';
+    expect(hasSessionCookie()).toBe(false);
   });
 });

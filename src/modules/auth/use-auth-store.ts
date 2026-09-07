@@ -1,6 +1,6 @@
 import { AUTHENTICATION_COOKIE_NAME, USER_NAME_STORAGE_KEY } from '@/constants/config';
-import { clearSessionCookie } from '@/modules/auth/session-cookie';
 import type { AuthState } from '@/modules/auth/auth.types';
+import { clearSessionCookie, hasSessionCookie } from '@/modules/auth/session-cookie';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
@@ -20,6 +20,9 @@ export const useAuthStore = create<AuthState>()(
 
       clearAuth: () => {
         clearSessionCookie();
+        try {
+          localStorage.removeItem(USER_NAME_STORAGE_KEY);
+        } catch {}
         set({ isAuthenticated: false, user: null });
       },
 
@@ -49,7 +52,16 @@ export const useAuthStore = create<AuthState>()(
         return persistedState as AuthState;
       },
       onRehydrateStorage: () => (state) => {
-        if (state && !state.isAuthenticated) {
+        if (!state) {
+          return;
+        }
+
+        if (typeof window !== 'undefined' && !hasSessionCookie()) {
+          state.clearAuth();
+          return;
+        }
+
+        if (!state.isAuthenticated) {
           clearSessionCookie();
         }
       },

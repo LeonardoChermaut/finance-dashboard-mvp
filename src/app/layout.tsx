@@ -10,23 +10,23 @@ const geistSans = Geist({
 
 export const metadata: Metadata = {
   title: 'Dashboard Financeiro',
-  description: 'Dashboard financeiro com filtros dinamicos, cards de resumo e graficos reativos.',
+  description: 'Dashboard financeiro com filtros dinâmicos, cards de resumo e gráficos reativos.',
 };
 
 const themeScript = `
   (function() {
     try {
-      var mode = localStorage.getItem('financial_dashboard_theme');
+      var rawMode = localStorage.getItem('financial_dashboard_theme');
+      var mode = rawMode ? rawMode.replace(/"/g, '') : null;
       var supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
-      if (!mode && supportDarkMode) {
-        document.body.classList.add('theme-dark');
-      } else if (mode === 'dark') {
-        document.body.classList.add('theme-dark');
-      } else {
-        document.body.classList.add('theme-light');
-      }
-    } catch(e) {
-      document.body.classList.add('theme-light');
+      var activeMode = (mode === 'dark' || (!mode && supportDarkMode)) ? 'dark' : 'light';
+      document.documentElement.classList.add('theme-' + activeMode);
+      document.documentElement.setAttribute('data-theme', activeMode);
+      document.documentElement.style.colorScheme = activeMode;
+    } catch (error) {
+      document.documentElement.classList.add('theme-light');
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.documentElement.style.colorScheme = 'light';
     }
   })();
 `;
@@ -37,7 +37,7 @@ type RootLayoutProps = {
 
 const RootLayout = ({ children }: RootLayoutProps) => {
   return (
-    <html lang="pt-BR" className={geistSans.variable}>
+    <html lang="pt-BR" className={geistSans.variable} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>

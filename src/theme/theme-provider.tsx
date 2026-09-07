@@ -5,7 +5,7 @@ import { useLocalStorage } from '@/hooks';
 import { darkTheme } from '@/theme/dark-theme';
 import { lightTheme } from '@/theme/light-theme';
 import type { ReactNode } from 'react';
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo } from 'react';
 import { ThemeProvider as StyledThemeProvider } from 'styled-components';
 
 export type ThemeMode = 'light' | 'dark';
@@ -33,8 +33,8 @@ const getInitialTheme = (): ThemeMode => {
 
   try {
     const stored = localStorage.getItem(THEME_STORAGE_KEY);
-    if (stored === 'dark' || stored === 'light') {
-      return stored;
+    if (stored) {
+      const parsed = stored.replace(/"/g, '');
     }
   } catch {}
 
@@ -43,7 +43,6 @@ const getInitialTheme = (): ThemeMode => {
 
 export const ThemeProvider = ({ children }: ThemeProviderProps) => {
   const [mode, setMode] = useLocalStorage<ThemeMode>(THEME_STORAGE_KEY, getInitialTheme());
-  const [isHydrated, setIsHydrated] = useState<boolean>(false);
 
   const toggleTheme = useCallback(
     () => setMode((previous) => (previous === 'light' ? 'dark' : 'light')),
@@ -55,14 +54,13 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
   const contextValue = useMemo(() => ({ mode, toggleTheme }), [mode, toggleTheme]);
 
   useEffect(() => {
+    document.documentElement.classList.remove('theme-light', 'theme-dark');
+    document.documentElement.classList.add(`theme-${mode}`);
+    document.documentElement.setAttribute('data-theme', mode);
+    document.documentElement.style.colorScheme = mode;
     document.body.classList.remove('theme-light', 'theme-dark');
     document.body.classList.add(`theme-${mode}`);
-    setIsHydrated(true);
   }, [mode]);
-
-  if (!isHydrated) {
-    return <StyledThemeProvider theme={lightTheme}>{children}</StyledThemeProvider>;
-  }
 
   return (
     <ThemeContext.Provider value={contextValue}>

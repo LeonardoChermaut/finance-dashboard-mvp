@@ -1,7 +1,12 @@
 import type { Transaction } from '@/modules/transactions/transaction.types';
+import { buildExportFilename } from '@/utils/export-filename';
 import { formatCentsToCurrency } from '@/utils/format';
 
-export const exportToExcel = (transactions: readonly Transaction[], currency: string): void => {
+export const exportToExcel = (
+  transactions: readonly Transaction[],
+  currency: string,
+  suffix = 'export',
+): void => {
   import('xlsx').then((xlsx) => {
     const data = transactions.map((transaction) => ({
       Data: transaction.date.toLocaleDateString('pt-BR'),
@@ -27,11 +32,11 @@ export const exportToExcel = (transactions: readonly Transaction[], currency: st
       { wch: 10 },
     ];
 
-    xlsx.writeFile(workbook, 'financeiro-export.xlsx');
+    xlsx.writeFile(workbook, buildExportFilename(suffix, 'xlsx'));
   });
 };
 
-export const exportToPdf = (): void => {
+export const exportToPdf = (suffix = 'relatorio'): void => {
   Promise.all([import('jspdf'), import('html2canvas')]).then(([jsPDFModule, html2canvasModule]) => {
     const { default: jsPDF } = jsPDFModule;
     const { default: html2canvas } = html2canvasModule;
@@ -54,7 +59,7 @@ export const exportToPdf = (): void => {
       const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
       pdf.setFontSize(16);
-      pdf.text('Relatorio Financeiro', 10, 15);
+      pdf.text('Relatório Financeiro', 10, 15);
       pdf.setFontSize(10);
       pdf.text(`Gerado em: ${new Date().toLocaleDateString('pt-BR')}`, 10, 22);
 
@@ -103,7 +108,7 @@ export const exportToPdf = (): void => {
         }
       }
 
-      pdf.save('financeiro-relatorio.pdf');
+      pdf.save(buildExportFilename(suffix, 'pdf'));
     });
   });
 };

@@ -21,10 +21,10 @@ export const DrilldownSearch = ({ search, onSearchChange }: DrilldownSearchProps
       </DrilldownSearchIcon>
       <DrilldownSearchInput
         type="text"
-        placeholder="Buscar por conta, industria, estado ou data..."
+        placeholder="Buscar por conta, indústria, estado ou data..."
         value={search}
         onChange={(event) => onSearchChange(event.target.value)}
-        aria-label="Buscar transacoes"
+        aria-label="Buscar transações"
       />
       {search !== '' ? (
         <DrilldownClearSearch

@@ -22,18 +22,27 @@ import { Form, LinkButton, LinksContainer } from '@/components/ui/form';
 import { useLocalStorage } from '@/hooks';
 import { useForm } from '@/hooks/use-form';
 import { usePasswordVisibility } from '@/hooks/use-password-visibility';
-import { getAuthService, setSessionCookie, useAuthStore } from '@/modules/auth';
+import { getAuthService, hasSessionCookie, setSessionCookie, useAuthStore } from '@/modules/auth';
 import { loginSchema } from '@/modules/auth/auth.schemas';
 import { routes } from '@/routes/routes';
 import { useRouter } from 'next/navigation';
-import type { FormEvent } from 'react';
+import { useEffect, type FormEvent } from 'react';
+
 const LoginPage = () => {
   const router = useRouter();
   const authService = getAuthService();
 
+  const clearAuth = useAuthStore((state) => state.clearAuth);
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const setAuthenticated = useAuthStore((state) => state.setAuthenticated);
   const [, setShowWelcomeToast] = useLocalStorage('showWelcomeToast', false);
   const { showPassword, togglePassword, InputIcon } = usePasswordVisibility();
+
+  useEffect(() => {
+    if (!hasSessionCookie() && isAuthenticated) {
+      clearAuth();
+    }
+  }, [clearAuth, isAuthenticated]);
 
   const { values, errors, isSubmitting, handleChange, handleSubmit, setErrors } =
     useForm(loginSchema);

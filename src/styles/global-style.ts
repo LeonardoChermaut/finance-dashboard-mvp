@@ -20,11 +20,15 @@ export const GlobalStyle = createGlobalStyle`
     overflow-x: hidden;
   }
 
+  html.theme-light,
+  html[data-theme='light'],
   body.theme-light {
     --color-background: #f8fafc;
     --color-text: #0f172a;
   }
 
+  html.theme-dark,
+  html[data-theme='dark'],
   body.theme-dark {
     --color-background: #0f172a;
     --color-text: #f1f5f9;
@@ -32,6 +36,7 @@ export const GlobalStyle = createGlobalStyle`
 
   html {
     background-color: var(--color-background, #f8fafc);
+    color-scheme: ${({ theme }) => theme.colorScheme};
   }
 
   body {
