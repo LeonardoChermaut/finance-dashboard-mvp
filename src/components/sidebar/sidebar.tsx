@@ -185,6 +185,7 @@ export const Sidebar = ({ authService: authServiceProp }: SidebarProps = {}) => 
             aria-label={mode === 'light' ? 'Ativar modo escuro' : 'Ativar modo claro'}
             onFocus={() => setHoveredItem('theme')}
             onBlur={() => setHoveredItem(null)}
+            suppressHydrationWarning
           >
             <NavIcon>{mode === 'light' ? <Moon size={18} /> : <Sun size={18} />}</NavIcon>
             <FooterLabel $isExpanded={isExpanded}>
